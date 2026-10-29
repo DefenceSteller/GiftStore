@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800" role="img" aria-label="Smoke Test Gift">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#123456"/>
+      <stop offset="100%" stop-color="#abcdef"/>
+    </linearGradient>
+    <pattern id="dots" width="34" height="34" patternUnits="userSpaceOnUse">
+      <circle cx="4" cy="4" r="2" fill="#FFFFFF" opacity="0.16"/>
+    </pattern>
+    <radialGradient id="glow" cx="0.5" cy="0.42" r="0.55">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="800" fill="url(#g)"/>
+  <rect width="800" height="800" fill="url(#dots)"/>
+  <circle cx="640" cy="150" r="210" fill="#FFFFFF" opacity="0.12"/>
+  <circle cx="130" cy="660" r="180" fill="#0B0B0F" opacity="0.08"/>
+  <rect x="707" y="135" width="14" height="7" rx="3.5" fill="#0B0B0F" opacity="0.65" transform="rotate(147 707 135)"/>
+  <rect x="437" y="517" width="14" height="7" rx="3.5" fill="#FFD84D" opacity="0.75" transform="rotate(301 437 517)"/>
+  <circle cx="686" cy="239" r="4.5" fill="#0B0B0F" opacity="0.27"/>
+  <circle cx="89" cy="797" r="4.5" fill="#FFD84D" opacity="0.55"/>
+  <circle cx="76" cy="614" r="4.5" fill="#0B0B0F" opacity="0.38"/>
+  <rect x="669" y="346" width="14" height="7" rx="3.5" fill="#FF6B5E" opacity="0.59" transform="rotate(193 669 346)"/>
+  <rect x="39" y="4" width="14" height="7" rx="3.5" fill="#FFFFFF" opacity="0.27" transform="rotate(241 39 4)"/>
+  <rect x="754" y="264" width="14" height="7" rx="3.5" fill="#0B0B0F" opacity="0.26" transform="rotate(246 754 264)"/>
+  <rect x="107" y="484" width="14" height="7" rx="3.5" fill="#0B0B0F" opacity="0.55" transform="rotate(93 107 484)"/>
+  <rect x="545" y="425" width="14" height="7" rx="3.5" fill="#FF6B5E" opacity="0.51" transform="rotate(316 545 425)"/>
+  <rect x="146" y="555" width="14" height="7" rx="3.5" fill="#FFFFFF" opacity="0.65" transform="rotate(108 146 555)"/>
+  <rect x="528" y="419" width="14" height="7" rx="3.5" fill="#0B0B0F" opacity="0.44" transform="rotate(103 528 419)"/>
+  <circle cx="772" cy="781" r="4.5" fill="#FFD84D" opacity="0.59"/>
+  <rect x="172" y="136" width="14" height="7" rx="3.5" fill="#FFD84D" opacity="0.68" transform="rotate(99 172 136)"/>
+  <rect x="786" y="230" width="14" height="7" rx="3.5" fill="#FF6B5E" opacity="0.33" transform="rotate(108 786 230)"/>
+  <rect x="428" y="401" width="14" height="7" rx="3.5" fill="#FF6B5E" opacity="0.40" transform="rotate(87 428 401)"/>
+  <rect x="513" y="582" width="14" height="7" rx="3.5" fill="#0B0B0F" opacity="0.28" transform="rotate(54 513 582)"/>
+  <rect x="720" y="511" width="14" height="7" rx="3.5" fill="#FFD84D" opacity="0.59" transform="rotate(302 720 511)"/>
+  <rect x="507" y="364" width="14" height="7" rx="3.5" fill="#FFFFFF" opacity="0.43" transform="rotate(6 507 364)"/>
+  <rect x="283" y="76" width="14" height="7" rx="3.5" fill="#FFFFFF" opacity="0.27" transform="rotate(144 283 76)"/>
+  <rect x="617" y="356" width="14" height="7" rx="3.5" fill="#0B0B0F" opacity="0.67" transform="rotate(356 617 356)"/>
+  <rect x="576" y="732" width="14" height="7" rx="3.5" fill="#FFD84D" opacity="0.56" transform="rotate(169 576 732)"/>
+  <rect x="797" y="360" width="14" height="7" rx="3.5" fill="#FFFFFF" opacity="0.66" transform="rotate(153 797 360)"/>
+  <circle cx="188" cy="694" r="4.5" fill="#FFD84D" opacity="0.48"/>
+  <rect x="640" y="60" width="14" height="7" rx="3.5" fill="#FF6B5E" opacity="0.45" transform="rotate(124 640 60)"/>
+  <circle cx="254" cy="692" r="4.5" fill="#FFD84D" opacity="0.70"/>
+  <rect x="150" y="150" width="500" height="500" rx="120" fill="url(#glow)"/>
+  <rect x="184" y="184" width="432" height="432" rx="110" fill="#FFFFFF" opacity="0.18"/>
+  <text x="400" y="418" font-family="'Segoe UI Emoji','Apple Color Emoji','Noto Color Emoji',sans-serif" font-size="300" text-anchor="middle" dominant-baseline="central">🧪</text>
+</svg>

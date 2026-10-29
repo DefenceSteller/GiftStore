@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign in — Confetti Club Admin</title>
+  <meta name="robots" content="noindex" />
+  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" />
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body class="bg-ink">
+  <main class="grid min-h-screen lg:grid-cols-2">
+    <!-- BRAND PANEL -->
+    <section class="relative hidden overflow-hidden p-12 lg:flex lg:flex-col lg:justify-between">
+      <div class="pointer-events-none absolute -left-20 -top-20 h-96 w-96 rounded-full bg-iris/40 blur-3xl"></div>
+      <div class="pointer-events-none absolute -bottom-24 -right-10 h-96 w-96 rounded-full bg-acid/25 blur-3xl"></div>
+
+      <a href="/" class="relative flex items-center gap-3 text-white">
+        <span class="grid h-11 w-11 place-items-center rounded-xl border-2 border-white/20 bg-acid text-lg text-ink">🎁</span>
+        <span class="font-display text-xl font-extrabold">Confetti<span class="text-acid">Club</span></span>
+      </a>
+
+      <div class="relative">
+        <span class="sticker border-white/30 bg-white/10 text-white">🔐 Ops console</span>
+        <h1 class="mt-6 font-display text-5xl font-extrabold leading-[1.02] text-white">
+          Run the shop<br /><span class="text-acid">like clockwork.</span>
+        </h1>
+        <p class="mt-5 max-w-md text-sm font-semibold leading-relaxed text-white/55">
+          Live traffic, order pipeline, inventory alerts, customers and revenue — one dashboard, refreshed in real time.
+        </p>
+        <ul class="mt-8 grid max-w-md gap-3 text-sm font-bold text-white/75">
+          <li class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3.5"><span class="text-lg">📊</span> Live visitors, traffic & conversion funnel</li>
+          <li class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3.5"><span class="text-lg">📦</span> Order pipeline with shipping & tracking</li>
+          <li class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3.5"><span class="text-lg">⚡</span> Stock, promos & customer lifetime value</li>
+        </ul>
+      </div>
+
+      <p class="relative text-xs font-bold text-white/35">Confetti Club · admin build 1.0 · secured session</p>
+    </section>
+
+    <!-- FORM -->
+    <section class="flex items-center justify-center bg-paper px-5 py-12">
+      <div class="w-full max-w-md">
+        <div class="mb-8 flex items-center gap-3 lg:hidden">
+          <span class="grid h-10 w-10 place-items-center rounded-xl border-2 border-ink bg-acid">🎁</span>
+          <span class="font-display text-lg font-extrabold">Confetti<span class="text-iris">Club</span></span>
+        </div>
+
+        <span class="sticker bg-iris/10 text-iris">Admin access</span>
+        <h2 class="mt-4 font-display text-3xl font-extrabold">Welcome back</h2>
+        <p class="mt-2 text-sm font-semibold text-ink/55">Sign in to manage orders, stock and live metrics.</p>
+
+        <form id="login-form" class="mt-8 space-y-4" novalidate>
+          <div>
+            <label class="label" for="email">Email</label>
+            <input id="email" type="email" class="input" autocomplete="username" value="admin@confetticlub.shop" required />
+          </div>
+          <div>
+            <label class="label" for="password">Password</label>
+            <input id="password" type="password" class="input" autocomplete="current-password" placeholder="••••••••••" required />
+          </div>
+          <p id="login-error" class="hidden rounded-2xl border-2 border-coral/40 bg-coral/10 px-4 py-3 text-sm font-extrabold text-coral"></p>
+          <button id="login-btn" type="submit" class="btn-primary w-full text-base">Sign in →</button>
+        </form>
+
+        <div class="mt-6 rounded-2xl border-2 border-dashed border-ink/15 p-4 text-xs font-bold text-ink/55">
+          <p class="text-[11px] font-black uppercase tracking-wide text-ink/40">Local demo credentials</p>
+          <p class="mt-1.5 font-mono">admin@confetticlub.shop · ChangeMe!2026</p>
+          <p class="mt-1.5">Change it from Settings → Security, or set <span class="font-mono">ADMIN_PASSWORD</span> in <span class="font-mono">.env</span>.</p>
+        </div>
+
+        <p class="mt-8 text-center text-xs font-bold text-ink/40">← <a href="/" class="transition hover:text-ink">Back to the shop</a></p>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="/assets/js/admin-login.js"></script>
+</body>
+</html>

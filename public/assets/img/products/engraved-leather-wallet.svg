@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800" role="img" aria-label="Engraved Leather Wallet">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#8B5A2B"/>
+      <stop offset="100%" stop-color="#C9B8FF"/>
+    </linearGradient>
+    <pattern id="dots" width="34" height="34" patternUnits="userSpaceOnUse">
+      <circle cx="4" cy="4" r="2" fill="#FFFFFF" opacity="0.16"/>
+    </pattern>
+    <radialGradient id="glow" cx="0.5" cy="0.42" r="0.55">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="800" fill="url(#g)"/>
+  <rect width="800" height="800" fill="url(#dots)"/>
+  <circle cx="640" cy="150" r="210" fill="#FFFFFF" opacity="0.12"/>
+  <circle cx="130" cy="660" r="180" fill="#0B0B0F" opacity="0.08"/>
+  <rect x="550" y="642" width="14" height="7" rx="3.5" fill="#0B0B0F" opacity="0.30" transform="rotate(23 550 642)"/>
+  <circle cx="16" cy="352" r="4.5" fill="#FFFFFF" opacity="0.31"/>
+  <rect x="310" y="388" width="14" height="7" rx="3.5" fill="#FF6B5E" opacity="0.50" transform="rotate(301 310 388)"/>
+  <rect x="192" y="783" width="14" height="7" rx="3.5" fill="#0B0B0F" opacity="0.27" transform="rotate(293 192 783)"/>
+  <rect x="366" y="509" width="14" height="7" rx="3.5" fill="#FF6B5E" opacity="0.57" transform="rotate(33 366 509)"/>
+  <circle cx="511" cy="420" r="4.5" fill="#0B0B0F" opacity="0.60"/>
+  <rect x="681" y="122" width="14" height="7" rx="3.5" fill="#FFD84D" opacity="0.47" transform="rotate(86 681 122)"/>
+  <rect x="784" y="771" width="14" height="7" rx="3.5" fill="#FF6B5E" opacity="0.54" transform="rotate(35 784 771)"/>
+  <rect x="584" y="77" width="14" height="7" rx="3.5" fill="#FFFFFF" opacity="0.53" transform="rotate(243 584 77)"/>
+  <circle cx="435" cy="443" r="4.5" fill="#FFFFFF" opacity="0.45"/>
+  <rect x="746" y="569" width="14" height="7" rx="3.5" fill="#FFD84D" opacity="0.42" transform="rotate(122 746 569)"/>
+  <circle cx="254" cy="295" r="4.5" fill="#FF6B5E" opacity="0.49"/>
+  <circle cx="355" cy="652" r="4.5" fill="#FF6B5E" opacity="0.29"/>
+  <circle cx="311" cy="378" r="4.5" fill="#FFD84D" opacity="0.66"/>
+  <rect x="10" y="434" width="14" height="7" rx="3.5" fill="#FFD84D" opacity="0.66" transform="rotate(339 10 434)"/>
+  <rect x="315" y="436" width="14" height="7" rx="3.5" fill="#FFD84D" opacity="0.38" transform="rotate(26 315 436)"/>
+  <rect x="324" y="544" width="14" height="7" rx="3.5" fill="#FFFFFF" opacity="0.31" transform="rotate(121 324 544)"/>
+  <rect x="647" y="325" width="14" height="7" rx="3.5" fill="#0B0B0F" opacity="0.45" transform="rotate(173 647 325)"/>
+  <rect x="292" y="313" width="14" height="7" rx="3.5" fill="#FFFFFF" opacity="0.43" transform="rotate(181 292 313)"/>
+  <circle cx="94" cy="256" r="4.5" fill="#FFFFFF" opacity="0.42"/>
+  <rect x="120" y="7" width="14" height="7" rx="3.5" fill="#FFD84D" opacity="0.53" transform="rotate(267 120 7)"/>
+  <rect x="685" y="661" width="14" height="7" rx="3.5" fill="#FF6B5E" opacity="0.48" transform="rotate(21 685 661)"/>
+  <circle cx="450" cy="17" r="4.5" fill="#0B0B0F" opacity="0.31"/>
+  <rect x="13" y="735" width="14" height="7" rx="3.5" fill="#FFD84D" opacity="0.26" transform="rotate(271 13 735)"/>
+  <rect x="316" y="136" width="14" height="7" rx="3.5" fill="#FF6B5E" opacity="0.43" transform="rotate(144 316 136)"/>
+  <circle cx="87" cy="693" r="4.5" fill="#0B0B0F" opacity="0.53"/>
+  <rect x="150" y="150" width="500" height="500" rx="120" fill="url(#glow)"/>
+  <rect x="184" y="184" width="432" height="432" rx="110" fill="#FFFFFF" opacity="0.18"/>
+  <text x="400" y="418" font-family="'Segoe UI Emoji','Apple Color Emoji','Noto Color Emoji',sans-serif" font-size="300" text-anchor="middle" dominant-baseline="central">👛</text>
+</svg>

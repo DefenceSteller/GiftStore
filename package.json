@@ -1,0 +1,35 @@
+{
+  "name": "confetti-club",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Confetti Club — modern gift shop e-commerce storefront + real-time admin dashboard",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "build": "npm run build:css && npm run build:vendor",
+    "build:css": "tailwindcss -i ./src/styles.css -o ./public/assets/css/styles.css --minify",
+    "watch:css": "tailwindcss -i ./src/styles.css -o ./public/assets/css/styles.css --watch",
+    "build:vendor": "node scripts/copy-vendor.js",
+    "seed": "node server/seed.js",
+    "gen:images": "node scripts/gen-images.js",
+    "loadtest": "node scripts/loadtest.js",
+    "setup": "npm run build && npm run gen:images && npm run seed"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "compression": "^1.7.5",
+    "cookie-parser": "^1.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "chart.js": "^4.4.9",
+    "tailwindcss": "^3.4.17"
+  },
+  "engines": {
+    "node": ">=20.11"
+  }
+}

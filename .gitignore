@@ -1,0 +1,9 @@
+node_modules/
+data/*.db
+data/*.db-wal
+data/*.db-shm
+.env
+.secret
+public/assets/css/styles.css
+*.log
+.DS_Store

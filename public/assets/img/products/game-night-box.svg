@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800" role="img" aria-label="Game Night Box">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FF6B5E"/>
+      <stop offset="100%" stop-color="#D3FF52"/>
+    </linearGradient>
+    <pattern id="dots" width="34" height="34" patternUnits="userSpaceOnUse">
+      <circle cx="4" cy="4" r="2" fill="#FFFFFF" opacity="0.16"/>
+    </pattern>
+    <radialGradient id="glow" cx="0.5" cy="0.42" r="0.55">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="800" fill="url(#g)"/>
+  <rect width="800" height="800" fill="url(#dots)"/>
+  <circle cx="640" cy="150" r="210" fill="#FFFFFF" opacity="0.12"/>
+  <circle cx="130" cy="660" r="180" fill="#0B0B0F" opacity="0.08"/>
+  <circle cx="81" cy="497" r="4.5" fill="#FF6B5E" opacity="0.55"/>
+  <rect x="266" y="419" width="14" height="7" rx="3.5" fill="#FFFFFF" opacity="0.61" transform="rotate(212 266 419)"/>
+  <circle cx="332" cy="270" r="4.5" fill="#0B0B0F" opacity="0.58"/>
+  <circle cx="697" cy="406" r="4.5" fill="#0B0B0F" opacity="0.50"/>
+  <rect x="266" y="422" width="14" height="7" rx="3.5" fill="#FF6B5E" opacity="0.64" transform="rotate(107 266 422)"/>
+  <rect x="529" y="789" width="14" height="7" rx="3.5" fill="#FF6B5E" opacity="0.72" transform="rotate(327 529 789)"/>
+  <circle cx="336" cy="112" r="4.5" fill="#FF6B5E" opacity="0.64"/>
+  <rect x="86" y="565" width="14" height="7" rx="3.5" fill="#0B0B0F" opacity="0.37" transform="rotate(360 86 565)"/>
+  <rect x="94" y="151" width="14" height="7" rx="3.5" fill="#FFFFFF" opacity="0.28" transform="rotate(92 94 151)"/>
+  <rect x="390" y="764" width="14" height="7" rx="3.5" fill="#FF6B5E" opacity="0.28" transform="rotate(308 390 764)"/>
+  <rect x="44" y="799" width="14" height="7" rx="3.5" fill="#0B0B0F" opacity="0.39" transform="rotate(269 44 799)"/>
+  <circle cx="184" cy="558" r="4.5" fill="#0B0B0F" opacity="0.40"/>
+  <rect x="398" y="485" width="14" height="7" rx="3.5" fill="#FFD84D" opacity="0.30" transform="rotate(153 398 485)"/>
+  <rect x="292" y="145" width="14" height="7" rx="3.5" fill="#0B0B0F" opacity="0.55" transform="rotate(265 292 145)"/>
+  <circle cx="312" cy="689" r="4.5" fill="#FF6B5E" opacity="0.67"/>
+  <circle cx="676" cy="554" r="4.5" fill="#0B0B0F" opacity="0.72"/>
+  <rect x="254" y="726" width="14" height="7" rx="3.5" fill="#FFD84D" opacity="0.67" transform="rotate(195 254 726)"/>
+  <rect x="451" y="684" width="14" height="7" rx="3.5" fill="#0B0B0F" opacity="0.35" transform="rotate(49 451 684)"/>
+  <circle cx="774" cy="609" r="4.5" fill="#FFD84D" opacity="0.51"/>
+  <rect x="27" y="214" width="14" height="7" rx="3.5" fill="#FFD84D" opacity="0.72" transform="rotate(187 27 214)"/>
+  <rect x="409" y="611" width="14" height="7" rx="3.5" fill="#FF6B5E" opacity="0.33" transform="rotate(161 409 611)"/>
+  <rect x="561" y="3" width="14" height="7" rx="3.5" fill="#0B0B0F" opacity="0.28" transform="rotate(346 561 3)"/>
+  <rect x="158" y="790" width="14" height="7" rx="3.5" fill="#FFFFFF" opacity="0.34" transform="rotate(164 158 790)"/>
+  <circle cx="750" cy="464" r="4.5" fill="#FF6B5E" opacity="0.40"/>
+  <circle cx="245" cy="642" r="4.5" fill="#FF6B5E" opacity="0.72"/>
+  <circle cx="332" cy="205" r="4.5" fill="#0B0B0F" opacity="0.66"/>
+  <rect x="150" y="150" width="500" height="500" rx="120" fill="url(#glow)"/>
+  <rect x="184" y="184" width="432" height="432" rx="110" fill="#FFFFFF" opacity="0.18"/>
+  <text x="400" y="418" font-family="'Segoe UI Emoji','Apple Color Emoji','Noto Color Emoji',sans-serif" font-size="300" text-anchor="middle" dominant-baseline="central">🎲</text>
+</svg>

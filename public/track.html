@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Track your order — Confetti Club</title>
+  <meta name="description" content="See where your Confetti Club order is, in real time." />
+  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Manrope:wght@400;500;600;700;800&display=swap" />
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body>
+  <canvas id="confetti-canvas" class="pointer-events-none fixed inset-0 z-[80] hidden"></canvas>
+
+  <main class="container-cc pb-24 pt-10">
+    <div class="mx-auto max-w-xl text-center">
+      <span class="sticker bg-acid">🚚 Live order tracking</span>
+      <h1 class="mt-4 font-display text-4xl font-extrabold leading-tight sm:text-5xl">Where's my stuff?</h1>
+      <p class="mt-3 font-semibold text-ink/55">Pop in your order number and email — we'll show you exactly where it is.</p>
+    </div>
+
+    <form id="track-form" class="mx-auto mt-8 flex max-w-xl flex-col gap-3 rounded-[28px] border-2 border-ink bg-white p-5 shadow-sticker sm:flex-row sm:p-6">
+      <label class="flex-1">
+        <span class="sr-only">Order number</span>
+        <input id="track-number" class="input uppercase" placeholder="Order no. (CC-XXXXXXX)" autocomplete="off" required />
+      </label>
+      <label class="flex-1">
+        <span class="sr-only">Email</span>
+        <input id="track-email" type="email" class="input" placeholder="Email used at checkout" autocomplete="email" required />
+      </label>
+      <button id="track-submit" class="btn-primary h-[50px] shrink-0">Track it</button>
+    </form>
+    <p id="track-error" class="mx-auto mt-4 hidden max-w-xl rounded-2xl border-2 border-coral/40 bg-coral/10 px-4 py-3 text-center text-sm font-extrabold text-coral"></p>
+
+    <section id="track-result" class="mx-auto mt-10 hidden max-w-3xl"></section>
+  </main>
+
+  <script type="module" src="/assets/js/pages/track.js"></script>
+</body>
+</html>

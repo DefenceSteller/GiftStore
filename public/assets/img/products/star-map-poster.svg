@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800" role="img" aria-label="Star Map Poster">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0B0B0F"/>
+      <stop offset="100%" stop-color="#7C5CFF"/>
+    </linearGradient>
+    <pattern id="dots" width="34" height="34" patternUnits="userSpaceOnUse">
+      <circle cx="4" cy="4" r="2" fill="#FFFFFF" opacity="0.16"/>
+    </pattern>
+    <radialGradient id="glow" cx="0.5" cy="0.42" r="0.55">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="800" fill="url(#g)"/>
+  <rect width="800" height="800" fill="url(#dots)"/>
+  <circle cx="640" cy="150" r="210" fill="#FFFFFF" opacity="0.12"/>
+  <circle cx="130" cy="660" r="180" fill="#0B0B0F" opacity="0.08"/>
+  <rect x="316" y="372" width="14" height="7" rx="3.5" fill="#FFFFFF" opacity="0.30" transform="rotate(117 316 372)"/>
+  <rect x="272" y="655" width="14" height="7" rx="3.5" fill="#FFFFFF" opacity="0.49" transform="rotate(6 272 655)"/>
+  <rect x="503" y="552" width="14" height="7" rx="3.5" fill="#0B0B0F" opacity="0.46" transform="rotate(158 503 552)"/>
+  <rect x="194" y="286" width="14" height="7" rx="3.5" fill="#FF6B5E" opacity="0.73" transform="rotate(63 194 286)"/>
+  <circle cx="310" cy="188" r="4.5" fill="#FF6B5E" opacity="0.49"/>
+  <circle cx="666" cy="490" r="4.5" fill="#FF6B5E" opacity="0.74"/>
+  <circle cx="241" cy="11" r="4.5" fill="#FF6B5E" opacity="0.38"/>
+  <circle cx="506" cy="335" r="4.5" fill="#FF6B5E" opacity="0.55"/>
+  <rect x="336" y="345" width="14" height="7" rx="3.5" fill="#FFFFFF" opacity="0.68" transform="rotate(144 336 345)"/>
+  <rect x="271" y="110" width="14" height="7" rx="3.5" fill="#FFFFFF" opacity="0.48" transform="rotate(223 271 110)"/>
+  <circle cx="337" cy="661" r="4.5" fill="#FFD84D" opacity="0.31"/>
+  <rect x="766" y="589" width="14" height="7" rx="3.5" fill="#FF6B5E" opacity="0.70" transform="rotate(212 766 589)"/>
+  <rect x="566" y="202" width="14" height="7" rx="3.5" fill="#FF6B5E" opacity="0.56" transform="rotate(272 566 202)"/>
+  <rect x="715" y="467" width="14" height="7" rx="3.5" fill="#FFFFFF" opacity="0.49" transform="rotate(64 715 467)"/>
+  <circle cx="167" cy="591" r="4.5" fill="#FF6B5E" opacity="0.34"/>
+  <circle cx="520" cy="177" r="4.5" fill="#FFD84D" opacity="0.42"/>
+  <circle cx="530" cy="655" r="4.5" fill="#FFFFFF" opacity="0.40"/>
+  <rect x="519" y="698" width="14" height="7" rx="3.5" fill="#0B0B0F" opacity="0.63" transform="rotate(98 519 698)"/>
+  <circle cx="537" cy="155" r="4.5" fill="#FFFFFF" opacity="0.44"/>
+  <rect x="355" y="503" width="14" height="7" rx="3.5" fill="#FFFFFF" opacity="0.34" transform="rotate(244 355 503)"/>
+  <rect x="11" y="417" width="14" height="7" rx="3.5" fill="#FF6B5E" opacity="0.44" transform="rotate(172 11 417)"/>
+  <rect x="713" y="432" width="14" height="7" rx="3.5" fill="#FFD84D" opacity="0.42" transform="rotate(322 713 432)"/>
+  <rect x="423" y="285" width="14" height="7" rx="3.5" fill="#FF6B5E" opacity="0.74" transform="rotate(136 423 285)"/>
+  <rect x="367" y="679" width="14" height="7" rx="3.5" fill="#FF6B5E" opacity="0.57" transform="rotate(117 367 679)"/>
+  <rect x="369" y="521" width="14" height="7" rx="3.5" fill="#FF6B5E" opacity="0.34" transform="rotate(52 369 521)"/>
+  <rect x="485" y="489" width="14" height="7" rx="3.5" fill="#FF6B5E" opacity="0.34" transform="rotate(91 485 489)"/>
+  <rect x="150" y="150" width="500" height="500" rx="120" fill="url(#glow)"/>
+  <rect x="184" y="184" width="432" height="432" rx="110" fill="#FFFFFF" opacity="0.18"/>
+  <text x="400" y="418" font-family="'Segoe UI Emoji','Apple Color Emoji','Noto Color Emoji',sans-serif" font-size="300" text-anchor="middle" dominant-baseline="central">🌌</text>
+</svg>

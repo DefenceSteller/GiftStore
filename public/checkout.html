@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Checkout — Confetti Club</title>
+  <meta name="robots" content="noindex" />
+  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Manrope:wght@400;500;600;700;800&display=swap" />
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body>
+  <main class="container-cc pb-24 pt-8">
+    <div class="flex flex-wrap items-end justify-between gap-5">
+      <div>
+        <p class="text-xs font-black uppercase tracking-[0.18em] text-iris">🔒 Secure checkout</p>
+        <h1 class="mt-2 font-display text-4xl font-extrabold sm:text-5xl">Almost theirs.</h1>
+      </div>
+      <ol class="flex flex-wrap items-center gap-2 text-xs font-extrabold uppercase tracking-wide" id="steps">
+        <li data-step-pill="1" class="flex items-center gap-2 rounded-full border-2 border-ink bg-ink px-4 py-2 text-white shadow-sticker-sm"><span class="grid h-5 w-5 place-items-center rounded-full bg-acid text-[11px] text-ink">1</span> Details</li>
+        <li class="text-ink/25">→</li>
+        <li data-step-pill="2" class="flex items-center gap-2 rounded-full border-2 border-ink/15 bg-white px-4 py-2 text-ink/50"><span class="grid h-5 w-5 place-items-center rounded-full bg-ink/10 text-[11px]">2</span> Payment</li>
+        <li class="text-ink/25">→</li>
+        <li data-step-pill="3" class="flex items-center gap-2 rounded-full border-2 border-ink/15 bg-white px-4 py-2 text-ink/50"><span class="grid h-5 w-5 place-items-center rounded-full bg-ink/10 text-[11px]">3</span> Review</li>
+      </ol>
+    </div>
+
+    <div class="mt-8 grid gap-8 lg:grid-cols-[1fr_370px]">
+      <div>
+        <!-- STEP 1 -->
+        <section data-step="1" class="rounded-[28px] border border-ink/8 bg-white p-6 shadow-soft sm:p-7">
+          <h2 class="font-display text-xl font-extrabold">Where's it going? <span class="ml-1 text-base font-bold text-ink/40">1 of 3</span></h2>
+
+          <div class="mt-6 grid gap-4 sm:grid-cols-2">
+            <div>
+              <label class="label" for="c-first">First name</label>
+              <input id="c-first" class="input" autocomplete="given-name" required />
+              <p class="field-error" data-error-for="c-first"></p>
+            </div>
+            <div>
+              <label class="label" for="c-last">Last name</label>
+              <input id="c-last" class="input" autocomplete="family-name" required />
+              <p class="field-error" data-error-for="c-last"></p>
+            </div>
+            <div>
+              <label class="label" for="c-email">Email <span class="font-bold text-ink/35">(for your receipt + tracking)</span></label>
+              <input id="c-email" type="email" class="input" autocomplete="email" required />
+              <p class="field-error" data-error-for="c-email"></p>
+            </div>
+            <div>
+              <label class="label" for="c-phone">Phone <span class="font-bold text-ink/35">(delivery updates)</span></label>
+              <input id="c-phone" type="tel" class="input" autocomplete="tel" placeholder="555 123 4567" required />
+              <p class="field-error" data-error-for="c-phone"></p>
+            </div>
+          </div>
+
+          <div class="mt-5 grid gap-4">
+            <div>
+              <label class="label" for="a-address1">Street address</label>
+              <input id="a-address1" class="input" autocomplete="address-line1" placeholder="123 Maple St" required />
+              <p class="field-error" data-error-for="a-address1"></p>
+            </div>
+            <div class="grid gap-4 sm:grid-cols-3">
+              <div class="sm:col-span-2">
+                <label class="label" for="a-address2">Apt / suite <span class="font-bold text-ink/35">(optional)</span></label>
+                <input id="a-address2" class="input" autocomplete="address-line2" />
+              </div>
+              <div>
+                <label class="label" for="a-city">City</label>
+                <input id="a-city" class="input" autocomplete="address-level2" required />
+                <p class="field-error" data-error-for="a-city"></p>
+              </div>
+            </div>
+            <div class="grid gap-4 sm:grid-cols-3">
+              <div>
+                <label class="label" for="a-state">State</label>
+                <input id="a-state" class="input" autocomplete="address-level1" placeholder="TX" maxlength="40" required />
+                <p class="field-error" data-error-for="a-state"></p>
+              </div>
+              <div>
+                <label class="label" for="a-zip">ZIP code</label>
+                <input id="a-zip" class="input" autocomplete="postal-code" placeholder="78701" required />
+                <p class="field-error" data-error-for="a-zip"></p>
+              </div>
+              <div>
+                <label class="label" for="a-country">Country</label>
+                <select id="a-country" class="input" autocomplete="country">
+                  <option value="US">United States</option>
+                  <option value="CA">Canada</option>
+                  <option value="GB">United Kingdom</option>
+                  <option value="AU">Australia</option>
+                  <option value="NZ">New Zealand</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="mt-7 font-display text-base font-extrabold">Delivery speed</h3>
+          <div class="mt-3 grid gap-3 sm:grid-cols-2">
+            <label class="flex cursor-pointer items-start gap-3 rounded-2xl border-2 border-ink bg-mist p-4 transition has-[:checked]:shadow-sticker-sm">
+              <input type="radio" name="delivery" value="standard" checked class="mt-1 accent-iris" />
+              <span>
+                <span class="block text-sm font-extrabold">Standard 🚚</span>
+                <span class="block text-xs font-bold text-ink/55">Arrives in <span data-days-standard>5–7</span> days</span>
+                <span class="mt-1 block text-sm font-extrabold" id="ship-standard-label">Free over $50</span>
+              </span>
+            </label>
+            <label class="flex cursor-pointer items-start gap-3 rounded-2xl border-2 border-ink/15 bg-white p-4 transition has-[:checked]:border-ink has-[:checked]:shadow-sticker-sm">
+              <input type="radio" name="delivery" value="express" class="mt-1 accent-iris" />
+              <span>
+                <span class="block text-sm font-extrabold">Express ⚡</span>
+                <span class="block text-xs font-bold text-ink/55">Arrives in <span data-days-express>2–3</span> days</span>
+                <span class="mt-1 block text-sm font-extrabold" id="ship-express-label">$12.99</span>
+              </span>
+            </label>
+          </div>
+
+          <div class="mt-7 flex justify-end">
+            <button class="btn-primary text-base" data-next="2">Continue to payment →</button>
+          </div>
+        </section>
+
+        <!-- STEP 2 -->
+        <section data-step="2" class="hidden rounded-[28px] border border-ink/8 bg-white p-6 shadow-soft sm:p-7">
+          <div class="flex items-start justify-between gap-4">
+            <h2 class="font-display text-xl font-extrabold">How are you paying? <span class="ml-1 text-base font-bold text-ink/40">2 of 3</span></h2>
+            <button class="text-xs font-extrabold text-ink/45 transition hover:text-ink" data-back="1">← Edit details</button>
+          </div>
+
+          <div class="mt-5 grid gap-3 sm:grid-cols-2">
+            <label class="flex cursor-pointer items-center gap-3 rounded-2xl border-2 border-ink bg-mist p-4 transition has-[:checked]:shadow-sticker-sm">
+              <input type="radio" name="payment" value="card" checked class="accent-iris" />
+              <span class="text-sm font-extrabold">💳 Card</span>
+            </label>
+            <label class="flex cursor-pointer items-center gap-3 rounded-2xl border-2 border-ink/15 bg-white p-4 transition has-[:checked]:border-ink has-[:checked]:shadow-sticker-sm">
+              <input type="radio" name="payment" value="cod" class="accent-iris" />
+              <span class="text-sm font-extrabold">💵 Pay on delivery</span>
+            </label>
+          </div>
+
+          <div id="card-fields" class="mt-6 grid gap-4 sm:grid-cols-2">
+            <div class="sm:col-span-2">
+              <label class="label" for="card-number">Card number</label>
+              <div class="relative">
+                <input id="card-number" inputmode="numeric" autocomplete="cc-number" class="input pr-24 tracking-widest" placeholder="4242 4242 4242 4242" maxlength="23" required />
+                <span id="card-brand" class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-black uppercase text-ink/40"></span>
+              </div>
+              <p class="field-error" data-error-for="card-number"></p>
+            </div>
+            <div class="sm:col-span-2">
+              <label class="label" for="card-name">Name on card</label>
+              <input id="card-name" autocomplete="cc-name" class="input" placeholder="ALEX RIVERA" required />
+              <p class="field-error" data-error-for="card-name"></p>
+            </div>
+            <div>
+              <label class="label" for="card-exp">Expiry (MM/YY)</label>
+              <input id="card-exp" inputmode="numeric" autocomplete="cc-exp" class="input" placeholder="12/29" maxlength="5" required />
+              <p class="field-error" data-error-for="card-exp"></p>
+            </div>
+            <div>
+              <label class="label" for="card-cvc">CVC</label>
+              <input id="card-cvc" inputmode="numeric" autocomplete="cc-csc" class="input" placeholder="123" maxlength="4" required />
+              <p class="field-error" data-error-for="card-cvc"></p>
+            </div>
+            <div class="sm:col-span-2 rounded-2xl bg-mist p-4 text-xs font-bold text-ink/55">
+              🔒 Demo payments are processed by our sandbox provider — <strong>no real charge will be made</strong> and card details are never stored on our servers.
+              Use any Luhn-valid number (e.g. <span class="font-mono">4242 4242 4242 4242</span>) or a future expiry date.
+            </div>
+          </div>
+
+          <div class="mt-7 flex items-center justify-between gap-3">
+            <button class="btn-ghost" data-back="1">← Back</button>
+            <button class="btn-primary text-base" data-next="3">Review order →</button>
+          </div>
+        </section>
+
+        <!-- STEP 3 -->
+        <section data-step="3" class="hidden rounded-[28px] border border-ink/8 bg-white p-6 shadow-soft sm:p-7">
+          <div class="flex items-start justify-between gap-4">
+            <h2 class="font-display text-xl font-extrabold">Give it one last look <span class="ml-1 text-base font-bold text-ink/40">3 of 3</span></h2>
+            <button class="text-xs font-extrabold text-ink/45 transition hover:text-ink" data-back="2">← Edit payment</button>
+          </div>
+
+          <div class="mt-5 grid gap-4 sm:grid-cols-2">
+            <div class="rounded-2xl border border-ink/10 p-4">
+              <p class="text-[11px] font-black uppercase tracking-wide text-ink/40">Shipping to</p>
+              <p id="review-name" class="mt-1.5 text-sm font-extrabold"></p>
+              <p id="review-address" class="text-sm font-semibold text-ink/60"></p>
+              <p id="review-contact" class="mt-1 text-xs font-bold text-ink/45"></p>
+              <button class="mt-2 text-xs font-extrabold text-iris" data-back="1">Edit</button>
+            </div>
+            <div class="rounded-2xl border border-ink/10 p-4">
+              <p class="text-[11px] font-black uppercase tracking-wide text-ink/40">Payment</p>
+              <p id="review-payment" class="mt-1.5 text-sm font-extrabold"></p>
+              <p id="review-delivery" class="text-sm font-semibold text-ink/60"></p>
+              <button class="mt-2 text-xs font-extrabold text-iris" data-back="2">Edit</button>
+            </div>
+          </div>
+
+          <div class="mt-5 rounded-2xl border border-ink/10">
+            <div id="review-items" class="divide-y divide-ink/8"></div>
+            <div class="flex items-center justify-between gap-3 border-t border-ink/10 bg-mist px-4 py-3">
+              <span class="text-sm font-extrabold">Total due today</span>
+              <span id="review-total" class="font-display text-2xl font-extrabold tabular"></span>
+            </div>
+          </div>
+
+          <div class="mt-7 flex flex-wrap items-center justify-between gap-3">
+            <button class="btn-ghost" data-back="2">← Back</button>
+            <button id="place-order" class="btn-lime text-base">🎁 Place order</button>
+          </div>
+          <p class="mt-3 text-center text-[11px] font-bold text-ink/45">By placing this order you agree to our (imaginary) terms. 30-day returns, always.</p>
+        </section>
+      </div>
+
+      <!-- SUMMARY -->
+      <aside class="lg:sticky lg:top-24 lg:self-start">
+        <div class="rounded-[28px] border-2 border-ink bg-white p-6 shadow-sticker">
+          <h2 class="font-display text-lg font-extrabold">Your items</h2>
+          <div id="checkout-items" class="mt-4 max-h-64 space-y-3 overflow-y-auto pr-1"></div>
+
+          <dl class="mt-5 space-y-2.5 border-t border-ink/10 pt-4 text-sm font-bold">
+            <div class="flex justify-between"><dt class="text-ink/55">Subtotal</dt><dd id="ck-subtotal" class="tabular">$0.00</dd></div>
+            <div id="ck-discount-row" class="hidden flex justify-between text-iris"><dt>Discount</dt><dd id="ck-discount" class="tabular">-$0.00</dd></div>
+            <div class="flex justify-between"><dt class="text-ink/55">Shipping</dt><dd id="ck-shipping" class="tabular">—</dd></div>
+            <div class="flex justify-between"><dt class="text-ink/55">Tax <span class="text-ink/35" id="ck-tax-rate"></span></dt><dd id="ck-tax" class="tabular">$0.00</dd></div>
+          </dl>
+          <div class="mt-3 flex items-end justify-between border-t border-ink/10 pt-3">
+            <span class="text-sm font-extrabold text-ink/60">Total</span>
+            <span id="ck-total" class="font-display text-2xl font-extrabold tabular">$0.00</span>
+          </div>
+          <p id="ck-promo-note" class="mt-3 hidden rounded-xl bg-acid/40 px-3 py-2 text-xs font-extrabold"></p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script type="module" src="/assets/js/pages/checkout.js"></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Confetti Club">
+  <rect width="64" height="64" rx="16" fill="#0D0D12"/>
+  <rect x="12" y="26" width="40" height="26" rx="7" fill="#7C5CFF"/>
+  <rect x="12" y="24" width="40" height="10" rx="5" fill="#B7A6FF"/>
+  <rect x="28" y="24" width="8" height="28" fill="#D6FF3E"/>
+  <path d="M32 24c-6-1-9-4-9-8 0-3 2-5 5-5 4 0 6 4 4 13z" fill="#FF6B5E"/>
+  <path d="M32 24c6-1 9-4 9-8 0-3-2-5-5-5-4 0-6 4-4 13z" fill="#FFD84D"/>
+  <circle cx="16" cy="14" r="3" fill="#7CE7FF"/>
+  <rect x="46" y="10" width="6" height="6" rx="1.5" fill="#FF9BE1" transform="rotate(20 49 13)"/>
+  <path d="M24 9l2 4 4 1-3 3 1 4-4-2-4 2 1-4-3-3 4-1z" fill="#D6FF3E"/>
+</svg>

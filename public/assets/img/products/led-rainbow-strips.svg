@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800" role="img" aria-label="LED Rainbow Strips">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FF9BE1"/>
+      <stop offset="100%" stop-color="#7CE7FF"/>
+    </linearGradient>
+    <pattern id="dots" width="34" height="34" patternUnits="userSpaceOnUse">
+      <circle cx="4" cy="4" r="2" fill="#FFFFFF" opacity="0.16"/>
+    </pattern>
+    <radialGradient id="glow" cx="0.5" cy="0.42" r="0.55">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="800" fill="url(#g)"/>
+  <rect width="800" height="800" fill="url(#dots)"/>
+  <circle cx="640" cy="150" r="210" fill="#FFFFFF" opacity="0.12"/>
+  <circle cx="130" cy="660" r="180" fill="#0B0B0F" opacity="0.08"/>
+  <circle cx="598" cy="159" r="4.5" fill="#FFFFFF" opacity="0.41"/>
+  <circle cx="347" cy="197" r="4.5" fill="#FFFFFF" opacity="0.65"/>
+  <circle cx="15" cy="192" r="4.5" fill="#FFFFFF" opacity="0.25"/>
+  <rect x="618" y="370" width="14" height="7" rx="3.5" fill="#0B0B0F" opacity="0.74" transform="rotate(149 618 370)"/>
+  <circle cx="472" cy="580" r="4.5" fill="#0B0B0F" opacity="0.25"/>
+  <rect x="704" y="378" width="14" height="7" rx="3.5" fill="#FF6B5E" opacity="0.54" transform="rotate(237 704 378)"/>
+  <rect x="208" y="237" width="14" height="7" rx="3.5" fill="#FF6B5E" opacity="0.31" transform="rotate(283 208 237)"/>
+  <circle cx="731" cy="593" r="4.5" fill="#0B0B0F" opacity="0.70"/>
+  <rect x="736" y="149" width="14" height="7" rx="3.5" fill="#0B0B0F" opacity="0.74" transform="rotate(200 736 149)"/>
+  <rect x="746" y="742" width="14" height="7" rx="3.5" fill="#0B0B0F" opacity="0.39" transform="rotate(70 746 742)"/>
+  <circle cx="781" cy="199" r="4.5" fill="#FFD84D" opacity="0.75"/>
+  <rect x="129" y="413" width="14" height="7" rx="3.5" fill="#0B0B0F" opacity="0.36" transform="rotate(204 129 413)"/>
+  <circle cx="293" cy="336" r="4.5" fill="#0B0B0F" opacity="0.63"/>
+  <circle cx="175" cy="433" r="4.5" fill="#FF6B5E" opacity="0.63"/>
+  <rect x="571" y="61" width="14" height="7" rx="3.5" fill="#FFD84D" opacity="0.44" transform="rotate(208 571 61)"/>
+  <rect x="77" y="234" width="14" height="7" rx="3.5" fill="#FFD84D" opacity="0.48" transform="rotate(331 77 234)"/>
+  <circle cx="782" cy="267" r="4.5" fill="#0B0B0F" opacity="0.26"/>
+  <circle cx="371" cy="730" r="4.5" fill="#FFFFFF" opacity="0.68"/>
+  <circle cx="287" cy="85" r="4.5" fill="#FF6B5E" opacity="0.60"/>
+  <rect x="76" y="582" width="14" height="7" rx="3.5" fill="#0B0B0F" opacity="0.28" transform="rotate(279 76 582)"/>
+  <rect x="525" y="513" width="14" height="7" rx="3.5" fill="#0B0B0F" opacity="0.74" transform="rotate(72 525 513)"/>
+  <circle cx="604" cy="209" r="4.5" fill="#FFFFFF" opacity="0.44"/>
+  <circle cx="518" cy="440" r="4.5" fill="#0B0B0F" opacity="0.66"/>
+  <circle cx="735" cy="133" r="4.5" fill="#FFD84D" opacity="0.61"/>
+  <rect x="521" y="555" width="14" height="7" rx="3.5" fill="#FFFFFF" opacity="0.48" transform="rotate(112 521 555)"/>
+  <circle cx="176" cy="574" r="4.5" fill="#FFD84D" opacity="0.71"/>
+  <rect x="150" y="150" width="500" height="500" rx="120" fill="url(#glow)"/>
+  <rect x="184" y="184" width="432" height="432" rx="110" fill="#FFFFFF" opacity="0.18"/>
+  <text x="400" y="418" font-family="'Segoe UI Emoji','Apple Color Emoji','Noto Color Emoji',sans-serif" font-size="300" text-anchor="middle" dominant-baseline="central">🌈</text>
+</svg>
