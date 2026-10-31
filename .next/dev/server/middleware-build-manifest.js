@@ -41,7 +41,7 @@ globalThis.__BUILD_MANIFEST = {
       "static/chunks/turbopack-_06rkbud3pyrlm._.js",
       "static/chunks/_219uq1sj0q91c._.js"
     ],
-    "/product/[slug]/page": [
+    "/shop/page": [
       "static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_0qva5cupmdgep._.js",
       "static/chunks/1daa_next_dist_compiled_react-dom_cjs_react-dom-client_development_0mp0cp_t-ezj9.js",
       "static/chunks/1q96_modules_next_dist_compiled_react-dom_cjs_react-dom_development_1sqry0_53krp4.js",
@@ -54,9 +54,9 @@ globalThis.__BUILD_MANIFEST = {
       "static/chunks/node_modules_@swc_helpers_cjs_1r9vbqwj2323d._.js",
       "static/chunks/_1anvha4rlo79g._.js",
       "static/chunks/turbopack-_06rkbud3pyrlm._.js",
-      "static/chunks/_09az8k3mcxof-._.js"
+      "static/chunks/_0c5w3gwgex5ef._.js"
     ],
-    "/cart/page": [
+    "/_not-found/page": [
       "static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_0qva5cupmdgep._.js",
       "static/chunks/1daa_next_dist_compiled_react-dom_cjs_react-dom-client_development_0mp0cp_t-ezj9.js",
       "static/chunks/1q96_modules_next_dist_compiled_react-dom_cjs_react-dom_development_1sqry0_53krp4.js",
@@ -69,7 +69,7 @@ globalThis.__BUILD_MANIFEST = {
       "static/chunks/node_modules_@swc_helpers_cjs_1r9vbqwj2323d._.js",
       "static/chunks/_1anvha4rlo79g._.js",
       "static/chunks/turbopack-_06rkbud3pyrlm._.js",
-      "static/chunks/_1b00s98w4yr-2._.js"
+      "static/chunks/_18x7jxupx5rou._.js"
     ]
   },
   "pagesChunkGroupBootstrapParams": {},

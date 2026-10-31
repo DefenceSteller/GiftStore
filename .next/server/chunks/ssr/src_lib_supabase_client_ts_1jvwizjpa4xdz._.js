@@ -1,0 +1,3 @@
+module.exports=[95445,a=>{"use strict";var b=a.i(9701);a.s(["f",0,function(){return(0,b.f)("https://ppolhziswextahhjfggi.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwb2xoemlzd2V4dGFoaGpmZ2dpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMyOTI0NjgsImV4cCI6MjEwODg2ODQ2OH0.G5rtNyF8rcQ-L73Mm0dx3D_WDD5uxFTnv12AMdcsxfg")}])}];
+
+//# sourceMappingURL=src_lib_supabase_client_ts_1jvwizjpa4xdz._.js.map

@@ -2,5 +2,5 @@
   "version": 3,
   "sources": [],
   "sections": [
-    {"offset": {"line": 1, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/Admin/Desktop/giftshop/app/globals.css"],"sourcesContent":["/* Minimal app-level resets. The full design system lives in\n   /assets/css/styles.css (compiled Tailwind), linked in app/layout.tsx. */\n\n*,\n*::before,\n*::after {\n  box-sizing: border-box;\n}\n"],"names":[],"mappings":"AAGA"}}]
+    {"offset": {"line": 1, "column": 0}, "map": {"version":3,"sources":["file:///home/ahsan/Desktop/Dont%20touch%20it/GiftStore/app/globals.css"],"sourcesContent":["/* Minimal app-level resets. The full design system lives in\n   /assets/css/styles.css (compiled Tailwind), linked in app/layout.tsx. */\n\n*,\n*::before,\n*::after {\n  box-sizing: border-box;\n}\n"],"names":[],"mappings":"AAGA"}}]
 }
