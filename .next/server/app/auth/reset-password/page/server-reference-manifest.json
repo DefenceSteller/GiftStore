@@ -1,0 +1,15 @@
+{
+  "node": {
+    "60fe7024b1c4b651ae9c305f77a7d1495bd69fdcf1": {
+      "workers": {
+        "app/auth/reset-password/page": {
+          "moduleId": 39128,
+          "async": false
+        }
+      },
+      "exportedName": "resetPassword",
+      "filename": "app/auth/actions.ts"
+    }
+  },
+  "edge": {}
+}

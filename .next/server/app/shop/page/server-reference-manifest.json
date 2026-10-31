@@ -1,0 +1,45 @@
+{
+  "node": {
+    "00061fec1d7643f25f65214290518ba5c82ba469db": {
+      "workers": {
+        "app/shop/page": {
+          "moduleId": 32061,
+          "async": false
+        }
+      },
+      "exportedName": "signout",
+      "filename": "app/auth/actions.ts"
+    },
+    "601e54b25dd0f4426d8c69acccf3c04a0d46bb785e": {
+      "workers": {
+        "app/shop/page": {
+          "moduleId": 32061,
+          "async": false
+        }
+      },
+      "exportedName": "signup",
+      "filename": "app/auth/actions.ts"
+    },
+    "605b185843e03aadcffc64093fee1099734a94548d": {
+      "workers": {
+        "app/shop/page": {
+          "moduleId": 32061,
+          "async": false
+        }
+      },
+      "exportedName": "signin",
+      "filename": "app/auth/actions.ts"
+    },
+    "60fe7024b1c4b651ae9c305f77a7d1495bd69fdcf1": {
+      "workers": {
+        "app/shop/page": {
+          "moduleId": 32061,
+          "async": false
+        }
+      },
+      "exportedName": "resetPassword",
+      "filename": "app/auth/actions.ts"
+    }
+  },
+  "edge": {}
+}

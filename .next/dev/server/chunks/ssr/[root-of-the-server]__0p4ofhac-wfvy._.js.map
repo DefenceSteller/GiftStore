@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 10, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/Admin/Desktop/giftshop/app/page.tsx"],"sourcesContent":["export default function HomePage() {\n  return (\n    <main style={{ padding: \"2rem\", fontFamily: \"system-ui, sans-serif\" }}>\n      <h1>Confetti Club 🎉</h1>\n      <p>Next.js + TypeScript + Supabase migration is scaffolding up.</p>\n    </main>\n  );\n}\n"],"names":["HomePage","style","padding","fontFamily"],"mappings":";;;;;;AAAe,SAASA;IACtB,qBACE,8OAAC;QAAKC,OAAO;YAAEC,SAAS;YAAQC,YAAY;QAAwB;;0BAClE,8OAAC;0BAAG;;;;;;0BACJ,8OAAC;0BAAE;;;;;;;;;;;;AAGT"}}]
+}

@@ -5,29 +5,43 @@
   "description": "Confetti Club — modern gift shop e-commerce storefront + real-time admin dashboard",
   "main": "server/index.js",
   "scripts": {
-    "start": "node server/index.js",
-    "dev": "node --watch server/index.js",
-    "build": "npm run build:css && npm run build:vendor",
-    "build:css": "tailwindcss -i ./src/styles.css -o ./public/assets/css/styles.css --minify",
-    "watch:css": "tailwindcss -i ./src/styles.css -o ./public/assets/css/styles.css --watch",
-    "build:vendor": "node scripts/copy-vendor.js",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "lint": "next lint",
+    "legacy:start": "node server/index.js",
+    "legacy:dev": "node --watch server/index.js",
+    "legacy:build": "npm run legacy:build:css && npm run legacy:build:vendor",
+    "legacy:build:css": "tailwindcss -i ./src/styles.css -o ./public/assets/css/styles.css --minify",
+    "legacy:watch:css": "tailwindcss -i ./src/styles.css -o ./public/assets/css/styles.css --watch",
+    "legacy:build:vendor": "node scripts/copy-vendor.js",
     "seed": "node server/seed.js",
     "gen:images": "node scripts/gen-images.js",
     "loadtest": "node scripts/loadtest.js",
-    "setup": "npm run build && npm run gen:images && npm run seed"
+    "legacy:setup": "npm run legacy:build && npm run gen:images && npm run seed"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.118.0",
     "bcryptjs": "^2.4.3",
     "compression": "^1.7.5",
     "cookie-parser": "^1.4.7",
     "express": "^4.21.2",
     "express-rate-limit": "^7.5.0",
     "helmet": "^8.1.0",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "next": "^16.4.3",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
   },
   "devDependencies": {
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
     "chart.js": "^4.4.9",
-    "tailwindcss": "^3.4.17"
+    "tailwindcss": "^3.4.17",
+    "typescript": "^7.0.2"
   },
   "engines": {
     "node": ">=20.11"

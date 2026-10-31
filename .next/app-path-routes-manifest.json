@@ -1,0 +1,12 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/admin/page": "/admin",
+  "/auth/reset-password/page": "/auth/reset-password",
+  "/auth/signin/page": "/auth/signin",
+  "/auth/signup/page": "/auth/signup",
+  "/cart/page": "/cart",
+  "/page": "/",
+  "/product/[slug]/page": "/product/[slug]",
+  "/shop/page": "/shop"
+}

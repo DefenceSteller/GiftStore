@@ -1,0 +1,3 @@
+module.exports=[90265,a=>{"use strict";var b=a.i(7997),c=a.i(36080),d=a.i(52457);a.s(["default",0,function({children:a}){return(0,b.jsxs)(b.Fragment,{children:[(0,b.jsx)(c.f,{}),a,(0,b.jsx)(d.f,{})]})},"metadata",0,{title:"Your bag — Confetti Club",description:"Review your bag and head to checkout."}])},6730,function(a){a.n(a.i(90265))}];
+
+//# sourceMappingURL=app_cart_layout_tsx_0se-j0sbivz_g._.js.map

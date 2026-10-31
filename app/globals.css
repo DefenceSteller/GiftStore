@@ -1,0 +1,8 @@
+/* Minimal app-level resets. The full design system lives in
+   /assets/css/styles.css (compiled Tailwind), linked in app/layout.tsx. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}

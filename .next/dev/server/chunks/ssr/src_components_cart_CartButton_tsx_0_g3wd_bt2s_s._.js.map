@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/Admin/Desktop/giftshop/src/components/cart/CartButton.tsx"],"sourcesContent":["\"use client\";\n\nimport { useCart } from \"./CartProvider\";\nimport { openCart } from \"./CartDrawer\";\n\n/** Header bag button — shows the live count and opens the drawer. */\nexport default function CartButton() {\n  const { count, ready } = useCart();\n\n  return (\n    <button\n      onClick={openCart}\n      className=\"btn-primary btn-sm relative\"\n      aria-label=\"Open bag\"\n    >\n      🛍️ <span className=\"hidden sm:inline\">Bag</span>\n      <span className=\"grid h-5 min-w-[20px] place-items-center rounded-full bg-acid px-1 text-[11px] font-black text-ink transition-transform\">\n        {ready && count > 99 ? \"99+\" : ready ? count : 0}\n      </span>\n    </button>\n  );\n}\n"],"names":["CartButton","count","ready","onClick","className"],"mappings":";;;;;AAEA;AACA;AAHA;;;;AAMe,SAASA;IACtB,MAAM,EAAEC,KAAK,EAAEC,KAAK,EAAE,GAAG,IAAA,qJAAO;IAEhC,qBACE,8OAAC;QACCC,SAAS,oJAAQ;QACjBC,WAAU;QACV,cAAW;;YACZ;0BACK,8OAAC;gBAAKA,WAAU;0BAAmB;;;;;;0BACvC,8OAAC;gBAAKA,WAAU;0BACbF,SAASD,QAAQ,KAAK,QAAQC,QAAQD,QAAQ;;;;;;;;;;;;AAIvD"}}]
+}

@@ -1,0 +1,3 @@
+module.exports=[86195,a=>{"use strict";var b=a.i(87924),c=a.i(40114),d=a.i(35491);a.s(["default",0,function(){let{count:a,ready:e}=(0,c.useCart)();return(0,b.jsxs)("button",{onClick:d.openCart,className:"btn-primary btn-sm relative","aria-label":"Open bag",children:["🛍️ ",(0,b.jsx)("span",{className:"hidden sm:inline",children:"Bag"}),(0,b.jsx)("span",{className:"grid h-5 min-w-[20px] place-items-center rounded-full bg-acid px-1 text-[11px] font-black text-ink transition-transform",children:e&&a>99?"99+":e?a:0})]})}])}];
+
+//# sourceMappingURL=src_components_cart_CartButton_tsx_0_g3wd_bt2s_s._.js.map
