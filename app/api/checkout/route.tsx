@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { STORE_CONFIG } from "@/lib/store-config";
 import { z } from "zod";
@@ -22,111 +22,289 @@ const deliverySchema = z.object({
   delivery: z.enum(["standard", "express"]),
 });
 
-export async function POST(request: Request) {
+const cartItemSchema = z.object({
+  id: z.string(),
+  slug: z.string(),
+  name: z.string(),
+  priceCents: z.number().int().positive(),
+  emoji: z.string(),
+  gradient: z.string(),
+  image: z.string(),
+  stock: z.number().int().nonnegative(),
+  maxQty: z.number().int().positive(),
+  qty: z.number().int().positive(),
+});
+
+const bodySchema = z.object({
+  contact: contactSchema,
+  shipping: shippingSchema,
+  delivery: deliverySchema,
+  cartItems: z.array(cartItemSchema),
+  promoCode: z.string().optional(),
+});
+
+function generateOrderNumber(): string {
+  return "CC-" + Math.random().toString(36).substring(2, 9).toUpperCase();
+}
+
+async function ensureProfile(supabase: Awaited<ReturnType<typeof createClient>>, email: string, name: string): Promise<string> {
+  const { data: existingProfile } = await supabase
+    .from("profiles")
+    .select("id")
+    .eq("email", email)
+    .maybeSingle();
+
+  if (existingProfile) {
+    return existingProfile.id;
+  }
+
+  const { data: newProfile, error } = await supabase
+    .from("profiles")
+    .insert({ email, role: "customer" })
+    .select("id")
+    .single();
+
+  if (error || !newProfile) {
+    throw new Error("Failed to create customer profile");
+  }
+  return newProfile.id;
+}
+
+async function ensureCustomer(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  profileId: string,
+  email: string,
+  name: string,
+  phone: string | null,
+  city: string | null
+): Promise<string> {
+  const { data: existingCustomer } = await supabase
+    .from("customers")
+    .select("id")
+    .eq("profiles_id", profileId)
+    .maybeSingle();
+
+  if (existingCustomer) {
+    await supabase
+      .from("customers")
+      .update({ name, phone, city })
+      .eq("id", existingCustomer.id);
+    return existingCustomer.id;
+  }
+
+  const { data: newCustomer, error } = await supabase
+    .from("customers")
+    .insert({ profiles_id: profileId, email, name, phone, city })
+    .select("id")
+    .single();
+
+  if (error || !newCustomer) {
+    throw new Error("Failed to create customer record");
+  }
+  return newCustomer.id;
+}
+
+export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    // Validate contact
-    const contactResult = contactSchema.safeParse({
-      name: String(body?.name ?? "").trim(),
-      email: String(body?.email ?? "").trim(),
-      phone: String(body?.phone ?? "").trim(),
-    });
-
-    if (!contactResult.success) {
-      return new Response(
-        JSON.stringify({ error: contactResult.error.errors[0].message }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+    const parseResult = bodySchema.safeParse(body);
+    if (!parseResult.success) {
+      return NextResponse.json(
+        { error: parseResult.error.issues[0].message },
+        { status: 400 }
       );
     }
 
-    // Validate shipping
-    const shippingResult = shippingSchema.safeParse({
-      address1: String(body?.address1 ?? "").trim(),
-      address2: String(body?.address2 ?? "").trim(),
-      city: String(body?.city ?? "").trim(),
-      state: String(body?.state ?? "").trim(),
-      postal_code: String(body?.postal_code ?? "").trim(),
-      country: String(body?.country ?? "").trim(),
-    });
-
-    if (!shippingResult.success) {
-      return new Response(
-        JSON.stringify({ error: shippingResult.error.errors[0].message }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
-      );
-    }
-
-    // Validate delivery
-    const deliveryResult = deliverySchema.safeParse({
-      delivery: String(body?.delivery ?? "standard"),
-    });
-
-    if (!deliveryResult.success) {
-      return new Response(
-        JSON.stringify({ error: deliveryResult.error.errors[0].message }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
-      );
-    }
-
+    const { contact, shipping, delivery, cartItems, promoCode } = parseResult.data;
     const supabase = await createClient();
 
-    // Calculate pricing - in a real app, compute from cart items
-    // For now use config defaults
-    const subtotal = 0; // Will be calculated from actual cart
-    const afterDiscount = subtotal;
-    const freeShip = false;
-    const shipping =
-      freeShip || afterDiscount >= STORE_CONFIG.free_shipping_threshold_cents
-        ? 0
-        : STORE_CONFIG.standard_shipping_cents;
-    const tax = Math.round((afterDiscount * STORE_CONFIG.tax_rate_bps) / 10000);
-    const total = afterDiscount + shipping + tax;
+    // Re-price from DB: fetch product prices by slug
+    const slugs = cartItems.map((item) => item.slug);
+    const { data: products } = await supabase
+      .from("products")
+      .select("id, slug, price_cents, stock, name, emoji, gradient")
+      .in("slug", slugs)
+      .eq("is_active", true);
 
-    // Create order number
-    const orderNumber = "CC-" + Math.random().toString(36).substring(2, 9).toUpperCase();
-
-    // Insert order into database
-    const { error: orderError } = await supabase.from("orders").insert({
-      order_number: orderNumber,
-      customer_id: null, // anon; will be filled if user signed in
-      email: contactResult.data.email,
-      name: contactResult.data.name,
-      phone: contactResult.data.phone,
-      address1: shippingResult.data.address1,
-      address2: shippingResult.data.address2,
-      city: shippingResult.data.city,
-      state: shippingResult.data.state,
-      postal_code: shippingResult.data.postal_code,
-      country: shippingResult.data.country,
-      subtotal_cents: Math.round(subtotal * 100),
-      discount_cents: 0,
-      shipping_cents: shipping,
-      tax_cents: tax,
-      total_cents: total,
-      currency: "USD",
-      status: "pending",
-      payment_method: "cod",
-      payment_status: "pending",
-      item_count: 0,
-      source: "nextjs-checkout",
-    });
-
-    if (orderError) {
-      return new Response(
-        JSON.stringify({ error: "Failed to create order. Please try again." }),
-        { status: 500, headers: { "Content-Type": "application/json" } }
-      );
+    if (!products || products.length === 0) {
+      return NextResponse.json({ error: "Products not found" }, { status: 400 });
     }
 
-    return new Response(
-      JSON.stringify({ success: true, orderNumber }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+    const priceMap = new Map(
+      products.map((p) => [p.slug, { priceCents: p.price_cents, stock: p.stock, productId: p.id, emoji: p.emoji, gradient: p.gradient }])
     );
+
+    // Calculate subtotal and validate stock
+    let subtotal = 0;
+    let itemCount = 0;
+    const orderItems: Array<{
+      product_id: string;
+      name: string;
+      slug: string;
+      emoji: string | null;
+      gradient: string | null;
+      unit_price_cents: number;
+      qty: number;
+      line_total_cents: number;
+    }> = [];
+
+    for (const item of cartItems) {
+      const dbProduct = priceMap.get(item.slug);
+      if (!dbProduct) {
+        return NextResponse.json({ error: `Product ${item.name} no longer available` }, { status: 400 });
+      }
+      if (dbProduct.stock < item.qty) {
+        return NextResponse.json({ error: `Insufficient stock for ${item.name}` }, { status: 400 });
+      }
+      const unitPrice = dbProduct.priceCents;
+      const lineTotal = unitPrice * item.qty;
+      subtotal += lineTotal;
+      itemCount += item.qty;
+      orderItems.push({
+        product_id: dbProduct.productId,
+        name: item.name,
+        slug: item.slug,
+        emoji: dbProduct.emoji,
+        gradient: dbProduct.gradient,
+        unit_price_cents: unitPrice,
+        qty: item.qty,
+        line_total_cents: lineTotal,
+      });
+    }
+
+    // Apply promo if provided
+    let discount = 0;
+    let freeShipping = false;
+
+    if (promoCode) {
+      const normalized = promoCode.trim().toUpperCase();
+      const { data: promoData } = await supabase
+        .from("promo_codes")
+        .select("code, type, value, active, min_subtotal_cents, expires_at")
+        .eq("code", normalized)
+        .maybeSingle();
+
+      if (promoData && promoData.active && (!promoData.expires_at || new Date(promoData.expires_at).getTime() > Date.now())) {
+        if (subtotal >= promoData.min_subtotal_cents) {
+          if (promoData.type === "percent") {
+            discount = Math.round((subtotal * promoData.value) / 100);
+          } else if (promoData.type === "fixed") {
+            discount = Math.min(promoData.value, subtotal);
+          } else if (promoData.type === "free_shipping") {
+            freeShipping = true;
+          }
+        }
+      }
+    }
+
+    const afterDiscount = subtotal - discount;
+
+    // Calculate shipping
+    const shippingCost = freeShipping || afterDiscount >= STORE_CONFIG.free_shipping_threshold_cents
+      ? 0
+      : delivery.delivery === "express"
+        ? STORE_CONFIG.express_shipping_cents
+        : STORE_CONFIG.standard_shipping_cents;
+
+    // Calculate tax (5% = 500 bps)
+    const tax = Math.round((afterDiscount * STORE_CONFIG.tax_rate_bps) / 10000);
+    const total = afterDiscount + shippingCost + tax;
+
+    // Ensure profile and customer exist
+    const profileId = await ensureProfile(supabase, contact.email, contact.name);
+    const customerId = await ensureCustomer(
+      supabase,
+      profileId,
+      contact.email,
+      contact.name,
+      contact.phone,
+      shipping.city
+    );
+
+    // Create order number (retry on collision)
+    let orderNumber = generateOrderNumber();
+    for (let attempt = 0; attempt < 4; attempt++) {
+      const { data: existing } = await supabase
+        .from("orders")
+        .select("id")
+        .eq("order_number", orderNumber)
+        .maybeSingle();
+      if (!existing) break;
+      orderNumber = generateOrderNumber();
+    }
+
+    // Insert order
+    const { data: order, error: orderError } = await supabase
+      .from("orders")
+      .insert({
+        order_number: orderNumber,
+        customer_id: profileId,
+        email: contact.email,
+        name: contact.name,
+        phone: contact.phone,
+        address1: shipping.address1,
+        address2: shipping.address2,
+        city: shipping.city,
+        state: shipping.state,
+        postal_code: shipping.postal_code,
+        country: shipping.country,
+        subtotal_cents: subtotal,
+        discount_cents: discount,
+        shipping_cents: shippingCost,
+        tax_cents: tax,
+        total_cents: total,
+        currency: "USD",
+        status: "pending",
+        payment_method: "cod",
+        payment_status: "pending",
+        item_count: itemCount,
+        delivery_method: delivery.delivery,
+        source: "api-checkout",
+      })
+      .select("id")
+      .single();
+
+    if (orderError || !order) {
+      return NextResponse.json({ error: "Failed to create order. Please try again." }, { status: 500 });
+    }
+
+    // Insert order items
+    const itemsWithOrderId = orderItems.map((item) => ({ ...item, order_id: order.id }));
+    const { error: itemsError } = await supabase.from("order_items").insert(itemsWithOrderId);
+
+    if (itemsError) {
+      await supabase.from("orders").delete().eq("id", order.id);
+      return NextResponse.json({ error: "Failed to create order items. Please try again." }, { status: 500 });
+    }
+
+    // Decrement stock for each product
+    for (const item of orderItems) {
+      const { data: product } = await supabase
+        .from("products")
+        .select("stock")
+        .eq("id", item.product_id)
+        .single();
+      if (product) {
+        const newStock = Math.max(0, product.stock - item.qty);
+        await supabase
+          .from("products")
+          .update({ stock: newStock })
+          .eq("id", item.product_id);
+      }
+    }
+
+    // Log order event
+    await supabase.from("order_events").insert({
+      order_id: order.id,
+      type: "order.created",
+      source: "api-checkout",
+      path: "/checkout",
+    });
+
+    return NextResponse.json({ success: true, orderNumber });
   } catch (err) {
-    return new Response(
-      JSON.stringify({ error: "Internal server error" }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
-    );
+    console.error("Checkout API error:", err);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

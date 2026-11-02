@@ -2,10 +2,12 @@ import { NextRequest } from "next/server";
 import Stripe from "stripe";
 import { createClient } from "@/lib/supabase/server";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2024-09-30",
-  typescript: true,
-});
+function getStripe() {
+  return new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    apiVersion: "2026-10-28.endive",
+    typescript: true,
+  });
+}
 
 export async function POST(request: Request) {
   try {
@@ -32,8 +34,8 @@ export async function POST(request: Request) {
     }
 
     // Real Stripe Checkout
+    const stripe = getStripe();
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
       line_items: [
         {
           price_data: {

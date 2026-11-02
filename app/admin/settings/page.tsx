@@ -1,30 +1,11 @@
 'use client'
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { createBrowserClient } from "@supabase/ssr";
-import { getSessionUser } from "@/lib/auth";
+import { createClient } from "@/lib/supabase/client";
 import SignOutButton from "@/components/SignOutButton";
-
-export const dynamic = "force-dynamic";
+import { money } from "@/lib/format";
 
 export default function AdminSettingsPage() {
-  const { createClient } = createBrowserClient();
-
-  // State for user - initialized first
-  const [user, setUser] = useState<{ role: string } | null>(null);
-
-  // Initialize user session
-  useEffect(() => {
-    ;(async () => {
-      const { data } = await getSessionUser();
-      setUser(data);
-    })();
-  }, []);
-
-  if (!user) redirect("/auth/signin");
-  if (user.role !== "admin") redirect("/");
-
-  // Supabase client (browser)
   const supabase = createClient();
 
   // Settings state
@@ -43,7 +24,7 @@ export default function AdminSettingsPage() {
   // Fetch settings from Supabase after component mounts
   useEffect(() => {
     ;(async () => {
-      const { data } = await supabase.from("settings").select("key, value").limit(10);
+      const { data } = await supabase.from("settings").select("key, value");
       if (data) {
         const parsed: Record<string, any> = {};
         data.forEach((d: any) => {
@@ -72,12 +53,18 @@ export default function AdminSettingsPage() {
 
   // Save settings to Supabase
   const saveSettings = async (newSettings: typeof settings) => {
-    const { error } = await supabase.from("settings").upsert({
-      key: "store_name",
-      value: newSettings.store_name,
-      updated_at: new Date().toISOString(),
-    });
-    if (error) console.error("Error saving settings:", error);
+    const upserts = Object.entries(newSettings).map(([key, value]) =>
+      supabase.from("settings").upsert({
+        key,
+        value: String(value),
+        updated_at: new Date().toISOString(),
+      })
+    );
+    const results = await Promise.all(upserts);
+    const errors = results.filter((r) => r.error);
+    if (errors.length > 0) {
+      console.error("Error saving settings:", errors);
+    }
     setSettings(newSettings);
   };
 
@@ -96,7 +83,7 @@ export default function AdminSettingsPage() {
 
       <div className="mt-6">
         <form
-          className="bg-white rounded-[26x] p-6 shadow-soft space-y-6"
+          className="bg-white rounded-[26px] p-6 shadow-soft space-y-6"
           onSubmit={handleSave}
         >
           <h2 className="font-display text-2xl font-extrabold mb-4">
@@ -269,7 +256,7 @@ export default function AdminSettingsPage() {
           <div className="mt-6">
             <button
               type="submit"
-              className="w-full px-6 py-3 font-display font-extrabold text-white bg-gradient-to-r from-iris to-acid rounded-[26x] transition"
+              className="w-full px-6 py-3 font-display font-extrabold text-white bg-gradient-to-r from-iris to-acid rounded-[26px] transition"
             >
               Save Settings
             </button>

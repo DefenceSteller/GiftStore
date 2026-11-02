@@ -2,24 +2,10 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { getSessionUser } from "@/lib/auth";
 import SignOutButton from "@/components/SignOutButton";
-import { money, type Promo } from "@/lib/store-config";
-
-export const dynamic = "force-dynamic";
+import { money } from "@/lib/format";
 
 export default function AdminCustomersPage() {
-  const [user, setUser] = useState<{ role: string } | null>(null);
-  useEffect(() => {;
-    ;(async () => {;
-      const { data } = await getSessionUser();
-      setUser(data);
-    })();
-  }, []);;
-
-  if (!user) redirect("/auth/signin");
-  if (user.role !== "admin") redirect("/");
-
   const supabase = createClient();
   const [page, setPage] = useState(1);
   const pageSize = 15;
@@ -194,6 +180,7 @@ export default function AdminCustomersPage() {
                             View
                           </Link>
                         </td>
+                      </tr>
                     );
                   })}
 

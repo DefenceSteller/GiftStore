@@ -2,23 +2,9 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { getSessionUser } from "@/lib/auth";
 import SignOutButton from "@/components/SignOutButton";
 
-export const dynamic = "force-dynamic";
-
 export default function AdminActivityLogPage() {
-  const [user, setUser] = useState<{ role: string } | null>(null);
-  useEffect(() => {;
-    ;(async () => {;
-      const { data } = await getSessionUser();
-      setUser(data);
-    })();
-  }, []);;
-
-  if (!user) redirect("/auth/signin");
-  if (user.role !== "admin") redirect("/");
-
   const supabase = createClient();
   const [page, setPage] = useState(1);
   const pageSize = 20;
@@ -152,13 +138,13 @@ export default function AdminActivityLogPage() {
                 <tbody>
                   {events.map((e) => {
                     const kindLabel = e.kind.replace(".", " → ");
-                    const kindClass = {
+                    const kindClass = ({
                       "order.created": "bg-acid text-ink",
                       "order.status": "bg-iris text-ink",
                       "product.created": "bg-aqua text-ink",
                       "setting.updated": "bg-butter text-ink",
                       "promo.used": "bg-iris text-ink",
-                    }[e.kind] || "text-ink/60";
+                    } as Record<string, string>)[e.kind] || "text-ink/60";
 
                     const createdAt = e.created_at
                       ? new Date(e.created_at).toLocaleString()

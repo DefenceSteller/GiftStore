@@ -2,10 +2,12 @@ import { NextRequest } from "next/server";
 import Stripe from "stripe";
 import { createClient } from "@/lib/supabase/server";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2024-09-30",
-  typescript: true,
-});
+function getStripe() {
+  return new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    apiVersion: "2026-10-28.endive",
+    typescript: true,
+  });
+}
 
 export async function POST(request: Request) {
   try {
@@ -13,6 +15,8 @@ export async function POST(request: Request) {
     const body = await request.text();
 
     let event: Stripe.Event;
+
+    const stripe = getStripe();
 
     try {
       event = stripe.webhooks.constructEvent(
@@ -48,8 +52,10 @@ export async function POST(request: Request) {
             payment_status: "succeeded",
             payment_method: "card",
             payment_ref: session.payment_intent ? session.payment_intent.toString() : null,
-            payment_brand: session.payment_method_details?.card?.brand || null,
-            payment_last4: session.payment_method_details?.card?.last4 || null,
+            // Checkout.Session doesn't carry card brand/last4 (those live on the
+            // PaymentIntent); leave null rather than making a synchronous API call.
+            payment_brand: null,
+            payment_last4: null,
             paid_at: new Date().toISOString(),
           })
           .eq("order_number", orderNumber);

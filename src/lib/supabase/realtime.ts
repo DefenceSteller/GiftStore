@@ -1,18 +1,20 @@
-import { createClient } from "./server";
-import type { Database } from "./types";
+import { createClient } from "./client";
 
 /**
  * Setup Supabase Realtime channels for live dashboard updates.
- * 
+ *
+ * Uses the browser client — realtime subscriptions run client-side.
+ *
  * Channels:
  * - orders: broadcasts status changes for admin dashboard
  * - traffic: tracks visitor counts and page views
  * - analytics: funnel events conversion tracking
- * 
- * Usage:
- *   const { orders } = setupRealtimeChannels();
- *   const { data: newOrder } = orders.on("*", (payload) => { ... });
+ *
+ * Usage (in a client component):
+ *   const channels = setupRealtimeChannels();
+ *   useEffect(() => () => cleanupRealtimeChannels(channels), []);
  */
+type ChangePayload = { new: Record<string, unknown> };
 
 export function setupRealtimeChannels() {
   const supabase = createClient();
@@ -26,11 +28,8 @@ export function setupRealtimeChannels() {
         event: "UPDATE",
         schema: "public",
         table: "orders",
-        filter: `status=eq.pending`, // Can filter by specific status or listen to all
       },
-      (payload) => {
-        // Broadcast order status change to admin dashboard
-        // In a real app, this would update the UI state
+      (payload: ChangePayload) => {
         console.log("Order status changed:", payload.new);
       }
     )
@@ -41,8 +40,7 @@ export function setupRealtimeChannels() {
         schema: "public",
         table: "orders",
       },
-      (payload) => {
-        // New order created, could trigger notification
+      (payload: ChangePayload) => {
         console.log("New order created:", payload.new);
       }
     )
@@ -58,8 +56,7 @@ export function setupRealtimeChannels() {
         schema: "public",
         table: "traffic_events",
       },
-      (payload) => {
-        // New traffic event, could update real-time visitor counters
+      (payload: ChangePayload) => {
         console.log("Traffic event:", payload.new);
       }
     )
@@ -75,8 +72,7 @@ export function setupRealtimeChannels() {
         schema: "public",
         table: "order_events",
       },
-      (payload) => {
-        // Funnel event (product_view, add_to_cart, purchase, etc.)
+      (payload: ChangePayload) => {
         console.log("Funnel event:", payload.new);
       }
     )
@@ -92,7 +88,9 @@ export function setupRealtimeChannels() {
 /**
  * Cleanup Realtime channels on unmount
  */
-export function cleanupRealtimeChannels(channels: ReturnType<typeof setupRealtimeChannels>) {
+export function cleanupRealtimeChannels(
+  channels: ReturnType<typeof setupRealtimeChannels>
+) {
   channels.orders.unsubscribe();
   channels.traffic.unsubscribe();
   channels.analytics.unsubscribe();

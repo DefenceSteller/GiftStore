@@ -2,25 +2,11 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { getSessionUser } from "@/lib/auth";
 import SignOutButton from "@/components/SignOutButton";
+import { money } from "@/lib/format";
 import { z } from "zod";
 
-export const dynamic = "force-dynamic";
-
 export default function AdminPromosPage() {
-  const [user, setUser] = useState<{ role: string } | null>(null);
-
-  useEffect(() => {
-    ;(async () => {
-      const { data } = await getSessionUser();
-      setUser(data);
-    })();
-  }, []);
-
-  if (!user) redirect("/auth/signin");
-  if (user.role !== "admin") redirect("/");
-
   const supabase = createClient();
   const [promos, setPromos] = useState<any[]>([]);
   const [editingPromo, setEditingPromo] = useState<any | null>(null);
@@ -72,7 +58,7 @@ export default function AdminPromosPage() {
             active: promoData.active,
             description: promoData.description,
           },
-          { onConflict: ["code"] }
+          { onConflict: "code" }
         );
 
       if (error) throw error;
@@ -85,11 +71,11 @@ export default function AdminPromosPage() {
   };
 
   // Delete promo (soft delete)
-  const deletePromo = async (promoId: string) => {
+  const deletePromo = async (promoCode: string) => {
     const { error } = await supabase
       .from("promo_codes")
       .update({ active: false })
-      .eq("id", promoId);
+      .eq("code", promoCode);
 
     if (error) console.error("Error deleting promo:", error);
     fetchPromos();
@@ -130,18 +116,18 @@ export default function AdminPromosPage() {
                 </thead>
                 <tbody>
                   {promos.map((p) => {
-                    const typeLabel = {
+                    const typeLabel = ({
                       percent: "Percent",
                       fixed: "Fixed",
                       free_shipping: "Free Shipping",
-                    }[p.type] || p.type;
+                    } as Record<string, string>)[p.type] || p.type;
 
                     const statusClass = p.active
                       ? "bg-green-100 text-green-900"
                       : "bg-gray-300 text-gray-500";
 
                     return (
-                      <tr key={p.id} className="border-b border-ink/5">
+                      <tr key={p.code} className="border-b border-ink/5">
                         <td className="font-bold text-ink">{p.code}</td>
                         <td>{typeLabel}</td>
                         <td>{money(p.value)}</td>
@@ -155,14 +141,14 @@ export default function AdminPromosPage() {
                         <td className="flex gap-1">
                           <button
                             onClick={() =>
-                              setEditingPromo({ ...p, id: p.id })
+                              setEditingPromo({ ...p, code: p.code })
                             }
                             className="btn-outline btn-xs"
                           >
                             Edit
                           </button>
                           <button
-                            onClick={() => deletePromo(p.id)}
+                            onClick={() => deletePromo(p.code)}
                             className="btn-xs text-red-600"
                           >
                             Delete

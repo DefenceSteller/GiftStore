@@ -111,10 +111,12 @@ export default async function OrderTrackingPage(
                   className={`w-3 h-3 rounded-full ${
                     passed
                       ? "bg-iris"
-                      : "bg-ink/20 border-2 border-ink"}
-                }`
+                      : "bg-ink/20 border-2 border-ink"
+                  }`}
                 />
-                <span className="text-[12px] font-bold {passed ? "text-ink" : "text-ink/60"}">
+                <span
+                  className={`text-[12px] font-bold ${passed ? "text-ink" : "text-ink/60"}`}
+                >
                   {step.label}
                 </span>
               </div>
@@ -181,7 +183,7 @@ export default async function OrderTrackingPage(
 
         <div className="mt-8">
           <Link
-            href={`/track/${order.orderNumber}?email=${order.email || ""}`}
+            href={`/track/${order.order_number}?email=${order.email || ""}`}
             className="btn-outline w-full px-6 py-3 text-center"
           >
             Track another order

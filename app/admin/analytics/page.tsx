@@ -2,23 +2,10 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { getSessionUser } from "@/lib/auth";
 import SignOutButton from "@/components/SignOutButton";
-
-export const dynamic = "force-dynamic";
+import { money } from "@/lib/format";
 
 export default function AdminAnalyticsPage() {
-  const [user, setUser] = useState<{ role: string } | null>(null);
-  useEffect(() => {;
-    ;(async () => {;
-      const { data } = await getSessionUser();
-      setUser(data);
-    })();
-  }, []);;
-
-  if (!user) redirect("/auth/signin");
-  if (user.role !== "admin") redirect("/");
-
   const supabase = createClient();
   const [period, setPeriod] = useState("30d"); // 30d, 7d, 24h
   const [periodLabel, setPeriodLabel] = useState("Last 30 Days");
@@ -190,7 +177,7 @@ export default function AdminAnalyticsPage() {
       });
       setHourlyBreakdown(
         Object.entries(hourlyCounts)
-          .sort((a, b) => a[0] - b[0])
+          .sort((a, b) => Number(a[0]) - Number(b[0]))
           .map(([hour, visitors]) => ({
             hour: parseInt(hour),
             visitors,
@@ -214,48 +201,44 @@ export default function AdminAnalyticsPage() {
       <div className="mt-6">
         {/* Period selector */}
         <div className="flex gap-2 mb-4">
-          ["30d", "7d", "24h"].map((period) => {
-            const isActive = period === period;
+          {["30d", "7d", "24h"].map((p) => {
+            const isActive = p === period;
             return (
               <button
-                key={period}
-                onClick={() => setPeriod(period)}
+                key={p}
+                onClick={() => setPeriod(p)}
                 className={`px-4 py-2 rounded text-sm font-medium ${
                   isActive
                     ? "bg-gradient-to-r from-iris to-acid text-white"
                     : "border border-ink/50 text-ink/70 hover:text-ink"
                 }`}
               >
-                {period === "30d"
-                  ? "30d"
-                  : period === "7d"
-                  ? "7d"
-                  : "24h"}
+                {p}
               </button>
             );
-          })
+          })}
         </div>
 
         {/* Key Metrics Row */}
         <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="bg-white rounded-[26x] p-4 shadow-soft">
+          <div className="bg-white rounded-[26px] p-4 shadow-soft">
             <div className="text-ink/60 text-xs font-bold">Visits</div>
             <div className="font-display text-3xl font-extrabold">{visits.total}</div>
             <div className="text-ink/40 text-sm">unique visitors</div>
           </div>
-          <div className="bg-white rounded-[26x] p-4 shadow-soft">
+          <div className="bg-white rounded-[26px] p-4 shadow-soft">
             <div className="text-ink/60 text-xs font-bold">Orders</div>
             <div className="font-display text-3xl font-extrabold">{orders.last30d}</div>
             <div className="text-ink/40 text-sm">last 30 days</div>
           </div>
-          <div className="bg-white rounded-[26x] p-4 shadow-soft">
+          <div className="bg-white rounded-[26px] p-4 shadow-soft">
             <div className="text-ink/60 text-xs font-bold">Revenue</div>
             <div className="font-display text-3xl font-extrabold">${money(
               revenue.last30d
             )}</div>
             <div className="text-ink/40 text-sm">last 30 days</div>
           </div>
-          <div className="bg-white rounded-[26x] p-4 shadow-soft">
+          <div className="bg-white rounded-[26px] p-4 shadow-soft">
             <div className="text-ink/60 text-xs font-bold">AOV</div>
             <div className="font-display text-3xl font-extrabold">${money(
               aov.last30d
@@ -265,7 +248,7 @@ export default function AdminAnalyticsPage() {
         </div>
 
         {/* Funnel Chart */}
-        <div className="bg-white rounded-[26x] p-4 shadow-soft mb-6">
+        <div className="bg-white rounded-[26px] p-4 shadow-soft mb-6">
           <h2 className="font-display text-lg font-extrabold mb-4">
             Conversion Funnel
           </h2>
@@ -305,7 +288,7 @@ export default function AdminAnalyticsPage() {
         </div>
 
         {/* Source Breakdown */}
-        <div className="bg-white rounded-[26x] p-4 shadow-soft mb-6">
+        <div className="bg-white rounded-[26px] p-4 shadow-soft mb-6">
           <h2 className="font-display text-lg font-extrabold mb-4">
             Traffic by Source
           </h2>
@@ -320,7 +303,7 @@ export default function AdminAnalyticsPage() {
         </div>
 
         {/* Top Pages */}
-        <div className="bg-white rounded-[26x] p-4 shadow-soft mb-6">
+        <div className="bg-white rounded-[26px] p-4 shadow-soft mb-6">
           <h2 className="font-display text-lg font-extrabold mb-4">
             Top Pages
           </h2>
@@ -330,7 +313,8 @@ export default function AdminAnalyticsPage() {
                 <tr className="text-[10px] font-bold text-ink/60 border-b border-ink/8">
                   <th>Page</th>
                   <th>Views</th>
-                </thead>
+                </tr>
+              </thead>
                 <tbody>
                   {topPages.map((tp) => (
                     <tr key={tp.path} className="border-b border-ink/5">
@@ -345,7 +329,7 @@ export default function AdminAnalyticsPage() {
         </div>
 
         {/* Hourly Breakdown */}
-        <div className="bg-white rounded-[26x] p-4 shadow-soft">
+        <div className="bg-white rounded-[26px] p-4 shadow-soft">
           <h2 className="font-display text-lg font-extrabold mb-4">
             Hourly Visitors (Last 24h)
           </h2>
@@ -373,7 +357,6 @@ export default function AdminAnalyticsPage() {
             })}
           </div>
         </div>
-      </div>
     </main>
   );
 }

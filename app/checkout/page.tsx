@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useActionState } from "react";
 import { useCart } from "@/components/cart/CartProvider";
 import { money } from "@/lib/format";
-import { STORE_CONFIG, discountFor, type Promo } from "@/lib/store-config";
-import { validatePromo, type ValidatedPromo } from "./actions";
+import { STORE_CONFIG, discountFor } from "@/lib/store-config";
+import { validatePromo, placeOrder, type ValidatedPromo } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -15,29 +15,6 @@ function CheckoutPage() {
   const [promoInput, setPromoInput] = useState("");
   const [promoMessage, setPromoMessage] = useState<{ text: string; ok: boolean } | null>(null);
   const [hydratedPromo, setHydratedPromo] = useState(false);
-  const [form, setForm] = useState<{
-    name: string;
-    email: string;
-    phone: string;
-    address1: string;
-    address2: string;
-    city: string;
-    state: string;
-    postal_code: string;
-    country: string;
-    delivery: "standard" | "express";
-  }>({
-    name: "",
-    email: "",
-    phone: "",
-    address1: "",
-    address2: "",
-    city: "",
-    state: "",
-    postal_code: "",
-    country: "",
-    delivery: "standard",
-  });
 
   // One-time: restore a saved promo from sessionStorage.
   if (ready && !hydratedPromo) {
@@ -91,6 +68,12 @@ function CheckoutPage() {
 
   const isEmpty = items.length === 0;
 
+  // Server action state
+  const [orderState, orderAction, isPending] = useActionState(
+    placeOrder as (prev: { error?: string }, formData: FormData) => Promise<{ error?: string }>,
+    { error: undefined }
+  );
+
   if (!ready) {
     return (
       <main className="container-cc pb-20 pt-8 sm:pt-10">
@@ -119,6 +102,9 @@ function CheckoutPage() {
     );
   }
 
+  // Serialize cart items for server action
+  const cartItemsJson = JSON.stringify(items);
+
   return (
     <main className="container-cc pb-20 pt-8">
       <nav className="text-xs font-bold text-ink/45" aria-label="Breadcrumb">
@@ -130,7 +116,12 @@ function CheckoutPage() {
         Order Summary {count ? <span className="text-ink/40">({count})</span> : null}
       </h1>
 
-      <form className="mt-8 max-w-3xl mx-auto space-y-6">
+      <form action={orderAction} className="mt-8 max-w-3xl mx-auto space-y-6">
+        {/* Hidden cart items */}
+        <input type="hidden" name="cartItems" value={cartItemsJson} />
+        {/* Hidden promo code */}
+        <input type="hidden" name="promoCode" value={promo?.code ?? ""} />
+
         {/* Items */}
         <section>
           <div className="rounded-[26px] border border-ink/8 bg-white p-4 shadow-soft">
@@ -155,6 +146,7 @@ function CheckoutPage() {
                     </div>
                     <div className="flex items-center gap-2">
                       <button
+                        type="button"
                         onClick={() => setQty(item.id, item.qty - 1)}
                         className="grid h-6 w-6 place-items-center rounded-full font-black transition hover:bg-ink/5"
                         aria-label="Decrease"
@@ -163,6 +155,7 @@ function CheckoutPage() {
                       </button>
                       <span className="w-5 text-center font-extrabold tabular">{item.qty}</span>
                       <button
+                        type="button"
                         onClick={() => setQty(item.id, item.qty + 1)}
                         className="grid h-6 w-6 place-items-center rounded-full font-black transition hover:bg-ink/5"
                         aria-label="Increase"
@@ -223,9 +216,8 @@ function CheckoutPage() {
               )}
               {promo?.type === "free_shipping" && (
                 <p className="mt-1 text-[10px] text-ink/50">
-                  Free shipping over Rs{
-                    " " + STORE_CONFIG.free_shipping_threshold_cents / 100
-                  }{freeShip ? " (unlocked)" : ""}
+                  Free shipping over Rs{" " + STORE_CONFIG.free_shipping_threshold_cents / 100}
+                  {freeShip ? " (unlocked)" : ""}
                 </p>
               )}
             </div>
@@ -244,10 +236,8 @@ function CheckoutPage() {
                   Name
                 </label>
                 <input
-                  value={form.name}
-                  onChange={(e) =>
-                    setForm({ ...form, name: e.target.value.trim() })
-                  }
+                  name="name"
+                  defaultValue={orderState.error ? "" : ""}
                   placeholder="Full name"
                   className="input w-full"
                   required
@@ -258,10 +248,7 @@ function CheckoutPage() {
                   Email
                 </label>
                 <input
-                  value={form.email}
-                  onChange={(e) =>
-                    setForm({ ...form, email: e.target.value.trim() })
-                  }
+                  name="email"
                   type="email"
                   placeholder="name@example.com"
                   className="input w-full"
@@ -273,15 +260,12 @@ function CheckoutPage() {
                   Phone
                 </label>
                 <input
-                  value={form.phone}
-                  onChange={(e) =>
-                    setForm({ ...form, phone: e.target.value.trim() })
-                  }
+                  name="phone"
                   placeholder="+92 XXX XXX XXXX"
                   className="input w-full"
                   required
-                  minLength="7"
-                  maxLength="15"
+                  minLength={7}
+                  maxLength={15}
                 />
               </div>
               <div>
@@ -289,10 +273,7 @@ function CheckoutPage() {
                   Address Line 1
                 </label>
                 <input
-                  value={form.address1}
-                  onChange={(e) =>
-                    setForm({ ...form, address1: e.target.value.trim() })
-                  }
+                  name="address1"
                   placeholder="Street address"
                   className="input w-full"
                   required
@@ -303,10 +284,7 @@ function CheckoutPage() {
                   Address Line 2
                 </label>
                 <input
-                  value={form.address2}
-                  onChange={(e) =>
-                    setForm({ ...form, address2: e.target.value.trim() })
-                  }
+                  name="address2"
                   placeholder="Apt, suite, unit (optional)"
                   className="input w-full"
                 />
@@ -317,10 +295,7 @@ function CheckoutPage() {
                     City
                   </label>
                   <input
-                    value={form.city}
-                    onChange={(e) =>
-                      setForm({ ...form, city: e.target.value.trim() })
-                    }
+                    name="city"
                     placeholder="City"
                     className="input w-full"
                     required
@@ -331,10 +306,7 @@ function CheckoutPage() {
                     State
                   </label>
                   <input
-                    value={form.state}
-                    onChange={(e) =>
-                      setForm({ ...form, state: e.target.value.trim() })
-                    }
+                    name="state"
                     placeholder="State/Province"
                     className="input w-full"
                     required
@@ -345,10 +317,7 @@ function CheckoutPage() {
                     Postal Code
                   </label>
                   <input
-                    value={form.postal_code}
-                    onChange={(e) =>
-                      setForm({ ...form, postal_code: e.target.value.trim() })
-                    }
+                    name="postal_code"
                     placeholder="Postal code"
                     className="input w-full"
                     required
@@ -361,10 +330,7 @@ function CheckoutPage() {
                     Country
                   </label>
                   <input
-                    value={form.country}
-                    onChange={(e) =>
-                      setForm({ ...form, country: e.target.value.trim() })
-                    }
+                    name="country"
                     placeholder="Country"
                     className="input w-full"
                     required
@@ -379,35 +345,26 @@ function CheckoutPage() {
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="radio"
+                      name="delivery"
                       value="standard"
-                      checked={form.delivery === "standard"}
-                      onChange={() => setForm({ ...form, delivery: "standard" })}
+                      defaultChecked
                       className="rounded border"
-                    >
-                    Standard (5-7 days) - Rs{
-                      " " + money(STORE_CONFIG.standard_shipping_cents)
-                    }
+                    />
+                    Standard (5-7 days) - Rs{" " + money(STORE_CONFIG.standard_shipping_cents)}
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="radio"
+                      name="delivery"
                       value="express"
-                      checked={form.delivery === "express"}
-                      onChange={() => setForm({ ...form, delivery: "express" })}
                       className="rounded border"
-                    >
-                    Express (2-3 days) - Rs{
-                      " " + money(STORE_CONFIG.express_shipping_cents)
-                    }
+                    />
+                    Express (2-3 days) - Rs{" " + money(STORE_CONFIG.express_shipping_cents)}
                   </label>
                 </div>
-                {form.delivery === "standard" && afterDiscount < STORE_CONFIG.free_shipping_threshold_cents && (
+                {afterDiscount < STORE_CONFIG.free_shipping_threshold_cents && (
                   <p className="mt-1 text-[10px] text-ink/50">
-                    You're{
-                      " " +
-                      money(STORE_CONFIG.free_shipping_threshold_cents - afterDiscount) +
-                      " away from free standard shipping"
-                    }
+                    You're{" " + money(STORE_CONFIG.free_shipping_threshold_cents - afterDiscount) + " away from free standard shipping"}
                   </p>
                 )}
               </div>
@@ -416,8 +373,7 @@ function CheckoutPage() {
         </section>
 
         {/* Promo */}
-        {(promo?.type !== "free_shipping" && promoMessage?.ok) ||
-        promoMessage?.ok === false ? (
+        {(promo?.type !== "free_shipping" && promoMessage?.ok) || promoMessage?.ok === false ? (
           <section className="mt-6">
             <div className="rounded-[26px] border border-ink/8 bg-white p-4 shadow-soft">
               <form onSubmit={handlePromoSubmit} className="flex gap-2">
@@ -429,7 +385,9 @@ function CheckoutPage() {
                   className="input flex-1 uppercase"
                   autoComplete="off"
                 />
-                <button type="submit" className="btn-outline btn-sm shrink-0">Apply</button>
+                <button type="submit" className="btn-outline btn-sm shrink-0">
+                  Apply
+                </button>
               </form>
               {promoMessage && (
                 <p className={`mt-2 text-xs font-extrabold ${promoMessage.ok ? "text-iris" : "text-coral"}`}>
@@ -437,17 +395,23 @@ function CheckoutPage() {
                 </p>
               )}
             </div>
-          </div>
+          </section>
         ) : null}
+
+        {/* Error message */}
+        {orderState.error && (
+          <div className="rounded-[16px] bg-coral/10 border border-coral/30 p-4 text-coral font-bold">
+            {orderState.error}
+          </div>
+        )}
 
         {/* Action */}
         <button
-          type="button"
-          disabled={!ready || items.length === 0}
-          className="w-full mt-6 px-6 py-3 font-display font-extrabold text-white bg-gradient-to-r from-iris to-acid rounded-[26x] transition"
-          onClick={() => alert("Order placement coming soon!")}
+          type="submit"
+          disabled={!ready || items.length === 0 || isPending}
+          className="w-full mt-6 px-6 py-3 font-display font-extrabold text-white bg-gradient-to-r from-iris to-acid rounded-[26px] transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Place Order →
+          {isPending ? "Placing Order…" : "Place Order →"}
         </button>
       </form>
     </main>

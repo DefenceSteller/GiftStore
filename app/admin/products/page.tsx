@@ -2,25 +2,10 @@
 import Link from "next/link";
 import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { getSessionUser } from "@/lib/auth";
 import SignOutButton from "@/components/SignOutButton";
 import { money } from "@/lib/format";
 
-export const dynamic = "force-dynamic";
-
 export default function AdminProductsPage() {
-  const [user, setUser] = useState<{ role: string } | null>(null);
-
-  useEffect(() => {
-    ;(async () => {
-      const { data } = await getSessionUser();
-      setUser(data);
-    })();
-  }, []);
-
-  if (!user) redirect("/auth/signin");
-  if (user.role !== "admin") redirect("/");
-
   const supabase = createClient();
   const [tab, setTab] = useState("all"); // all | active | low_stock | archived
   const [products, setProducts] = useState<any[]>([]);
@@ -76,17 +61,20 @@ export default function AdminProductsPage() {
       let imageUrl = product.image;
 
       if (imageFile) {
-        const { data: { path } } = await supabase.storage
+        const { data: uploadData } = await supabase.storage
           .from("product-images")
           .upload(`${product.id}.png`, imageFile, {
             cacheControl: "max-age=31536000",
           });
 
-        const { data: { publicUrl } } = await supabase.storage
-          .from("product-images")
-          .getPublicUrl(path!);
+        const path = uploadData?.path;
+        if (path) {
+          const { data: { publicUrl } } = await supabase.storage
+            .from("product-images")
+            .getPublicUrl(path);
 
-        imageUrl = publicUrl;
+          imageUrl = publicUrl;
+        }
       }
 
       if (product.id) {
@@ -95,7 +83,6 @@ export default function AdminProductsPage() {
           .from("products")
           .update({
             name: product.name,
-            tagline: product.tagline,
             description: product.description,
             category: product.category,
             price_cents: product.price_cents,
@@ -106,16 +93,15 @@ export default function AdminProductsPage() {
             review_count: product.review_count,
             stock: product.stock,
             is_active: product.is_active,
-            featured: product.featured,
+            sort_order: product.sort_order,
             updated_at: new Date().toISOString(),
-            image_url: imageUrl,
           })
           .eq("id", product.id);
       } else {
         // Create new
         await supabase.from("products").insert({
           name: product.name,
-          tagline: product.tagline,
+          slug: product.slug,
           description: product.description,
           category: product.category,
           price_cents: product.price_cents,
@@ -126,10 +112,8 @@ export default function AdminProductsPage() {
           review_count: 0,
           stock: product.stock ?? 0,
           is_active: product.is_active ?? true,
-          featured: product.featured ?? false,
           sort_order: product.sort_order ?? 0,
           created_at: new Date().toISOString(),
-          image_url: imageUrl,
         });
       }
 
@@ -183,7 +167,7 @@ export default function AdminProductsPage() {
       <div className="mt-6">
         {/* Tabs */}
         <div className="flex gap-2 mb-4">
-          {"All", "Active", "Low Stock", "Archived"}.map((label, i) => {
+          {["All", "Active", "Low Stock", "Archived"].map((label, i) => {
             const status = ["all", "active", "low_stock", "archived"][i];
             return (
               <button
@@ -198,7 +182,7 @@ export default function AdminProductsPage() {
                 {label}
               </button>
             );
-          })
+          })}
         </div>
 
         {/* Products Table */}

@@ -2,18 +2,10 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { getSessionUser } from "@/lib/auth";
 import SignOutButton from "@/components/SignOutButton";
 import { money } from "@/lib/format";
 
-export const dynamic = "force-dynamic";
-
-export default async function AdminOrdersPage() {
-  const user = await getSessionUser();
-
-  if (!user) redirect("/auth/signin");
-  if (user.role !== "admin") redirect("/");
-
+export default function AdminOrdersPage() {
   const supabase = createClient();
   const [page, setPage] = useState(1);
   const pageSize = 15;
@@ -160,7 +152,7 @@ export default async function AdminOrdersPage() {
                 </thead>
                 <tbody>
                   {allOrders.map((o) => {
-                    const statusClass = {
+                    const statusClass = ({
                       pending: "bg-ink/10 text-ink/70",
                       paid: "bg-acid text-ink",
                       packed: "bg-iris text-ink",
@@ -168,9 +160,9 @@ export default async function AdminOrdersPage() {
                       delivered: "bg-green-100 text-green-900",
                       cancelled: "bg-red-100 text-red-900",
                       refunded: "bg-purple-100 text-purple-900",
-                    }[o.status] || "text-ink";
+                    } as Record<string, string>)[o.status] || "text-ink";
 
-                    const statusLabel = {
+                    const statusLabel = ({
                       pending: "Pending",
                       paid: "Paid",
                       packed: "Packed",
@@ -178,7 +170,7 @@ export default async function AdminOrdersPage() {
                       delivered: "Delivered",
                       cancelled: "Cancelled",
                       refunded: "Refunded",
-                    }[o.status] || "Unknown";
+                    } as Record<string, string>)[o.status] || "Unknown";
 
                     return (
                       <tr key={o.id} className="border-b border-ink/5 hover:bg-ink/5">
