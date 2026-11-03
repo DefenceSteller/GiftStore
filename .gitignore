@@ -7,3 +7,4 @@ data/*.db-shm
 public/assets/css/styles.css
 *.log
 .DS_Store
+.next/
