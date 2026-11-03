@@ -313,7 +313,13 @@ export default function CheckoutPage() {
   if (items.length === 0) {
     return (
       <main className="container-cc pb-24 pt-8">
-        <div className="mt-8 rounded-[28px] border-2 border-dashed border-ink/15 p-16 text-center">
+        <Link
+          href="/shop"
+          className="btn-outline btn-sm mb-4 inline-flex items-center gap-1.5"
+        >
+          ← Back to shop
+        </Link>
+        <div className="mt-4 rounded-[28px] border-2 border-dashed border-ink/15 p-16 text-center">
           <span className="text-6xl">🛒</span>
           <h2 className="mt-4 font-display text-2xl font-extrabold">Your bag is empty</h2>
           <p className="mx-auto mt-2 max-w-sm text-sm font-semibold text-ink/55">
@@ -333,6 +339,12 @@ export default function CheckoutPage() {
       {/* Header */}
       <div className="flex flex-wrap items-end justify-between gap-5">
         <div>
+          <Link
+            href="/shop"
+            className="btn-outline btn-sm mb-3 inline-flex items-center gap-1.5"
+          >
+            ← Back to shop
+          </Link>
           <p className="text-xs font-black uppercase tracking-[0.18em] text-iris">
             🔒 Secure checkout
           </p>
