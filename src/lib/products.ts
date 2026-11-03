@@ -59,8 +59,8 @@ function mapProduct(row: ProductRow): StoreProduct {
     gradient: row.gradient,
     rating: Number(row.rating ?? 0),
     reviewCount: row.review_count,
-    // No is_featured column; treat the first few by sort_order as bestsellers.
-    featured: row.sort_order <= 6,
+    // Use is_featured column if available, otherwise fall back to sort_order
+    featured: (row as any).is_featured ?? row.sort_order <= 6,
     inStock: row.stock > 0,
     stock: row.stock,
     image: `/assets/img/products/${row.slug}.svg`,
