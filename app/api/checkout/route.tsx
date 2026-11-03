@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 import { STORE_CONFIG } from "@/lib/store-config";
 import { z } from "zod";
 
@@ -47,7 +47,7 @@ function generateOrderNumber(): string {
   return "CC-" + Math.random().toString(36).substring(2, 9).toUpperCase();
 }
 
-async function ensureProfile(supabase: Awaited<ReturnType<typeof createClient>>, email: string, name: string): Promise<string> {
+async function ensureProfile(supabase: ReturnType<typeof createServiceClient>, email: string, name: string): Promise<string> {
   const { data: existingProfile } = await supabase
     .from("profiles")
     .select("id")
@@ -71,7 +71,7 @@ async function ensureProfile(supabase: Awaited<ReturnType<typeof createClient>>,
 }
 
 async function ensureCustomer(
-  supabase: Awaited<ReturnType<typeof createClient>>,
+  supabase: ReturnType<typeof createServiceClient>,
   profileId: string,
   email: string,
   name: string,
@@ -117,7 +117,7 @@ export async function POST(request: NextRequest) {
     }
 
     const { contact, shipping, delivery, cartItems, promoCode } = parseResult.data;
-    const supabase = await createClient();
+    const supabase = createServiceClient();
 
     // Re-price from DB: fetch product prices by slug
     const slugs = cartItems.map((item) => item.slug);

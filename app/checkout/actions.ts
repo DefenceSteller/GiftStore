@@ -98,7 +98,7 @@ function generateOrderNumber(): string {
   return "CC-" + Math.random().toString(36).substring(2, 9).toUpperCase();
 }
 
-async function ensureProfile(supabase: Awaited<ReturnType<typeof createClient>>, email: string, name: string): Promise<string> {
+async function ensureProfile(supabase: ReturnType<typeof createServiceClient>, email: string, name: string): Promise<string> {
   // Check if profile exists for this email
   const { data: existingProfile } = await supabase
     .from("profiles")
@@ -123,7 +123,7 @@ async function ensureProfile(supabase: Awaited<ReturnType<typeof createClient>>,
   return newProfile.id;
 }
 
-async function ensureCustomer(supabase: Awaited<ReturnType<typeof createClient>>, profileId: string, email: string, name: string, phone: string | null, city: string | null): Promise<string> {
+async function ensureCustomer(supabase: ReturnType<typeof createServiceClient>, profileId: string, email: string, name: string, phone: string | null, city: string | null): Promise<string> {
   const { data: existingCustomer } = await supabase
     .from("customers")
     .select("id")
@@ -347,7 +347,7 @@ export async function placeOrder(
       total_cents: total,
       currency: "USD",
       status: "pending",
-      payment_method: "cod",
+      payment_method: String(formData.get("payment_method") ?? "cod"),
       payment_status: "pending",
       item_count: itemCount,
       delivery_method: deliveryResult.data.delivery,
