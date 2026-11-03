@@ -30,7 +30,8 @@
 - [x] Phase 5.9: Admin activity log with filter and export CSV
 - [x] Phase 5.10: Payments - demo provider + Stripe Checkout + webhook fulfillment
 - [x] Phase 5.11: Zod schemas for all forms (15+ schemas)
-- [x] Phase 5.12: Supabase Realtime channels for live dashboard
+- [x] Phase 5.13: Header UI updates: remove Admin link, add Surprise me button, improve Sign out button style
+- [x] Phase 5.14: Surprise me page (/surprise) with random active product picker and view gift/spin again UI
 
 ### Migration Readiness
 - ✅ SQLite → Postgres schema understood and migrated

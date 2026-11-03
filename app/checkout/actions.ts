@@ -48,6 +48,7 @@ export type ValidatedPromo = {
   type: "percent" | "fixed" | "free_shipping";
   value: number;
   minSubtotalCents: number;
+  description?: string;
 };
 
 export async function validatePromo(code: string) {
@@ -87,6 +88,7 @@ export async function validatePromo(code: string) {
       type: data.type as "percent" | "fixed" | "free_shipping",
       value: data.value,
       minSubtotalCents: data.min_subtotal_cents ?? 0,
+      description: data.description ?? "",
     },
   };
 }
