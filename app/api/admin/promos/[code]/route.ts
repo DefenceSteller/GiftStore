@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 
 export async function PATCH(req: Request, props: { params: Promise<{ code: string }> }) {
   const params = await props.params;
-  const supabase = await createClient();
+  const supabase = createServiceClient();
   const body = await req.json();
   const { error } = await supabase.from("promo_codes").update({
     active: body.active,
@@ -15,7 +15,7 @@ export async function PATCH(req: Request, props: { params: Promise<{ code: strin
 
 export async function DELETE(req: Request, props: { params: Promise<{ code: string }> }) {
   const params = await props.params;
-  const supabase = await createClient();
+  const supabase = createServiceClient();
   await supabase.from("promo_codes").delete().eq("code", params.code);
   return NextResponse.json({ ok: true });
 }

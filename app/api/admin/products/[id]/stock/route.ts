@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 
 export async function POST(req: Request, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
-  const supabase = await createClient();
+  const supabase = createServiceClient();
   const body = await req.json();
   const { data: product } = await supabase.from("products").select("stock").eq("id", params.id).single();
   const newStock = Math.max(0, (product?.stock ?? 0) + body.delta);

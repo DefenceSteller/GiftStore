@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 
 export async function GET(req: Request) {
-  const supabase = await createClient();
+  const supabase = createServiceClient();
   const { data } = await supabase.from("orders").select("order_number, name, email, status, payment_method, payment_status, total_cents, carrier, tracking_number, placed_at").order("placed_at", { ascending: false }).limit(5000);
 
   const header = "Order,Customer,Email,Status,Payment,Payment Status,Total (USD),Carrier,Tracking,Placed\n";

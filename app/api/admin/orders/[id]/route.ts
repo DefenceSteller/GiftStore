@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 
 export async function GET(req: Request, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
-  const supabase = await createClient();
+  const supabase = createServiceClient();
   const id = params.id;
 
   const { data: order, error } = await supabase.from("orders").select("*").eq("id", id).maybeSingle();
@@ -33,7 +33,7 @@ export async function GET(req: Request, props: { params: Promise<{ id: string }>
 
 export async function PATCH(req: Request, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
-  const supabase = await createClient();
+  const supabase = createServiceClient();
   const body = await req.json();
   const id = params.id;
 

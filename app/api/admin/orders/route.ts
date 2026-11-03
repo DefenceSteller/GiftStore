@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 
 export async function GET(req: Request) {
-  const supabase = await createClient();
+  const supabase = createServiceClient();
   const url = new URL(req.url);
   const status = url.searchParams.get("status") || "all";
   const q = url.searchParams.get("q") || "";
