@@ -68,14 +68,13 @@ export default async function StoreHeader() {
                   {l.label}
                 </Link>
               ))}
-              {user?.role === "admin" && (
-                <Link
-                  href="/admin"
-                  className="rounded-full px-4 py-2 font-bold text-iris transition hover:bg-iris/10"
-                >
-                  Admin
-                </Link>
-              )}
+              <Link
+                href="/surprise"
+                className="ml-1 rounded-full bg-iris/10 px-4 py-2 font-bold text-iris transition hover:bg-iris hover:text-white"
+                title="Show me something good"
+              >
+                🎲 Surprise me
+              </Link>
             </nav>
 
             <div className="flex items-center gap-2">
@@ -108,6 +107,12 @@ export default async function StoreHeader() {
                   {l.label}
                 </Link>
               ))}
+              <Link
+                href="/surprise"
+                className="rounded-xl px-3 py-2.5 text-left text-iris hover:bg-ink/5"
+              >
+                🎲 Surprise me
+              </Link>
             </nav>
           </div>
         </div>
