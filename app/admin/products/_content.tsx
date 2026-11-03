@@ -20,6 +20,8 @@ export default function ProductsContent() {
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [editingProduct, setEditingProduct] = useState<any | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     loadProducts();
@@ -41,30 +43,62 @@ export default function ProductsContent() {
   }
 
   async function handleSave(product: any) {
-    if (product.id) {
-      await fetch(`/api/admin/products/${product.id}`, {
-        method: "PATCH",
+    setSaveError(null);
+    setSaving(true);
+    try {
+      const isEdit = !!product.id;
+      const url = isEdit
+        ? `/api/admin/products/${product.id}`
+        : "/api/admin/products";
+      const method = isEdit ? "PATCH" : "POST";
+      const res = await fetch(url, {
+        method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(product)
       });
-    } else {
-      await fetch("/api/admin/products", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(product)
-      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || `Server returned ${res.status}`);
+      }
+      setShowModal(false);
+      await loadProducts();
+    } catch (err: any) {
+      setSaveError(err.message || "Failed to save product.");
+    } finally {
+      setSaving(false);
     }
-    setShowModal(false);
-    loadProducts();
   }
 
   async function handleDelete(id: string) {
-    await fetch(`/api/admin/products/${id}`, { method: "DELETE" });
-    loadProducts();
+    try {
+      const res = await fetch(`/api/admin/products/${id}`, { method: "DELETE" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || `Server returned ${res.status}`);
+      await loadProducts();
+    } catch (err: any) {
+      setSaveError(err.message || "Failed to delete product.");
+    }
   }
 
   return (
     <div className="space-y-4">
+      {saveError && (
+        <div className="card border-2 border-coral bg-coral/5 p-4">
+          <div className="flex items-center gap-3">
+            <span className="text-xl">⚠️</span>
+            <div>
+              <p className="font-extrabold text-coral">Operation failed</p>
+              <p className="text-sm font-bold text-coral/80">{saveError}</p>
+            </div>
+            <button
+              onClick={() => setSaveError(null)}
+              className="ml-auto text-coral hover:text-coral/70"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
       <div className="card p-4">
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex flex-wrap gap-2">
@@ -174,13 +208,14 @@ export default function ProductsContent() {
           product={editingProduct}
           onClose={() => setShowModal(false)}
           onSave={handleSave}
+          saving={saving}
         />
       )}
     </div>
   );
 }
 
-function ProductModal({ product, onClose, onSave }: { product: any, onClose: () => void, onSave: (p: any) => Promise<void> }) {
+function ProductModal({ product, onClose, onSave, saving }: { product: any, onClose: () => void, onSave: (p: any) => Promise<void>, saving: boolean }) {
   const [form, setForm] = useState({
     name: product?.name || "",
     tagline: product?.tagline || "",
@@ -268,8 +303,10 @@ function ProductModal({ product, onClose, onSave }: { product: any, onClose: () 
             </label>
           </div>
           <div className="flex justify-end gap-2 sm:col-span-2">
-            <button type="button" onClick={onClose} className="btn-outline btn-sm">Cancel</button>
-            <button type="submit" className="btn-primary btn-sm">{product ? "Save changes" : "Create product"}</button>
+            <button type="button" onClick={onClose} disabled={saving} className="btn-outline btn-sm">Cancel</button>
+            <button type="submit" disabled={saving} className="btn-primary btn-sm">
+              {saving ? "Saving…" : (product ? "Save changes" : "Create product")}
+            </button>
           </div>
         </form>
       </div>
