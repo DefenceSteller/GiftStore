@@ -31,11 +31,11 @@ export async function GET(req: Request) {
   }
 
   return NextResponse.json({
-    items: data?.map(p => ({
+    items: data?.map((p: any) => ({
       id: p.id, slug: p.slug, name: p.name, tagline: p.description, category: p.category,
       priceCents: p.price_cents, compareAtCents: p.compare_at_cents, stock: p.stock,
       emoji: p.emoji, gradient: p.gradient, rating: p.rating, reviewCount: p.review_count,
-      active: p.is_active, featured: p.sort_order <= 6, sortOrder: p.sort_order,
+      active: p.is_active, featured: p.is_featured ?? (p.sort_order <= 6), sortOrder: p.sort_order,
       image: `/assets/img/products/${p.slug}.svg`, description: p.description
     })) ?? [],
     total: count ?? 0, page, limit,
@@ -47,15 +47,48 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   const supabase = await createClient();
   const body = await req.json();
-  const slug = body.slug || body.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  
+  // Generate unique slug
+  let slug = body.slug || body.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  let slugExists = true;
+  let slugCounter = 2;
+  
+  while (slugExists) {
+    const { data: existing } = await supabase
+      .from("products")
+      .select("id")
+      .eq("slug", slug)
+      .maybeSingle();
+    
+    if (!existing || !existing.id) {
+      slugExists = false;
+    } else {
+      slug = `${body.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")}-${slugCounter}`;
+      slugCounter++;
+    }
+  }
+  
   const { data, error } = await supabase.from("products").insert({
-    slug, name: body.name, description: body.description, category: body.category,
-    price_cents: body.priceCents, compare_at_cents: body.compareAtCents,
-    emoji: body.emoji || "🎁", gradient: body.gradient || "#7C5CFF,#D3FF52",
-    rating: body.rating ?? 4.5, review_count: body.reviewCount ?? 0,
-    stock: body.stock ?? 0, is_active: body.is_active ?? true,
+    slug,
+    name: body.name,
+    description: body.description || body.tagline || "",
+    category: body.category,
+    price_cents: body.priceCents,
+    compare_at_cents: body.compareAtCents || null,
+    emoji: body.emoji || "🎁",
+    gradient: body.gradient || "#7C5CFF,#D3FF52",
+    rating: body.rating ?? 4.5,
+    review_count: body.reviewCount ?? 0,
+    stock: body.stock ?? 0,
+    is_active: body.is_active ?? true,
+    is_featured: body.is_featured ?? false,
     sort_order: body.sortOrder ?? 0
-  }).select().single();
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  } as any).select().single();
+  
+  if (error) {
+    console.error("Product create error:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+  
   return NextResponse.json({ ok: true, id: data.id, slug });
 }
