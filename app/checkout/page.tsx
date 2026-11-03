@@ -285,8 +285,15 @@ export default function CheckoutPage() {
     }
 
     try {
-      await placeOrder({} as any, formData);
+      const result = await placeOrder({} as any, formData);
+      if (result?.error) {
+        setFormState({ ...emptyActionState, submitError: result.error });
+      }
+      // On success, placeOrder() calls redirect() which throws — handled by Next.js.
+      // If it returns without redirecting, show any returned error.
     } catch (err: any) {
+      // redirect() throws a special error caught by Next.js; only handle real errors
+      if (err?.message?.includes("NEXT_REDIRECT")) return;
       const msg = err?.message ?? "Something went wrong. Please try again.";
       if (err?.fields) {
         setFormState({ ...emptyActionState, errors: err.fields as FormErrors, step: 1 });

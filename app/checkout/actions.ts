@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 import { STORE_CONFIG } from "@/lib/store-config";
 import { z } from "zod";
 
@@ -17,7 +18,7 @@ const shippingSchema = z.object({
   address2: z.string().optional(),
   city: z.string().min(1, "City required"),
   state: z.string().min(1, "State required"),
-  postal_code: z.string().regex(/^[0-9]{6}$/, "Postal code must be 6 digits"),
+  postal_code: z.string().min(3, "Postal/ZIP code required").max(12, "Postal code too long"),
   country: z.string().min(1, "Country required"),
 });
 
@@ -158,7 +159,9 @@ export async function placeOrder(
   },
   formData: FormData
 ) {
-  const supabase = await createClient();
+  // Use service role for checkout — guest users have no authenticated session,
+  // and the orders table has no INSERT policy for the anon role.
+  const supabase = createServiceClient();
 
   // Parse and validate contact
   const contactResult = contactSchema.safeParse({
