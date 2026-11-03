@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { CartProvider } from "@/components/cart/CartProvider";
 import CartDrawer from "@/components/cart/CartDrawer";
+import RevealInit from "@/components/RevealInit";
 
 export const metadata: Metadata = {
   title: "Confetti Club — Modern Gift Shop",
@@ -34,6 +35,7 @@ export default function RootLayout({
           {children}
           <CartDrawer />
         </CartProvider>
+        <RevealInit />
       </body>
     </html>
   );
