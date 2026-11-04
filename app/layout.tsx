@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { getSessionUser } from "@/lib/auth";
+import { AuthProvider } from "@/components/auth/AuthProvider";
+import SignInPopout from "@/components/auth/SignInPopout";
 import { CartProvider } from "@/components/cart/CartProvider";
 import CartDrawer from "@/components/cart/CartDrawer";
 import RevealInit from "@/components/RevealInit";
@@ -17,11 +20,15 @@ const DESIGN_CSS = "/assets/css/styles.css";
 const FONTS =
   "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Manrope:wght@400;500;600;700;800&display=swap";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // The server knows whether this request carries a session; passing it down
+  // means the client never flashes "signed out" for signed-in visitors.
+  const user = await getSessionUser();
+
   return (
     <html lang="en">
       <head>
@@ -31,10 +38,13 @@ export default function RootLayout({
         <link rel="stylesheet" href={DESIGN_CSS} />
       </head>
       <body>
-        <CartProvider>
-          {children}
-          <CartDrawer />
-        </CartProvider>
+        <AuthProvider initialUser={user}>
+          <CartProvider>
+            {children}
+            <CartDrawer />
+          </CartProvider>
+          <SignInPopout />
+        </AuthProvider>
         <RevealInit />
       </body>
     </html>

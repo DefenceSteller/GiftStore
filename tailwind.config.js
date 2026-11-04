@@ -1,6 +1,13 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./public/**/*.{html,js}', './src/**/*.{css,html}'],
+  // NOTE: the React app lives in app/**/*.tsx and src/**/*.tsx. The original
+  // globs only scanned the legacy Express templates, so any class used solely
+  // in TSX was silently dropped from the compiled stylesheet.
+  content: [
+    './public/**/*.{html,js}',
+    './src/**/*.{css,html,tsx,ts}',
+    './app/**/*.{tsx,ts}',
+  ],
   theme: {
     extend: {
       colors: {

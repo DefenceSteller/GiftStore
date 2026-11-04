@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useCart, type AddableProduct } from "./CartProvider";
 import { openCart } from "./CartDrawer";
+import { useAuth } from "@/components/auth/AuthProvider";
+import { openSignInPopout } from "@/components/auth/SignInPopout";
 
 /** Add-to-bag button wired to the cart context; opens the drawer on add. */
 export default function AddToCartButton({
@@ -17,6 +19,7 @@ export default function AddToCartButton({
   openAfter?: boolean;
 }) {
   const { add } = useCart();
+  const { user } = useAuth();
   const [justAdded, setJustAdded] = useState(false);
 
   const disabled = !product.stock || product.stock <= 0;
@@ -30,6 +33,12 @@ export default function AddToCartButton({
   }
 
   const handleClick = () => {
+    // Signed-out visitors get the sign-in popout instead of a bag; the product
+    // is stashed and auto-added once they come back signed in.
+    if (!user) {
+      openSignInPopout(product);
+      return;
+    }
     add(product, 1);
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1200);

@@ -8,3 +8,4 @@ public/assets/css/styles.css
 *.log
 .DS_Store
 .next/
+*.tsbuildinfo

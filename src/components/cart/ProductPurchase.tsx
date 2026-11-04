@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useCart } from "./CartProvider";
 import { openCart } from "./CartDrawer";
+import { useAuth } from "@/components/auth/AuthProvider";
+import { openSignInPopout } from "@/components/auth/SignInPopout";
 import { money } from "@/lib/format";
 
 type ProductInfo = {
@@ -20,6 +22,7 @@ type ProductInfo = {
 /** Product-detail purchase row: functional quantity stepper + add-to-bag. */
 export default function ProductPurchase({ product }: { product: ProductInfo }) {
   const { add } = useCart();
+  const { user } = useAuth();
   const max = Math.max(1, Math.min(product.maxQty || product.stock || 10, 10));
   const [qty, setQty] = useState(1);
   const [justAdded, setJustAdded] = useState(false);
@@ -28,6 +31,12 @@ export default function ProductPurchase({ product }: { product: ProductInfo }) {
     setQty((q) => Math.min(Math.max(1, q + delta), max));
 
   const handleAdd = () => {
+    // Gate: signed-out visitors are asked to sign in first; the item they
+    // tried to add (and the qty) is picked up automatically afterwards.
+    if (!user) {
+      openSignInPopout(product);
+      return;
+    }
     add(product, qty);
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1200);

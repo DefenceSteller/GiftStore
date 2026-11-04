@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { useFormState, useFormStatus } from "react-dom";
 import { signin, type AuthState } from "../actions";
 
@@ -31,10 +33,24 @@ function SubmitButton() {
 const initialState: AuthState = {};
 
 export default function SignInPage() {
+  // useSearchParams requires a Suspense boundary when the route is prerendered.
+  return (
+    <Suspense fallback={null}>
+      <SignInForm />
+    </Suspense>
+  );
+}
+
+function SignInForm() {
   const [state, formAction] = useFormState(signin, initialState);
+  // Where the visitor came from (the sign-in popout passes the current page),
+  // so signing in drops them back exactly where they were.
+  const next = useSearchParams().get("next") ?? "/";
 
   return (
     <form action={formAction} style={{ display: "grid", gap: "1rem" }}>
+      <input type="hidden" name="next" value={next} />
+
       <h1 style={{ margin: 0, fontSize: "1.25rem", color: "#1a1a2e" }}>
         Welcome back
       </h1>
