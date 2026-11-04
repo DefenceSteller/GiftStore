@@ -1,69 +1,26 @@
-# 📊 Confetti Club — Migration Progress Tracker
+# Migration Progress — Confetti Club
 
-## Current Phase: Analysis Complete (Phase 1)
+## Status: Auth-gated per-user carts — done ✅
 
-**Completed:** 1 of 6 phases (16.7%)
+Express + SQLite → Next.js 16 + TypeScript + Supabase Cloud (`ppolhziswextahhjfggi`).
 
-### What's Done
-- [x] Full codebase analysis
-- [x] All tables & columns documented
-- [x] All API endpoints catalogued
-- [x] Business rules extracted
-- [x] Feature checklist created
-- [x] Summary delivered and approved
+### What's done
+- Foundation: Next 16.4.3, React 19.3.1, `@supabase/ssr`, build + typecheck green (28 routes).
+- Supabase clients (anon server, browser, service role), auth, admin auth, `proxy.ts` role guard.
+- Storefront: home / shop / product / cart / checkout / surprise / track / order-success.
+- Admin shell + pages: dashboard, orders, products, customers, promos, settings, activity, analytics.
+- Admin API routes all use `createServiceClient()` (bypasses RLS) — orders, stats, customers, promos, settings, export/orders.csv, products/[id]/stock.
+- 26 products, 3 promo codes (GIFT10, FREESHIP, WELCOME5), order lifecycle, Stripe + demo payments.
+- `is_featured` boolean (migration 018); storefront falls back to `sort_order <= 6`.
+- Reveal animation fix ported as `RevealInit.tsx` in root layout.
+- CSS: rebuilt `public/assets/css/styles.css` after adding `.tsx` to `tailwind.config.js` content globs. Verified additive-only (0 declarations lost, 54 new classes).
+- **Auth-gated per-user carts** (commit `3de89f3`):
+  - `AuthProvider.tsx`: server-seeded `initialUser`, `usePathname()` soft-nav sync, `onAuthStateChange`, `visibilitychange`/`pageshow`, and continuous cookie polling for sign-in redirects that land on the same path.
+  - `SignInPopout.tsx`: modal shown when a signed-out visitor clicks Add; stashes the product in `sessionStorage` (`cc_pending_add`) and carries the return path as `next`.
+  - `CartProvider.tsx`: per-user key `cc_cart_v2:<userId>` (guest = `cc_cart_v2`); re-hydrates on user change; auto-adds the pending product after sign-in and opens the drawer.
+  - `AddToCartButton.tsx` / `ProductPurchase.tsx`: gate on signed-out click → popout instead of add.
+  - `app/layout.tsx`: passes `initialUser` from `getSessionUser()`; mounts `AuthProvider` → `CartProvider` → `SignInPopout`.
+  - `scripts/e2e-auth-cart.js`: 15/15 checks pass (signed-out → popout → sign in → return → scoped cart → auto-add → drawer open).
 
-### Migration Readiness
-- ✅ SQLite → Postgres schema understood
-- ✅ All 36+ API endpoints mapped
-- ✅ Order lifecycle, pricing, payments documented
-- ✅ Rate limits, security, design tokens noted
-- ✅ Migration plan (6 phases) approved
-
-### Ready for Phase 2
-- Target architecture definition
-- Supabase project setup
-- Database migration scripts
-
----
-
-## Upcoming Milestones
-
-| Milestone | Target | Status |
-|-----------|--------|--------|
-| Phase 2: Target Architecture | 2026-08-24 | ⏳ Planned |
-| Phase 3: Database Migrations | 2026-08-26 | ⏳ Planned |
-| Phase 4: Auth Implementation | 2026-08-28 | ⏳ Planned |
-| Phase 5: Feature Porting (Storefront) | 2026-09-02 | ⏳ Planned |
-| Phase 5: Feature Porting (Admin) | 2026-09-08 | ⏳ Planned |
-| Phase 6: Quality & Deploy | 2026-09-12 | ⏳ Planned |
-
----
-
-## 📁 Related Files
-- `docs/plan/revamp_next.js-supabase.md` — Full migration plan
-- `docs/MIGRATION_WORKLOG.md` — This work log (just created)
-- `public/assets/js/api.js` — Current formatting helpers (will be updated)
-- `server/services/payments.js` — Payment provider interface (will be kept)
-- `.env.example` — Config will need SUPABASE_URL, SUPABASE_ANON_KEY
-
----
-
-## 🎯 Next Immediate Action
-**Start Phase 2: Define Target Architecture**
-- Set up Next.js 15 project with App Router
-- Configure TypeScript
-- Set up Tailwind CSS with reused design tokens
-- Initialize Supabase project
-- Define folder structure: src/app, src/modules/<feature>/
-
----
-
-**Progress:** 1/6 phases complete (16.7%)  
-**Estimated completion:** 4–6 weeks from Phase 2 start  
-**Risk level:** Medium (new tech stack, but full feature parity planned)
-
----
-
-**Last updated:** 2026-08-24  
-**Project:** Confetti Club — Next.js + Supabase migration  
-**Version:** 1.0 (analysis complete)
+### Known issues
+- **Postal code validation mismatch**: client (`app/checkout/page.tsx`) uses `min(3).max(12)`, server action (`app/checkout/actions.ts`) uses `min(3).max(12)`, but `app/api/checkout/route.tsx` still enforces `^[0-9]{6}$`. Needs relaxing to match.
