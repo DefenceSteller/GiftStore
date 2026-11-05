@@ -21,6 +21,7 @@ Express + SQLite → Next.js 16 + TypeScript + Supabase Cloud (`ppolhziswextahhj
   - `AddToCartButton.tsx` / `ProductPurchase.tsx`: gate on signed-out click → popout instead of add.
   - `app/layout.tsx`: passes `initialUser` from `getSessionUser()`; mounts `AuthProvider` → `CartProvider` → `SignInPopout`.
   - `scripts/e2e-auth-cart.js`: 15/15 checks pass (signed-out → popout → sign in → return → scoped cart → auto-add → drawer open).
+- Cart: signed-out state renders an empty bag (stale guest-cart data cleared), per-user keys for signed-in users.
 
 ### Known issues
-- **Postal code validation mismatch**: client (`app/checkout/page.tsx`) uses `min(3).max(12)`, server action (`app/checkout/actions.ts`) uses `min(3).max(12)`, but `app/api/checkout/route.tsx` still enforces `^[0-9]{6}$`. Needs relaxing to match.
+- **Postal code validation mismatch**: client (`app/checkout/page.tsx`) uses `min(3).max(12)`, server action (`app/checkout/actions.ts`) uses `min(3).max(12)`, but `app/api/checkout/route.tsx` still enforced `^[0-9]{6}$`. Fixed → now `min(3).max(12)` everywhere.
