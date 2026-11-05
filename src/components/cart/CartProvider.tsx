@@ -97,11 +97,21 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }
 
   // Hydrate from localStorage after mount, and re-hydrate whenever the signed
-  // user changes so each account loads its own bag.
+  // user changes so each account loads its own bag. Signed-out visitors cannot
+  // add items (the Add gate routes them to the sign-in popout), so the bag
+  // starts clean for a first-time visitor and any stale guest-cart data is
+  // discarded rather than rendered.
   useEffect(() => {
+    if (!user) {
+      // Signed-out: bag starts clean (guests can't add via the gate; stale
+      // guest-cart data is discarded rather than rendered).
+      setItems([]);
+      setReady(true);
+      return;
+    }
     setItems(read(storageKey));
     setReady(true);
-  }, [storageKey]);
+  }, [storageKey, user]);
 
   // Sync across tabs/windows — only for this cart's own key, so another
   // account signing in elsewhere never bleeds into this one.
