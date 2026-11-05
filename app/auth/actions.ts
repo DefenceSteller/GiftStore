@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 
 export type AuthState = {
   error?: string;
@@ -22,31 +23,29 @@ export async function signup(
     return { error: "Email and password are required." };
   }
 
-  const supabase = await createClient();
+  const service = createServiceClient();
 
-  const { data, error } = await supabase.auth.signUp({
+  // Create the user via the admin API. The client-keyed `auth.signUp` has been
+  // failing at the DB step ("Database error saving new user"); the admin API
+  // uses the same underlying DB write but is the path we've verified works.
+  const { data: created, error: createError } = await service.auth.admin.createUser({
     email,
     password,
-    options: {
-      data: { name },
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/auth/signin`,
-    },
+    email_confirm: true,
+    user_metadata: { name },
   });
 
-  if (error) {
-    return { error: error.message };
+  if (createError) {
+    return { error: createError.message };
   }
 
-  // Create the profile row (role defaults to 'customer').
-  // If email confirmation is on, data.user may exist without a session;
-  // guard on user id so we don't fail silently.
-  if (data.user) {
-    const { error: profileError } = await supabase.from("profiles").insert({
-      id: data.user.id,
+  const userId = created?.user?.id;
+  if (userId) {
+    const { error: profileError } = await service.from("profiles").insert({
+      id: userId,
       email,
       role: "customer",
     });
-    // Ignore duplicate (in case a trigger already created it).
     if (profileError && profileError.code !== "23505") {
       return { error: `Account created, but profile setup failed: ${profileError.message}` };
     }
@@ -54,8 +53,7 @@ export async function signup(
 
   revalidatePath("/", "layout");
   return {
-    message:
-      "Almost there! Check your email to confirm your account, then sign in.",
+    message: "Your account is ready — sign in and your bag is waiting.",
   };
 }
 

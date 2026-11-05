@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { signin, type AuthState } from "../actions";
 
 function SubmitButton() {
@@ -42,7 +43,7 @@ export default function SignInPage() {
 }
 
 function SignInForm() {
-  const [state, formAction] = useFormState(signin, initialState);
+  const [state, formAction, pending] = useActionState(signin, initialState);
   // Where the visitor came from (the sign-in popout passes the current page),
   // so signing in drops them back exactly where they were.
   const next = useSearchParams().get("next") ?? "/";
