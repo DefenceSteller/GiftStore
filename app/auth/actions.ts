@@ -72,14 +72,30 @@ export async function signin(
 
   const supabase = await createClient();
 
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data: signedIn, error } = await supabase.auth.signInWithPassword({ email, password });
 
-  if (error) {
-    return { error: error.message };
+  if (error || !signedIn.user) {
+    return { error: error?.message ?? "Sign-in failed." };
+  }
+
+  // With no explicit destination, send admins to the admin panel. Read the role
+  // with the service client: the anon/RLS read can come back empty on this
+  // freshly-minted request and would misclassify the admin as a customer.
+  let destination = next.startsWith("/") ? next : "/";
+  if (destination === "/") {
+    const service = createServiceClient();
+    const { data: profile } = await service
+      .from("profiles")
+      .select("role")
+      .eq("id", signedIn.user.id)
+      .maybeSingle();
+    if (profile?.role === "admin") {
+      destination = "/admin";
+    }
   }
 
   revalidatePath("/", "layout");
-  redirect(next.startsWith("/") ? next : "/");
+  redirect(destination);
 }
 
 /** Sign out the current user. */

@@ -57,6 +57,11 @@ async function userFromSession(
     .select("role")
     .eq("id", u.id)
     .maybeSingle();
+  // A session user is always returned — a failed profile read defaults to
+  // "customer" rather than null, because null means "signed out" to the cart
+  // (it switches the storage key and clears the bag). The server-side role
+  // read in getSessionUser() uses the service client and is the source of
+  // truth for admin access control.
   return {
     id: u.id,
     email: u.email ?? "",
@@ -85,7 +90,11 @@ export function AuthProvider({
     try {
       const supabase = createClient();
       const { data } = await supabase.auth.getSession();
-      setUser(await userFromSession(supabase, data.session?.user ?? null));
+      const next = await userFromSession(supabase, data.session?.user ?? null);
+      // `userFromSession` returns null only when there is genuinely no session
+      // (sign-out). A signed-in user is always returned, so the bag's storage
+      // key stays stable and the add-to-bag gate stays open.
+      setUser(next);
     } catch {
       /* session read failed — keep current state */
     }
