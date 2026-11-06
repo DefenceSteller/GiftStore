@@ -39,34 +39,41 @@ export default async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Protect admin routes: require a session AND role='admin' in public.profiles.
+  // /admin/login is the dedicated admin login page — accessible to everyone.
   if (pathname.startsWith("/admin")) {
-    // Not signed in -> send to sign-in.
-    if (!user) {
+    if (pathname.startsWith("/admin/login")) {
+      // Admin login page AND its server actions are open to all — skip
+      // role check. (If the visitor is already an admin, the page component
+      // redirects them to /admin.)
+    } else if (!user) {
+      // Not signed in -> send to the dedicated admin login.
       const url = request.nextUrl.clone();
-      url.pathname = "/auth/signin";
-      url.searchParams.set("next", pathname);
-      return NextResponse.redirect(url);
-    }
-
-    // Signed in -> verify the admin role. RLS lets a user read their own
-    // profile (auth.uid() = id), so this returns the row for the current user.
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .maybeSingle();
-
-    if (profile?.role !== "admin") {
-      // Authenticated but not an admin -> send to home.
-      const url = request.nextUrl.clone();
-      url.pathname = "/";
+      url.pathname = "/admin/login";
       url.search = "";
       return NextResponse.redirect(url);
+    } else {
+      // Signed in -> verify the admin role. RLS lets a user read their own
+      // profile (auth.uid() = id), so this returns the row for the current user.
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (profile?.role !== "admin") {
+        // Authenticated but not an admin -> send to the admin login.
+        const url = request.nextUrl.clone();
+        url.pathname = "/admin/login";
+        url.search = "";
+        return NextResponse.redirect(url);
+      }
     }
   }
 
-  // If signed in and heading to auth pages, send to home
-  if (user && pathname.startsWith("/auth/")) {
+  // If signed in and heading to auth pages, send to home.
+  // Exception: /auth/callback is the OAuth redirect target — it must run
+  // even when a session is already present (e.g. re-authentication).
+  if (user && pathname.startsWith("/auth/") && !pathname.startsWith("/auth/callback")) {
     const url = request.nextUrl.clone();
     url.pathname = "/";
     url.search = "";

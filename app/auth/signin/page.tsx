@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { signin, type AuthState } from "../actions";
+import GoogleSigninButton from "@/components/auth/GoogleSigninButton";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -104,6 +105,25 @@ function SignInForm() {
       </label>
 
       <SubmitButton />
+
+      {/* Divider */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "0.75rem",
+          margin: "0.25rem 0",
+          color: "#adb5bd",
+          fontSize: "0.8rem",
+          fontWeight: 600,
+        }}
+      >
+        <span style={{ flex: 1, height: "1px", background: "#e9ecef" }} />
+        OR
+        <span style={{ flex: 1, height: "1px", background: "#e9ecef" }} />
+      </div>
+
+      <GoogleSigninButton next={next} label="Continue with Google" />
 
       <div
         style={{

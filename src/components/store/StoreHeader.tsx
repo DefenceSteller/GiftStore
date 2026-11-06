@@ -86,7 +86,16 @@ export default async function StoreHeader() {
                 🔎 <span className="hidden lg:inline">Search</span>
               </Link>
               {user ? (
-                <SignOutButton />
+                <>
+                  <Link
+                    href="/profile"
+                    className="btn-outline btn-sm"
+                    aria-label="My profile"
+                  >
+                    👤 <span className="hidden lg:inline">Profile</span>
+                  </Link>
+                  <SignOutButton />
+                </>
               ) : (
                 <Link href="/auth/signin" className="btn-primary btn-sm">
                   Sign in

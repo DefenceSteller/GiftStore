@@ -7,8 +7,8 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   const user = await getSessionUser();
-  if (!user) redirect("/auth/signin?next=/admin");
-  if (user.role !== "admin") redirect("/");
+  if (!user) redirect("/admin/login");
+  if (user.role !== "admin") redirect("/admin/login");
 
   return <>{children}</>;
 }

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { signup, type AuthState } from "../actions";
+import GoogleSigninButton from "@/components/auth/GoogleSigninButton";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -54,7 +55,6 @@ export default function SignUpPage() {
           {state.error}
         </p>
       )}
-
       {state.message && (
         <p
           style={{
@@ -120,6 +120,25 @@ export default function SignUpPage() {
       </label>
 
       <SubmitButton />
+
+      {/* Divider */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "0.75rem",
+          margin: "0.25rem 0",
+          color: "#adb5bd",
+          fontSize: "0.8rem",
+          fontWeight: 600,
+        }}
+      >
+        <span style={{ flex: 1, height: "1px", background: "#e9ecef" }} />
+        OR
+        <span style={{ flex: 1, height: "1px", background: "#e9ecef" }} />
+      </div>
+
+      <GoogleSigninButton next="/" label="Continue with Google" />
 
       <p style={{ margin: 0, fontSize: "0.875rem", textAlign: "center", color: "#495057" }}>
         Already have an account?{" "}
