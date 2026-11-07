@@ -34,7 +34,11 @@ export default function AdminLoginForm() {
   const [state, formAction] = useActionState(adminSignin, initialState);
 
   return (
-    <form action={formAction} style={{ display: "grid", gap: "1rem" }}>
+    <form action={formAction} style={{ display: "grid", gap: "1rem" }} autoComplete="off">
+      {/* Hidden dummy fields to prevent browser autofill from populating the real inputs */}
+      <input type="hidden" autoComplete="username" tabIndex={-1} />
+      <input type="hidden" autoComplete="new-password" tabIndex={-1} />
+
       <h1 style={{ margin: 0, fontSize: "1.25rem", color: "#1a1a2e" }}>
         Admin Access
       </h1>
@@ -67,7 +71,7 @@ export default function AdminLoginForm() {
           type="email"
           name="email"
           required
-          autoComplete="email"
+          autoComplete="off"
           style={{
             padding: "0.625rem",
             borderRadius: "0.5rem",
@@ -90,7 +94,7 @@ export default function AdminLoginForm() {
           type="password"
           name="password"
           required
-          autoComplete="current-password"
+          autoComplete="new-password"
           style={{
             padding: "0.625rem",
             borderRadius: "0.5rem",

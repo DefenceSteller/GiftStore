@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Logout Test</title>
+</head>
+<body>
+  <h1>Testing logout endpoint</h1>
+  <form id="logoutForm" method="POST" action="/api/admin/logout">
+    <input type="hidden" name="test" value="data">
+    <button type="submit">Logout</button>
+  </form>
+  <script>
+    document.getElementById('logoutForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        const response = await fetch('/api/admin/logout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({})
+        });
+        console.log('Response status:', response.status);
+        console.log('Response:', await response.json());
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    });
+  </script>
+</body>
+</html>

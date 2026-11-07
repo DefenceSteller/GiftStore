@@ -1,6 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
@@ -36,10 +35,10 @@ export async function adminSignin(
     return { error: error?.message ?? "Sign-in failed." };
   }
 
-  // Verify the account is actually an admin. Use the service client so the
-  // read is immune to RLS timing.
-  const service = createServiceClient();
-  const { data: profile } = await service
+  // Verify the account is actually an admin. The proxy does the same check
+  // on the /admin request, but we check here too so non-admins see an error
+  // instead of being bounced back to the login page.
+  const { data: profile } = await supabase
     .from("profiles")
     .select("role")
     .eq("id", signedIn.user.id)
@@ -51,6 +50,5 @@ export async function adminSignin(
     return { error: "This account does not have admin access." };
   }
 
-  revalidatePath("/", "layout");
   redirect("/admin");
 }

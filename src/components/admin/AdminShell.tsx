@@ -17,6 +17,8 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [adminEmail, setAdminEmail] = useState("Store Owner");
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [activeVisitors, setActiveVisitors] = useState(0);
 
   useEffect(() => {
     fetch("/api/admin/me").then(r => r.json()).then(d => {
@@ -24,9 +26,45 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
     }).catch(() => {});
   }, []);
 
+  // Poll live active-visitor count every 5 seconds.
+  useEffect(() => {
+    let cancelled = false;
+    async function poll() {
+      try {
+        const res = await fetch("/api/admin/stats/live");
+        const data = await res.json();
+        if (!cancelled) setActiveVisitors(data.activeVisitors ?? 0);
+      } catch { /* keep last value */ }
+    }
+    poll();
+    const timer = setInterval(poll, 5000);
+    return () => { cancelled = true; clearInterval(timer); };
+  }, []);
+
   async function handleLogout() {
-    await fetch("/api/admin/logout", { method: "POST" });
-    window.location.href = "/auth/signin";
+    if (isLoggingOut) return; // Prevent double-submit
+    setIsLoggingOut(true);
+    console.log('Admin logout initiated');
+    try {
+      const res = await fetch("/api/admin/logout", { method: "POST", credentials: 'same-origin' });
+      console.log('Logout response:', res.status, res.ok);
+      if (res.ok) {
+        // Clear all admin-related session storage
+        sessionStorage.removeItem('admin_token');
+        sessionStorage.removeItem('cc_promo'); // Clear any saved promo
+        console.log('Admin session cleared, redirecting...');
+        // Give a small delay for cleanup
+        setTimeout(() => {
+          window.location.href = "/admin/login";
+        }, 100);
+      } else {
+        console.error('Logout failed with status:', res.status);
+        setIsLoggingOut(false);
+      }
+    } catch (e) {
+      console.error('Logout error:', e);
+      setIsLoggingOut(false);
+    }
   }
 
   const initials = adminEmail.split("@")[0].slice(0, 2).toUpperCase();
@@ -73,7 +111,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
             <span className="text-[10px] font-black uppercase tracking-[0.18em] text-white/40">Live traffic</span>
             <span className="h-2 w-2 animate-pulse rounded-full bg-acid" />
           </div>
-          <p className="mt-2 font-display text-3xl font-extrabold tabular" id="side-visitors">0</p>
+          <p className="mt-2 font-display text-3xl font-extrabold tabular" id="side-visitors">{activeVisitors}</p>
           <p className="text-[11px] font-bold text-white/45">active visitors now</p>
         </div>
 
@@ -84,7 +122,13 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
               <p id="admin-name" className="truncate text-[13px] font-extrabold">Store Owner</p>
               <p id="admin-email" className="truncate text-[11px] font-bold text-white/40">{adminEmail}</p>
             </div>
-            <button onClick={handleLogout} title="Sign out" className="grid h-9 w-9 place-items-center rounded-xl border border-white/10 text-white/60 transition hover:border-coral hover:text-coral">⏻</button>
+            <button onClick={handleLogout} title="Sign out" className="grid h-9 w-9 place-items-center rounded-xl border border-white/10 text-white/60 transition hover:border-coral hover:text-coral">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+          </button>
           </div>
         </div>
       </aside>
