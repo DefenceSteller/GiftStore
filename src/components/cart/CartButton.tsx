@@ -3,7 +3,6 @@
 import { useCart } from "./CartProvider";
 import { openCart } from "./CartDrawer";
 
-/** Header bag button — shows the live count and opens the drawer. */
 export default function CartButton() {
   const { count, ready } = useCart();
 
