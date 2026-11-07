@@ -1,7 +1,18 @@
+"use client";
+
 import Link from "next/link";
+import { useStoreConfig } from "@/components/store/StoreConfigProvider";
+import { moneySymbol } from "@/lib/format";
 
 export default function StoreFooter() {
+  const config = useStoreConfig();
   const year = new Date().getFullYear();
+  const sym = moneySymbol(config.currency);
+
+  // Build the store name with branded suffix colors
+  const storeName = config.store_name || "Confetti Club";
+  const parts = storeName.split(/(?=[A-Z])/).filter(Boolean);
+  const brandPart = parts.slice(1).join("");
 
   return (
     <footer className="mt-16 bg-ink text-white sm:mt-24">
@@ -13,7 +24,8 @@ export default function StoreFooter() {
                 🎁
               </span>
               <span className="font-display text-lg font-extrabold">
-                Confetti<span className="text-acid">Club</span>
+                {parts[0]}
+                <span className="text-acid">{brandPart}</span>
               </span>
             </div>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/55">
@@ -32,7 +44,7 @@ export default function StoreFooter() {
             <ul className="mt-4 space-y-2.5 text-sm font-semibold text-white/70">
               <li><Link className="transition hover:text-acid" href="/shop">All gifts</Link></li>
               <li><Link className="transition hover:text-acid" href="/shop?featured=1">Bestsellers</Link></li>
-              <li><Link className="transition hover:text-acid" href="/shop?max=2500">Under Rs 25</Link></li>
+              <li><Link className="transition hover:text-acid" href={`/shop?max=${Math.round(2500 * 100)}`}>Under {sym} 25</Link></li>
               <li><Link className="transition hover:text-acid" href="/shop?category=Personalized">Personalized</Link></li>
             </ul>
           </div>
@@ -43,7 +55,14 @@ export default function StoreFooter() {
               <li><Link className="transition hover:text-acid" href="/track">Track my order</Link></li>
               <li><Link className="transition hover:text-acid" href="/track">Shipping &amp; returns</Link></li>
               <li><Link className="transition hover:text-acid" href="/shop">Gift cards</Link></li>
-              <li><a className="transition hover:text-acid" href="mailto:hey@confetticlub.shop">Contact us</a></li>
+              <li>
+                <a
+                  className="transition hover:text-acid"
+                  href={`mailto:${config.support_email || "hello@confetticlub.shop"}`}
+                >
+                  Contact us
+                </a>
+              </li>
             </ul>
           </div>
 
@@ -67,8 +86,11 @@ export default function StoreFooter() {
         </div>
 
         <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-xs font-semibold text-white/45 sm:flex-row">
-          <p>© {year} Confetti Club. All rights reserved.</p>
-          <p>Made with 🎉 · Free shipping over Rs 50</p>
+          <p>© {year} {config.store_name}. All rights reserved.</p>
+          <p>
+            Made with 🎉 · Free shipping over {sym}{" "}
+            {Math.round((config.free_shipping_threshold_cents ?? 5000) / 100)}
+          </p>
         </div>
       </div>
     </footer>

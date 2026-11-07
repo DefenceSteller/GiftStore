@@ -4,11 +4,13 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useCart } from "./CartProvider";
 import { money } from "@/lib/format";
-import { STORE_CONFIG } from "@/lib/store-config";
+import { useStoreConfig } from "@/components/store/StoreConfigProvider";
+import { discountFor, type Promo } from "@/lib/store-config";
 
 /** Slide-over bag drawer, mounted once in the root layout. */
 export default function CartDrawer() {
   const { items, count, subtotal, setQty, remove } = useCart();
+  const config = useStoreConfig();
   const [open, setOpen] = useState(false);
 
   // Close on Escape + open when `cart:open` is dispatched (header/card buttons).
@@ -33,7 +35,7 @@ export default function CartDrawer() {
     };
   }, [open]);
 
-  const threshold = STORE_CONFIG.free_shipping_threshold_cents;
+  const threshold = config.free_shipping_threshold_cents;
   const remaining = Math.max(0, threshold - subtotal);
   const pct = Math.min(100, Math.round((subtotal / threshold) * 100));
 

@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { useCart } from "@/components/cart/CartProvider";
 import { money } from "@/lib/format";
-import { STORE_CONFIG, discountFor, type Promo } from "@/lib/store-config";
+import { useStoreConfig } from "@/components/store/StoreConfigProvider";
+import { discountFor, type Promo } from "@/lib/store-config";
 import { validatePromo } from "./actions";
 
 const PROMO_KEY = "cc_promo";
@@ -20,6 +21,7 @@ function loadPromo(): Promo | null {
 
 export default function CartPage() {
   const { items, ready, count, subtotal, setQty, remove } = useCart();
+  const config = useStoreConfig();
   const [promo, setPromo] = useState<Promo | null>(null);
   const [promoInput, setPromoInput] = useState("");
   const [promoMessage, setPromoMessage] = useState<{ text: string; ok: boolean } | null>(null);
@@ -39,19 +41,19 @@ export default function CartPage() {
   const afterDiscount = Math.max(0, subtotal - discount);
   const freeShip = promo?.type === "free_shipping";
   const shipping =
-    freeShip || afterDiscount >= STORE_CONFIG.free_shipping_threshold_cents
+    freeShip || afterDiscount >= config.free_shipping_threshold_cents
       ? 0
-      : STORE_CONFIG.standard_shipping_cents;
-  const tax = Math.round((afterDiscount * STORE_CONFIG.tax_rate_bps) / 10000);
+      : config.standard_shipping_cents;
+  const tax = Math.round((afterDiscount * config.tax_rate_bps) / 10000);
   const total = afterDiscount + shipping + tax;
 
   const pct = Math.min(
     100,
-    Math.round((afterDiscount / STORE_CONFIG.free_shipping_threshold_cents) * 100)
+    Math.round((afterDiscount / config.free_shipping_threshold_cents) * 100)
   );
   const remaining = Math.max(
     0,
-    STORE_CONFIG.free_shipping_threshold_cents - afterDiscount
+    config.free_shipping_threshold_cents - afterDiscount
   );
 
   const savePromo = (p: Promo | null) => {
@@ -170,18 +172,25 @@ export default function CartPage() {
               </div>
 
               {/* Promo */}
-              <form onSubmit={handlePromoSubmit} className="flex gap-2">
-                <input
-                  type="text"
-                  value={promoInput}
-                  onChange={(e) => setPromoInput(e.target.value)}
-                  placeholder="Promo code"
-                  className="input flex-1 uppercase"
-                  autoComplete="off"
-                />
-                <button type="submit" className="btn-outline btn-sm shrink-0">Apply</button>
-              </form>
-              {promoMessage && (
+              {promo ? (
+                <div className="flex items-center justify-between gap-2 rounded-xl border border-iris/30 bg-iris/5 px-3 py-2.5">
+                  <span className="text-xs font-extrabold text-iris">{`🏷️ ${promo.code} — ${promo.type === "percent" ? `${promo.value}% off` : promo.type === "fixed" ? money(promo.value) + " off" : "free shipping"}`}</span>
+                  <button onClick={() => savePromo(null)} className="grid h-6 w-6 shrink-0 place-items-center rounded-full border-2 border-iris/30 text-xs font-black text-iris transition hover:border-coral hover:bg-coral/10 hover:text-coral" aria-label="Remove promo">✕</button>
+                </div>
+              ) : (
+                <form onSubmit={handlePromoSubmit} className="flex gap-2">
+                  <input
+                    type="text"
+                    value={promoInput}
+                    onChange={(e) => setPromoInput(e.target.value)}
+                    placeholder="Promo code"
+                    className="input flex-1 uppercase"
+                    autoComplete="off"
+                  />
+                  <button type="submit" className="btn-outline btn-sm shrink-0">Apply</button>
+                </form>
+              )}
+              {promoMessage && !promo && (
                 <p className={`mt-2 text-xs font-extrabold ${promoMessage.ok ? "text-iris" : "text-coral"}`}>
                   {promoMessage.text}
                 </p>
@@ -216,7 +225,7 @@ export default function CartPage() {
                 Checkout →
               </Link>
               <p className="mt-2 text-center text-xs font-semibold text-ink/45">
-                Shipping &amp; tax calculated at checkout.
+                // Cart summary: Shipping & tax calculated at checkout (live from DB settings).
               </p>
             </div>
           </aside>

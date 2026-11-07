@@ -1,7 +1,12 @@
+"use client";
+
 import Link from "next/link";
-import { getSessionUser } from "@/lib/auth";
+import { usePathname } from "next/navigation";
+import { useStoreConfig } from "@/components/store/StoreConfigProvider";
+import { useAuth } from "@/components/auth/AuthProvider";
 import SignOutButton from "@/components/SignOutButton";
 import CartButton from "@/components/cart/CartButton";
+import { moneySymbol } from "@/lib/format";
 
 const NAV_LINKS = [
   { href: "/shop", label: "Shop all" },
@@ -10,13 +15,11 @@ const NAV_LINKS = [
   { href: "/track", label: "Track order" },
 ];
 
-const ANNOUNCEMENT =
-  "FREE SHIPPING OVER Rs 50  ✦  NEW DROPS EVERY FRIDAY  ✦  30-DAY EASY RETURNS";
+/** Marquee announcement bar — reads text from dynamic settings. */
+function AnnouncementBar({ text }: { text: string }) {
+  const items = text.split("✦").map((s) => s.trim()).filter(Boolean);
 
-function AnnouncementBar() {
-  const items = ANNOUNCEMENT.split("✦")
-    .map((s) => s.trim())
-    .filter(Boolean);
+  if (items.length === 0) return null;
 
   return (
     <div className="overflow-hidden bg-ink py-2.5 text-center text-[11px] font-extrabold uppercase tracking-[0.2em] text-white sm:text-[12px]">
@@ -40,21 +43,30 @@ function AnnouncementBar() {
   );
 }
 
-export default async function StoreHeader() {
-  const user = await getSessionUser();
+export default function StoreHeader() {
+  const config = useStoreConfig();
+  const { user } = useAuth();
+  const pathname = usePathname();
+
+  const showAnnouncement = !!config.announcement?.trim();
+  const navActive = pathname || "";
 
   return (
     <>
-      <AnnouncementBar />
+      {showAnnouncement && <AnnouncementBar text={config.announcement!} />}
       <header className="sticky top-0 z-50 px-3 pt-3 sm:px-5 sm:pt-4">
         <div className="mx-auto max-w-[1240px] rounded-[22px] border border-ink/10 bg-white/85 shadow-soft backdrop-blur-xl">
           <div className="flex h-16 items-center justify-between gap-3 px-4 sm:px-5">
-            <Link href="/" className="flex items-center gap-2.5" aria-label="Confetti Club home">
+            <Link href="/" className="flex items-center gap-2.5" aria-label={`${config.store_name} home`}>
               <span className="grid h-9 w-9 place-items-center rounded-xl border-2 border-ink bg-acid text-base shadow-sticker-sm">
                 🎁
               </span>
               <span className="font-display text-lg font-extrabold tracking-tight">
-                Confetti<span className="text-iris">Club</span>
+                {config.store_name.split(/(?=[A-Z])/).map((part, i, arr) => (
+                  <span key={i}>
+                    {i === 0 ? part : <span className="text-iris">{part}</span>}
+                  </span>
+                ))}
               </span>
             </Link>
 

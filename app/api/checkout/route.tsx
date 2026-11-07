@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase/service";
-import { STORE_CONFIG } from "@/lib/store-config";
+import { getServerStoreConfig } from "@/lib/store-config";
 import { z } from "zod";
 
 const contactSchema = z.object({
@@ -198,17 +198,18 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    const storeConfig = await getServerStoreConfig();
     const afterDiscount = subtotal - discount;
 
     // Calculate shipping
-    const shippingCost = freeShipping || afterDiscount >= STORE_CONFIG.free_shipping_threshold_cents
+    const shippingCost = freeShipping || afterDiscount >= storeConfig.free_shipping_threshold_cents
       ? 0
       : delivery.delivery === "express"
-        ? STORE_CONFIG.express_shipping_cents
-        : STORE_CONFIG.standard_shipping_cents;
+        ? storeConfig.express_shipping_cents
+        : storeConfig.standard_shipping_cents;
 
-    // Calculate tax (5% = 500 bps)
-    const tax = Math.round((afterDiscount * STORE_CONFIG.tax_rate_bps) / 10000);
+    // Calculate tax (live from DB settings)
+    const tax = Math.round((afterDiscount * storeConfig.tax_rate_bps) / 10000);
     const total = afterDiscount + shippingCost + tax;
 
     // Ensure profile and customer exist

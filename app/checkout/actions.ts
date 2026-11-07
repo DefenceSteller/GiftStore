@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
-import { STORE_CONFIG } from "@/lib/store-config";
+import { STORE_CONFIG, getServerStoreConfig, discountFor, type Promo } from "@/lib/store-config";
 import { z } from "zod";
 
 const contactSchema = z.object({
@@ -74,11 +74,13 @@ export async function validatePromo(code: string) {
     return { ok: false, message: "Promo code has expired." };
   }
 
+  // Read live store config so fixed/percent promo caps use current thresholds.
+  const cfg = await getServerStoreConfig();
   let discount = 0;
   if (data.type === "percent") {
-    discount = Math.round((STORE_CONFIG.free_shipping_threshold_cents * data.value) / 100);
+    discount = Math.round((cfg.free_shipping_threshold_cents * data.value) / 100);
   } else if (data.type === "fixed") {
-    discount = Math.min(data.value, STORE_CONFIG.free_shipping_threshold_cents);
+    discount = Math.min(data.value, cfg.free_shipping_threshold_cents);
   }
 
   return {
@@ -162,6 +164,10 @@ export async function placeOrder(
   // Use service role for checkout — guest users have no authenticated session,
   // and the orders table has no INSERT policy for the anon role.
   const supabase = createServiceClient();
+
+  // Price the order with LIVE store settings from the DB so admin changes to
+  // tax, shipping, or delivery days apply to the customer's bill immediately.
+  const storeConfig = await getServerStoreConfig();
 
   // Parse and validate contact
   const contactResult = contactSchema.safeParse({
@@ -291,15 +297,15 @@ export async function placeOrder(
 
   const afterDiscount = subtotal - discount;
 
-  // Calculate shipping
-  const shipping = freeShipping || afterDiscount >= STORE_CONFIG.free_shipping_threshold_cents
+  // Calculate shipping (live from DB settings)
+  const shipping = freeShipping || afterDiscount >= storeConfig.free_shipping_threshold_cents
     ? 0
     : deliveryResult.data.delivery === "express"
-      ? STORE_CONFIG.express_shipping_cents
-      : STORE_CONFIG.standard_shipping_cents;
+      ? storeConfig.express_shipping_cents
+      : storeConfig.standard_shipping_cents;
 
-  // Calculate tax (5% = 500 bps)
-  const tax = Math.round((afterDiscount * STORE_CONFIG.tax_rate_bps) / 10000);
+  // Calculate tax (live from DB settings)
+  const tax = Math.round((afterDiscount * storeConfig.tax_rate_bps) / 10000);
   const total = afterDiscount + shipping + tax;
 
   // Ensure profile and customer exist

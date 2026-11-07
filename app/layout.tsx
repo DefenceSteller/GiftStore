@@ -3,6 +3,7 @@ import "./globals.css";
 import { getSessionUser } from "@/lib/auth";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import SignInPopout from "@/components/auth/SignInPopout";
+import { StoreConfigProvider } from "@/components/store/StoreConfigProvider";
 import { CartProvider } from "@/components/cart/CartProvider";
 import CartDrawer from "@/components/cart/CartDrawer";
 import RevealInit from "@/components/RevealInit";
@@ -40,10 +41,12 @@ export default async function RootLayout({
       </head>
       <body>
         <AuthProvider initialUser={user}>
-          <CartProvider>
-            {children}
-            <CartDrawer />
-          </CartProvider>
+          <StoreConfigProvider>
+            <CartProvider>
+              {children}
+              <CartDrawer />
+            </CartProvider>
+          </StoreConfigProvider>
           <SignInPopout />
           <TrafficTracker />
         </AuthProvider>

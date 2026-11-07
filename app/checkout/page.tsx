@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { useCart } from "@/components/cart/CartProvider";
 import { money } from "@/lib/format";
-import { STORE_CONFIG, discountFor } from "@/lib/store-config";
+import { useStoreConfig } from "@/components/store/StoreConfigProvider";
+import { discountFor, type Promo } from "@/lib/store-config";
 import { validatePromo, placeOrder, type ValidatedPromo } from "./actions";
 import { trackEvent } from "@/lib/traffic";
 
@@ -46,6 +47,7 @@ const emptyActionState = {
 /* ── main page ───────────────────────────────────────────── */
 export default function CheckoutPage() {
   const { items, ready, count, subtotal, remove, setQty } = useCart();
+  const config = useStoreConfig();
 
   // step / UI state
   const [step, setStep] = useState(1);
@@ -94,10 +96,10 @@ export default function CheckoutPage() {
   const afterDiscount = Math.max(0, subtotal - discount);
   const freeShip = promo?.type === "free_shipping";
   const shippingCost =
-    freeShip || afterDiscount >= STORE_CONFIG.free_shipping_threshold_cents
+    freeShip || afterDiscount >= config.free_shipping_threshold_cents
       ? 0
-      : STORE_CONFIG.standard_shipping_cents;
-  const tax = Math.round((afterDiscount * STORE_CONFIG.tax_rate_bps) / 10000);
+      : config.standard_shipping_cents;
+  const tax = Math.round((afterDiscount * config.tax_rate_bps) / 10000);
   const total = afterDiscount + shippingCost + tax;
 
   /* ── promo submit ──────────────────────────────────────── */
@@ -241,10 +243,10 @@ export default function CheckoutPage() {
   const getReviewDelivery = () => {
     const method = (document.querySelector('input[name="delivery"]:checked') as HTMLInputElement)?.value;
     if (method === "express") {
-      const days = STORE_CONFIG.delivery_days_express ?? "2–3";
+      const days = config.delivery_days_express ?? "2–3";
       return `⚡ Express — arrives in ${days} days`;
     }
-    const days = STORE_CONFIG.delivery_days_standard ?? "5–7";
+    const days = config.delivery_days_standard ?? "5–7";
     return `🚚 Standard — arrives in ${days} days`;
   };
 
@@ -569,13 +571,13 @@ export default function CheckoutPage() {
                   <span className="block text-sm font-extrabold">Standard 🚚</span>
                   <span className="block text-xs font-bold text-ink/55">
                     Arrives in{" "}
-                    <span data-days-standard={STORE_CONFIG.delivery_days_standard ?? "5–7"}>
-                      {STORE_CONFIG.delivery_days_standard ?? "5–7"}
+                    <span data-days-standard={config.delivery_days_standard ?? "5–7"}>
+                      {config.delivery_days_standard ?? "5–7"}
                     </span>{" "}
                     days
                   </span>
                   <span className="mt-1 block text-sm font-extrabold" id="ship-standard-label">
-                    Free over Rs {Math.round(STORE_CONFIG.free_shipping_threshold_cents / 100)}
+                    Free over Rs {Math.round(config.free_shipping_threshold_cents / 100)}
                   </span>
                 </span>
               </label>
@@ -590,13 +592,13 @@ export default function CheckoutPage() {
                   <span className="block text-sm font-extrabold">Express ⚡</span>
                   <span className="block text-xs font-bold text-ink/55">
                     Arrives in{" "}
-                    <span data-days-express={STORE_CONFIG.delivery_days_express ?? "2–3"}>
-                      {STORE_CONFIG.delivery_days_express ?? "2–3"}
+                    <span data-days-express={config.delivery_days_express ?? "2–3"}>
+                      {config.delivery_days_express ?? "2–3"}
                     </span>{" "}
                     days
                   </span>
                   <span className="mt-1 block text-sm font-extrabold" id="ship-express-label">
-                    {money(STORE_CONFIG.express_shipping_cents)}
+                    {money(config.express_shipping_cents)}
                   </span>
                 </span>
               </label>
@@ -910,7 +912,7 @@ export default function CheckoutPage() {
               <div className="flex justify-between">
                 <dt className="text-ink/55">
                   Tax{" "}
-                  <span className="text-ink/35">({(STORE_CONFIG.tax_rate_bps / 100).toFixed(2)}%)</span>
+                  <span className="text-ink/35">({(config.tax_rate_bps / 100).toFixed(2)}%)</span>
                 </dt>
                 <dd className="tabular">{money(tax)}</dd>
               </div>
@@ -921,27 +923,28 @@ export default function CheckoutPage() {
               <span className="font-display text-2xl font-extrabold tabular">{money(total)}</span>
             </div>
 
-            {promo && (
-              <p id="ck-promo-note" className="mt-3 rounded-xl bg-acid/40 px-3 py-2 text-xs font-extrabold">
-                🏷️ {promo.code} — {promo.description || "applied"}
-              </p>
+            {/* Promo applied / input */}
+            {promo ? (
+              <div className="mt-3 flex items-center justify-between gap-2 rounded-xl border border-iris/30 bg-iris/5 px-3 py-2.5">
+                <p className="text-xs font-extrabold text-iris">{`🏷️ ${promo.code} — ${promo.type === "percent" ? `${promo.value}% off` : promo.type === "fixed" ? money(promo.value) + " off" : "free shipping"}`}</p>
+                <button onClick={() => { setPromo(null); sessionStorage.removeItem("cc_promo"); }} className="grid h-6 w-6 shrink-0 place-items-center rounded-full border-2 border-iris/30 text-xs font-black text-iris transition hover:border-coral hover:bg-coral/10 hover:text-coral" aria-label="Remove promo">✕</button>
+              </div>
+            ) : (
+              <form onSubmit={handlePromoSubmit} className="mt-4 flex gap-2">
+                <input
+                  type="text"
+                  value={promoInput}
+                  onChange={(e) => setPromoInput(e.target.value)}
+                  placeholder="Promo code"
+                  className="input flex-1 uppercase text-xs"
+                  autoComplete="off"
+                />
+                <button type="submit" className="btn-outline btn-sm shrink-0">
+                  Apply
+                </button>
+              </form>
             )}
-
-            {/* Promo input */}
-            <form onSubmit={handlePromoSubmit} className="mt-4 flex gap-2">
-              <input
-                type="text"
-                value={promoInput}
-                onChange={(e) => setPromoInput(e.target.value)}
-                placeholder="Promo code"
-                className="input flex-1 uppercase text-xs"
-                autoComplete="off"
-              />
-              <button type="submit" className="btn-outline btn-sm shrink-0">
-                Apply
-              </button>
-            </form>
-            {promoMsg && (
+            {promoMsg && !promo && (
               <p
                 className={`mt-2 text-xs font-extrabold ${promoMsg.ok ? "text-iris" : "text-coral"}`}
               >

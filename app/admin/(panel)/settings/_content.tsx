@@ -32,10 +32,16 @@ export default function SettingsContent() {
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
+    // Map local state keys to their corresponding DB setting keys
+    const payload: Record<string, string | number> = { ...settings };
+    if (payload.announcement !== undefined) {
+      payload["announcement_banner"] = payload.announcement;
+      delete payload.announcement;
+    }
     await fetch("/api/admin/settings", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(settings)
+      body: JSON.stringify(payload)
     });
     setSaveMsg("Settings saved!");
     setTimeout(() => setSaveMsg(""), 2000);

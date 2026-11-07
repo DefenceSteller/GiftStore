@@ -4,6 +4,7 @@ import StoreFooter from "@/components/store/StoreFooter";
 import ProductCard from "@/components/store/ProductCard";
 import { getProducts, getCategories } from "@/lib/products";
 import { money } from "@/lib/format";
+import { getServerStoreConfig } from "@/lib/store-config";
 
 export const dynamic = "force-dynamic";
 
@@ -70,10 +71,12 @@ function HeroFloatingCard({
 }
 
 export default async function HomePage() {
-  const [featured, categoriesData] = await Promise.all([
+  const [featured, categoriesData, storeConfig] = await Promise.all([
     getProducts({ sort: "featured", inStock: true }),
     getCategories(),
+    getServerStoreConfig(),
   ]);
+  const sym = storeConfig.currency === "USD" ? "$" : "Rs";
 
   // Featured products for hero (up to 6)
   const heroProducts = featured.slice(0, 3);
@@ -142,7 +145,7 @@ export default async function HomePage() {
                   </dd>
                 </div>
                 <div className="rounded-2xl border border-ink/8 bg-white p-3.5 shadow-soft">
-                  <dt className="font-display text-2xl font-extrabold">Rs 50</dt>
+                  <dt className="font-display text-2xl font-extrabold">{sym} 50</dt>
                   <dd className="mt-0.5 text-[11px] font-extrabold uppercase tracking-wide text-ink/45">
                     free shipping
                   </dd>
@@ -183,7 +186,7 @@ export default async function HomePage() {
                 New drop
               </span>
               <span className="absolute left-0 bottom-8 z-10 sticker -rotate-6 border-ink bg-acid shadow-sticker-sm">
-                under Rs 50
+                under {sym} 50
               </span>
             </div>
           </div>
@@ -259,7 +262,7 @@ export default async function HomePage() {
                     Live tracking
                   </span>
                   <span className="rounded-full bg-white/10 px-3 py-1.5">
-                    Free over Rs 50
+                    Free over {sym} 50
                   </span>
                 </div>
               </div>
@@ -307,11 +310,11 @@ export default async function HomePage() {
             <div>
               <span className="sticker bg-aqua">💸 Tiny budget, big energy</span>
               <h2 className="mt-3 font-display text-3xl font-extrabold sm:text-4xl">
-                Under Rs 25
+                Under {sym} 25
               </h2>
             </div>
             <Link href="/shop?max=2500" className="btn-outline btn-sm">
-              Shop under Rs 25
+              Shop under {sym} 25
             </Link>
           </div>
           <div className="no-scrollbar mt-8 flex snap-x gap-4 overflow-x-auto pb-4 sm:grid sm:grid-cols-2 sm:overflow-visible lg:grid-cols-4">
