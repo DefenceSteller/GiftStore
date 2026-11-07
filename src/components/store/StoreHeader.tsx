@@ -44,12 +44,13 @@ export default function StoreHeader() {
 
   // Mobile menu state: controls whether the hamburger dropdown is open
   // This replaces the old 5-row stacked navbar with a clean hamburger menu
+  // v3: Force Vercel rebuild with this comment change
   const showAnnouncement = !!config.announcement?.trim();
 
   return (
     <>
       {showAnnouncement && <AnnouncementBar text={config.announcement!} />}
-      <header className="sticky top-0 z-50 px-2 pt-2 sm:px-4 sm:pt-3">
+      <header className="sticky top-0 z-50 px-2 pt-2 sm:px-4 sm:pt-3" data-build="v3-mobile-fix">
         <div className="mx-auto max-w-[1240px] rounded-[22px] border border-ink/10 bg-white/85 shadow-soft backdrop-blur-xl">
           {/* Main bar — always single line */}
           <div className="flex h-14 items-center justify-between gap-2 px-3 sm:h-16 sm:gap-3 sm:px-4">
