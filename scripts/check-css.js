@@ -1,49 +1,11 @@
 const fs = require("fs");
-const path = require("path");
-
-const css = fs.readFileSync(path.join(__dirname, "..", "public", "assets", "css", "styles.css"), "utf8");
-
-function escapeClass(tok) {
-  return tok.replace(/[.[\]/#:%!]/g, (c) => "\\" + c);
+const css = fs.readFileSync("C:\\Users\\Admin\\Desktop\\giftshop\\public\\assets\\css\\styles.css", "utf8");
+const classes = new Set();
+const re = /\.([a-zA-Z][\w-]*)\s*{/g;
+let m;
+while ((m = re.exec(css)) !== null) classes.add(m[1]);
+const needed = ["max-h-96","bg-ink/60","text-ink/40","text-ink/45","text-ink/50","text-ink/55","text-ink/60","text-ink/70","text-ink/80","border-ink/8","border-ink/10","bg-mist/40","rounded-t-2xl","rounded-b-2xl","rounded-l-2xl","rounded-r-2xl","rounded-[28px]","rounded-[26px]","rounded-b","rounded-s","rounded-e","rounded-3xl","rounded-2xl","rounded-xl","rounded-lg","rounded-md","rounded-full","rounded-t","rounded"];
+for (const c of needed) {
+  console.log(c, classes.has(c) ? "FOUND" : "MISSING");
 }
-
-function present(tok) {
-  const sel = "." + escapeClass(tok);
-  let i = css.indexOf(sel);
-  while (i !== -1) {
-    const next = css[i + sel.length];
-    // must be a selector boundary, not a prefix of a longer class name
-    if (next === undefined || !/[a-zA-Z0-9_-]/.test(next)) return true;
-    i = css.indexOf(sel, i + 1);
-  }
-  return false;
-}
-
-function walk(dir, out = []) {
-  for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
-    const p = path.join(dir, e.name);
-    if (e.isDirectory()) walk(p, out);
-    else if (e.name.endsWith(".tsx")) out.push(p);
-  }
-  return out;
-}
-
-const root = path.join(__dirname, "..");
-const files = [...walk(path.join(root, "app")), ...walk(path.join(root, "src"))];
-const missing = new Map();
-
-for (const f of files) {
-  const src = fs.readFileSync(f, "utf8");
-  const strs = [...src.matchAll(/className=\{?"([^"]*)"/g)].map((x) => x[1]);
-  for (const s of strs) {
-    for (const tok of s.split(/\s+/)) {
-      if (!tok || tok.includes("${") || tok.includes("`")) continue;
-      if (!/^[a-z][a-zA-Z0-9:\[\]/_.%|-]*$/.test(tok)) continue;
-      if (!present(tok)) missing.set(tok, path.relative(root, f));
-    }
-  }
-}
-
-console.log("Files scanned:", files.length);
-console.log("Class tokens NOT in compiled CSS:", missing.size);
-for (const [k, v] of [...missing.entries()].sort()) console.log(k.padEnd(42), v);
+console.log("Total classes:", classes.size);

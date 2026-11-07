@@ -42,8 +42,8 @@ export async function PATCH(req: Request, props: { params: Promise<{ id: string 
 
   const updates: Record<string, unknown> = { status: body.status, updated_at: new Date().toISOString() };
   if (body.status === "shipped") {
-    updates.carrier = body.carrier;
-    updates.tracking_number = body.tracking;
+    if (body.carrier != null) updates.carrier = body.carrier;
+    if (body.tracking != null) updates.tracking_number = body.tracking;
     updates.shipped_at = new Date().toISOString();
   }
   if (body.note) updates.note = body.note;
