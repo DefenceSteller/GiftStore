@@ -6,6 +6,7 @@ import { useCart } from "@/components/cart/CartProvider";
 import { money } from "@/lib/format";
 import { STORE_CONFIG, discountFor } from "@/lib/store-config";
 import { validatePromo, placeOrder, type ValidatedPromo } from "./actions";
+import { trackEvent } from "@/lib/traffic";
 
 type FormErrors = Record<string, string>;
 

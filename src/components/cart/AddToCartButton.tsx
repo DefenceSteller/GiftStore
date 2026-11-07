@@ -5,6 +5,7 @@ import { useCart, type AddableProduct } from "./CartProvider";
 import { openCart } from "./CartDrawer";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { openSignInPopout } from "@/components/auth/SignInPopout";
+import { trackEvent } from "@/lib/traffic";
 
 /** Add-to-bag button wired to the cart context; opens the drawer on add. */
 export default function AddToCartButton({
@@ -43,6 +44,7 @@ export default function AddToCartButton({
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1200);
     if (openAfter) openCart();
+    trackEvent("add_to_cart", `/product/${product.slug}`);
   };
 
   return (

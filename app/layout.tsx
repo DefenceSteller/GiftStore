@@ -6,6 +6,7 @@ import SignInPopout from "@/components/auth/SignInPopout";
 import { CartProvider } from "@/components/cart/CartProvider";
 import CartDrawer from "@/components/cart/CartDrawer";
 import RevealInit from "@/components/RevealInit";
+import TrafficTracker from "@/components/traffic/TrafficTracker";
 
 export const metadata: Metadata = {
   title: "Confetti Club — Modern Gift Shop",
@@ -44,6 +45,7 @@ export default async function RootLayout({
             <CartDrawer />
           </CartProvider>
           <SignInPopout />
+          <TrafficTracker />
         </AuthProvider>
         <RevealInit />
       </body>

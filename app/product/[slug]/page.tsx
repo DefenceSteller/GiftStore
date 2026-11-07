@@ -4,6 +4,7 @@ import StoreHeader from "@/components/store/StoreHeader";
 import StoreFooter from "@/components/store/StoreFooter";
 import ProductCard from "@/components/store/ProductCard";
 import ProductPurchase from "@/components/cart/ProductPurchase";
+import ProductTracker from "@/components/traffic/ProductTracker";
 import { getProductBySlug } from "@/lib/products";
 import { money } from "@/lib/format";
 
@@ -33,6 +34,7 @@ export default async function ProductPage({ params }: { params: Params }) {
   return (
     <>
       <StoreHeader />
+      <ProductTracker slug={slug} />
       <main className="container-cc pb-20 pt-8 sm:pt-10">
         <nav className="text-xs font-bold text-ink/45" aria-label="Breadcrumb">
           <Link href="/" className="transition hover:text-ink">Home</Link>{" "}

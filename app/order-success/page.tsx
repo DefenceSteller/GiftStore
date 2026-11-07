@@ -2,6 +2,7 @@ import Link from "next/link";
 import StoreHeader from "@/components/store/StoreHeader";
 import StoreFooter from "@/components/store/StoreFooter";
 import ClearCartAfterOrder from "@/components/cart/ClearCartAfterOrder";
+import PurchaseTracker from "@/components/traffic/PurchaseTracker";
 import { Suspense } from "react";
 
 export const dynamic = "force-dynamic";
@@ -11,13 +12,16 @@ export const metadata = {
   description: "Your gift is on its way. Confetti deployed.",
 };
 
-function SuccessContent({
+async function SuccessContent({
   searchParams,
 }: {
   searchParams: Promise<{ orderNumber?: string }>;
 }) {
+  const sp = await searchParams;
   return (
-    <main className="container-cc pb-24 pt-8 text-center">
+    <>
+      <PurchaseTracker orderNumber={sp.orderNumber} />
+      <main className="container-cc pb-24 pt-8 text-center">
       <div className="mx-auto max-w-xl">
         {/* Confetti burst */}
         <div className="relative mx-auto mb-8 flex h-28 w-28 items-center justify-center">
@@ -43,7 +47,7 @@ function SuccessContent({
             id="order-number"
             className="font-display text-2xl font-extrabold tabular text-iris"
           >
-            —
+            {sp.orderNumber || "—"}
           </span>
         </div>
 
@@ -88,6 +92,7 @@ function SuccessContent({
         </div>
       </div>
     </main>
+    </>
   );
 }
 
