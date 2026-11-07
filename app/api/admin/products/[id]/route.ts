@@ -10,7 +10,9 @@ export async function PATCH(req: Request, props: { params: Promise<{ id: string 
     price_cents: body.priceCents, compare_at_cents: body.compareAtCents,
     emoji: body.emoji, gradient: body.gradient, rating: body.rating,
     review_count: body.reviewCount, stock: body.stock, is_active: body.is_active,
-    is_featured: body.is_featured, sort_order: body.sortOrder, updated_at: new Date().toISOString()
+    is_featured: body.is_featured, sort_order: body.sortOrder,
+    image_url: body.imageUrl ?? null,
+    updated_at: new Date().toISOString()
   } as any).eq("id", params.id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ ok: true });

@@ -22,10 +22,17 @@ export default function ProductsContent() {
   const [showModal, setShowModal] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [categories, setCategories] = useState<string[]>([]);
 
   useEffect(() => {
     loadProducts();
   }, [page, status, search]);
+
+  useEffect(() => {
+    fetch("/api/admin/categories").then(r => r.json()).then(d => {
+      if (Array.isArray(d.categories)) setCategories(d.categories);
+    }).catch(() => {});
+  }, []);
 
   async function loadProducts() {
     const params = new URLSearchParams({
@@ -46,6 +53,13 @@ export default function ProductsContent() {
     setSaveError(null);
     setSaving(true);
     try {
+      // Convert special __new__ category into a plain string
+      const payload = { ...product };
+      if (payload.category === "__new__" && payload._newCategory) {
+        payload.category = payload._newCategory.trim();
+      }
+      delete (payload as any)._newCategory;
+
       const isEdit = !!product.id;
       const url = isEdit
         ? `/api/admin/products/${product.id}`
@@ -54,7 +68,7 @@ export default function ProductsContent() {
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(product)
+        body: JSON.stringify(payload)
       });
       const data = await res.json();
       if (!res.ok) {
@@ -157,10 +171,15 @@ export default function ProductsContent() {
                   <tr key={p.id} className="hover:bg-mist/60 transition">
                     <td className="px-4 py-3">
                       <span className="flex items-center gap-3">
-                        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl text-lg"
-                          style={{ background: `linear-gradient(135deg, ${p.gradient?.split(",")[0] || "#7C5CFF"}, ${p.gradient?.split(",")[1] || "#D3FF52"})` }}>
-                          {p.emoji || "🎁"}
-                        </span>
+                        {p.imageUrl ? (
+                          /* eslint-disable-next-line @next/next/no-img-element */
+                          <img src={p.imageUrl} alt={p.name} className="h-11 w-11 shrink-0 rounded-xl object-cover" width={44} height={44} />
+                        ) : (
+                          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl text-lg"
+                            style={{ background: `linear-gradient(135deg, ${p.gradient?.split(",")[0] || "#7C5CFF"}, ${p.gradient?.split(",")[1] || "#D3FF52"})` }}>
+                            {p.emoji || "🎁"}
+                          </span>
+                        )}
                         <span className="min-w-0">
                           <span className="block truncate text-sm font-extrabold text-ink">{p.name}</span>
                           <span className="block truncate text-[11px] font-bold text-ink/45">{p.tagline || p.slug}</span>
@@ -206,6 +225,7 @@ export default function ProductsContent() {
       {showModal && (
         <ProductModal
           product={editingProduct}
+          categories={categories}
           onClose={() => setShowModal(false)}
           onSave={handleSave}
           saving={saving}
@@ -215,11 +235,11 @@ export default function ProductsContent() {
   );
 }
 
-function ProductModal({ product, onClose, onSave, saving }: { product: any, onClose: () => void, onSave: (p: any) => Promise<void>, saving: boolean }) {
+function ProductModal({ product, onClose, onSave, saving, categories }: { product: any, onClose: () => void, onSave: (p: any) => Promise<void>, saving: boolean, categories: string[] }) {
   const [form, setForm] = useState({
     name: product?.name || "",
     tagline: product?.tagline || "",
-    category: product?.category || "",
+    category: product?.category || (categories[0] || ""),
     priceCents: product?.priceCents || 0,
     compareAtCents: product?.compareAtCents || null,
     stock: product?.stock || 0,
@@ -227,6 +247,8 @@ function ProductModal({ product, onClose, onSave, saving }: { product: any, onCl
     emoji: product?.emoji || "🎁",
     gradient: product?.gradient || "#7C5CFF,#D3FF52",
     description: product?.description || "",
+    imageUrl: product?.imageUrl || "",
+    _newCategory: "",
     is_active: product?.active ?? true,
     is_featured: product?.featured ?? false
   });
@@ -258,11 +280,45 @@ function ProductModal({ product, onClose, onSave, saving }: { product: any, onCl
           </label>
           <label className="block">
             <span className="label">Category *</span>
-            <input name="category" className="input" value={form.category} onChange={e => update("category", e.target.value)} required />
+            <select
+              name="category"
+              className="input cursor-pointer"
+              value={form.category}
+              onChange={e => update("category", e.target.value)}
+              required
+            >
+              {categories.length === 0 && <option value="">— type to create new —</option>}
+              {categories.map(c => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+              <option value="__new__">+ Add new category…</option>
+            </select>
           </label>
+          {form.category === "__new__" && (
+            <label className="block sm:col-span-2">
+              <span className="label">New Category Name *</span>
+              <input
+                className="input"
+                value={form._newCategory || ""}
+                onChange={e => update("_newCategory", e.target.value)}
+                placeholder="e.g. New Collection"
+                autoFocus
+              />
+            </label>
+          )}
           <label className="block sm:col-span-2">
             <span className="label">Tagline</span>
             <input name="tagline" className="input" value={form.tagline} onChange={e => update("tagline", e.target.value)} placeholder="One line of charm…" />
+          </label>
+          <label className="block sm:col-span-2">
+            <span className="label">Product Image URL</span>
+            <input
+              name="imageUrl"
+              className="input font-mono text-xs"
+              value={form.imageUrl}
+              onChange={e => update("imageUrl", e.target.value)}
+              placeholder="https://i.imgur.com/abc123.jpg  (optional — leaves SVG as fallback)"
+            />
           </label>
           <label className="block">
             <span className="label">Price (cents) *</span>

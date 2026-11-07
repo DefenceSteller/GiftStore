@@ -36,7 +36,8 @@ export async function GET(req: Request) {
       priceCents: p.price_cents, compareAtCents: p.compare_at_cents, stock: p.stock,
       emoji: p.emoji, gradient: p.gradient, rating: p.rating, reviewCount: p.review_count,
       active: p.is_active, featured: p.is_featured ?? (p.sort_order <= 6), sortOrder: p.sort_order,
-      image: `/assets/img/products/${p.slug}.svg`, description: p.description
+      image: `/assets/img/products/${p.slug}.svg`, description: p.description,
+      imageUrl: p.image_url || ""
     })) ?? [],
     total: count ?? 0, page, limit,
     pages: Math.max(1, Math.ceil((count ?? 0) / limit)),
@@ -82,7 +83,8 @@ export async function POST(req: Request) {
     stock: body.stock ?? 0,
     is_active: body.is_active ?? true,
     is_featured: body.is_featured ?? false,
-    sort_order: body.sortOrder ?? 0
+    sort_order: body.sortOrder ?? 0,
+    image_url: body.imageUrl || null,
   } as any).select().single();
   
   if (error) {
