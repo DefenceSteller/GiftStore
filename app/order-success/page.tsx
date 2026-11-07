@@ -1,6 +1,7 @@
 import Link from "next/link";
 import StoreHeader from "@/components/store/StoreHeader";
 import StoreFooter from "@/components/store/StoreFooter";
+import ClearCartAfterOrder from "@/components/cart/ClearCartAfterOrder";
 import { Suspense } from "react";
 
 export const dynamic = "force-dynamic";
@@ -99,6 +100,7 @@ export default function OrderSuccessPage({
     <>
       <StoreHeader />
       <Suspense fallback={<div className="container-cc pb-24 pt-8 text-center"><div className="skeleton mx-auto h-64 w-full max-w-xl rounded-[28px]" /></div>}>
+        <ClearCartAfterOrder />
         <SuccessContent searchParams={searchParams} />
       </Suspense>
       <StoreFooter />

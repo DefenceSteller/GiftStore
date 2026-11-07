@@ -56,32 +56,7 @@ export default function GoogleSigninButton({
       type="button"
       onClick={handleGoogle}
       disabled={!origin}
-      style={{
-        width: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: "0.625rem",
-        padding: "0.68rem 0.9rem",
-        borderRadius: "0.5rem",
-        border: "1px solid #dee2e6",
-        background: "#fff",
-        color: "#1a1a2e",
-        fontSize: "0.95rem",
-        fontWeight: 600,
-        cursor: origin ? "pointer" : "wait",
-        opacity: origin ? 1 : 0.6,
-        transition: "border-color 0.15s, box-shadow 0.15s",
-      }}
-      onMouseEnter={(e) => {
-        (e.currentTarget as HTMLElement).style.borderColor = "#7C5CFF";
-        (e.currentTarget as HTMLElement).style.boxShadow =
-          "0 0 0 3px rgba(124,92,255,0.12)";
-      }}
-      onMouseLeave={(e) => {
-        (e.currentTarget as HTMLElement).style.borderColor = "#dee2e6";
-        (e.currentTarget as HTMLElement).style.boxShadow = "none";
-      }}
+      className="btn-outline w-full disabled:cursor-not-allowed"
     >
       {GOOGLE_LOGO}
       {label}

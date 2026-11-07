@@ -106,8 +106,12 @@ function connect(wsUrl) {
 
 async function setup() {
   // Idempotent: remove leftovers from a prior run.
-  const existing = await supa(`/auth/v1/admin/users?email=eq.${EMAIL}`);
-  const uid0 = existing.body?.users?.[0]?.id;
+  // GoTrue ignores `?email=eq.` on this endpoint and returns EVERY user, so
+  // list them all and match the email client-side — never touch another user.
+  const existing = await supa(`/auth/v1/admin/users`);
+  const uid0 = (existing.body?.users || []).find(
+    (u) => (u.email || "").toLowerCase() === EMAIL.toLowerCase()
+  )?.id;
   if (uid0) {
     await supa(`/rest/v1/orders?customer_id=eq.${uid0}`, { method: "DELETE" });
     await supa(`/rest/v1/customers?profiles_id=eq.${uid0}`, { method: "DELETE" });

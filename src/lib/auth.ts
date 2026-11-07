@@ -6,7 +6,6 @@ export async function getSessionUser() {
   const { data } = await supabase.auth.getSession();
 
   if (!data.session?.user) {
-    console.log("[getSessionUser] no session user");
     return null;
   }
 

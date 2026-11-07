@@ -12,18 +12,8 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      style={{
-        width: "100%",
-        padding: "0.75rem",
-        borderRadius: "0.5rem",
-        border: "none",
-        background: "#7C5CFF",
-        color: "#fff",
-        fontSize: "1rem",
-        fontWeight: 600,
-        cursor: pending ? "wait" : "pointer",
-        opacity: pending ? 0.7 : 1,
-      }}
+      aria-busy={pending}
+      className="btn-primary mt-6 w-full"
     >
       {pending ? "Creating account…" : "Create account"}
     </button>
@@ -33,116 +23,118 @@ function SubmitButton() {
 const initialState: AuthState = {};
 
 export default function SignUpPage() {
-  const [state, formAction, pending] = useActionState(signup, initialState);
+  const [state, formAction] = useActionState(signup, initialState);
 
   return (
-    <form action={formAction} style={{ display: "grid", gap: "1rem" }}>
-      <h1 style={{ margin: 0, fontSize: "1.25rem", color: "#1a1a2e" }}>
-        Join Confetti Club
+    <form
+      action={formAction}
+      className="animate-pop rounded-[28px] border-2 border-ink bg-white p-7 shadow-sticker"
+    >
+      <span className="sticker -rotate-3 bg-coral text-white">
+        ✦ Join the club
+      </span>
+
+      <div className="mt-5 grid h-16 w-16 place-items-center rounded-2xl border-2 border-ink bg-acid text-3xl shadow-sticker-sm">
+        🎉
+      </div>
+
+      <h1 className="mt-5 font-display text-3xl font-extrabold leading-tight sm:text-4xl">
+        Join the <span className="text-gradient">Confetti Club</span>
       </h1>
+      <p className="mt-2 text-sm font-medium leading-relaxed text-ink/60">
+        Orders, tracking, and a private bag that&apos;s yours from day one. Free
+        to join, always.
+      </p>
 
       {state.error && (
-        <p
-          style={{
-            margin: 0,
-            padding: "0.5rem 0.75rem",
-            borderRadius: "0.5rem",
-            background: "#ffe3e3",
-            color: "#c92a2a",
-            fontSize: "0.875rem",
-          }}
+        <div
+          role="alert"
+          className="mt-5 rounded-2xl border-2 border-coral bg-coral/10 px-4 py-3 text-sm font-bold text-coral"
         >
           {state.error}
-        </p>
+        </div>
       )}
       {state.message && (
-        <p
-          style={{
-            margin: 0,
-            padding: "0.5rem 0.75rem",
-            borderRadius: "0.5rem",
-            background: "#d3f9d8",
-            color: "#2b8a3e",
-            fontSize: "0.875rem",
-          }}
+        <div
+          role="status"
+          className="mt-5 rounded-2xl border-2 border-ink bg-acid px-4 py-3 text-sm font-bold text-ink"
         >
           {state.message}
-        </p>
+        </div>
       )}
 
-      <label style={{ display: "grid", gap: "0.25rem", fontSize: "0.875rem", color: "#495057" }}>
-        Name
-        <input
-          type="text"
-          name="name"
-          required
-          autoComplete="name"
-          style={{
-            padding: "0.625rem",
-            borderRadius: "0.5rem",
-            border: "1px solid #dee2e6",
-            fontSize: "1rem",
-          }}
-        />
-      </label>
+      <div className="mt-6 grid gap-4">
+        <div>
+          <label htmlFor="name" className="label">
+            Full name
+          </label>
+          <input
+            id="name"
+            type="text"
+            name="name"
+            required
+            autoComplete="name"
+            placeholder="Jamie Sparkles"
+            className="input placeholder:font-medium placeholder:text-ink/35"
+          />
+        </div>
 
-      <label style={{ display: "grid", gap: "0.25rem", fontSize: "0.875rem", color: "#495057" }}>
-        Email
-        <input
-          type="email"
-          name="email"
-          required
-          autoComplete="email"
-          style={{
-            padding: "0.625rem",
-            borderRadius: "0.5rem",
-            border: "1px solid #dee2e6",
-            fontSize: "1rem",
-          }}
-        />
-      </label>
+        <div>
+          <label htmlFor="email" className="label">
+            Email
+          </label>
+          <input
+            id="email"
+            type="email"
+            name="email"
+            required
+            autoComplete="email"
+            placeholder="you@example.com"
+            className="input placeholder:font-medium placeholder:text-ink/35"
+          />
+        </div>
 
-      <label style={{ display: "grid", gap: "0.25rem", fontSize: "0.875rem", color: "#495057" }}>
-        Password
-        <input
-          type="password"
-          name="password"
-          required
-          minLength={8}
-          autoComplete="new-password"
-          style={{
-            padding: "0.625rem",
-            borderRadius: "0.5rem",
-            border: "1px solid #dee2e6",
-            fontSize: "1rem",
-          }}
-        />
-      </label>
+        <div>
+          <label htmlFor="password" className="label">
+            Password
+          </label>
+          <input
+            id="password"
+            type="password"
+            name="password"
+            required
+            minLength={8}
+            autoComplete="new-password"
+            placeholder="Create a password"
+            className="input placeholder:font-medium placeholder:text-ink/35"
+          />
+          <p className="mt-1.5 text-[13px] font-bold text-ink/45">
+            Must be at least 8 characters.
+          </p>
+        </div>
+      </div>
 
       <SubmitButton />
 
       {/* Divider */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "0.75rem",
-          margin: "0.25rem 0",
-          color: "#adb5bd",
-          fontSize: "0.8rem",
-          fontWeight: 600,
-        }}
-      >
-        <span style={{ flex: 1, height: "1px", background: "#e9ecef" }} />
-        OR
-        <span style={{ flex: 1, height: "1px", background: "#e9ecef" }} />
+      <div className="mt-5 flex items-center gap-3">
+        <span className="h-px flex-1 bg-ink/10" />
+        <span className="text-[11px] font-black uppercase tracking-[0.2em] text-ink/35">
+          or
+        </span>
+        <span className="h-px flex-1 bg-ink/10" />
       </div>
 
-      <GoogleSigninButton next="/" label="Continue with Google" />
+      <div className="mt-5">
+        <GoogleSigninButton next="/" label="Continue with Google" />
+      </div>
 
-      <p style={{ margin: 0, fontSize: "0.875rem", textAlign: "center", color: "#495057" }}>
+      <p className="mt-6 text-center text-sm font-bold text-ink/50">
         Already have an account?{" "}
-        <Link href="/auth/signin" style={{ color: "#7C5CFF" }}>
+        <Link
+          href="/auth/signin"
+          className="text-iris underline transition hover:text-ink"
+        >
           Sign in
         </Link>
       </p>

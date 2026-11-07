@@ -11,18 +11,8 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      style={{
-        width: "100%",
-        padding: "0.75rem",
-        borderRadius: "0.5rem",
-        border: "none",
-        background: "#7C5CFF",
-        color: "#fff",
-        fontSize: "1rem",
-        fontWeight: 600,
-        cursor: pending ? "wait" : "pointer",
-        opacity: pending ? 0.7 : 1,
-      }}
+      aria-busy={pending}
+      className="btn-primary mt-6 w-full"
     >
       {pending ? "Sending…" : "Send reset link"}
     </button>
@@ -32,65 +22,68 @@ function SubmitButton() {
 const initialState: AuthState = {};
 
 export default function ResetPasswordPage() {
-  const [state, formAction, pending] = useActionState(resetPassword, initialState);
+  const [state, formAction] = useActionState(resetPassword, initialState);
 
   return (
-    <form action={formAction} style={{ display: "grid", gap: "1rem" }}>
-      <h1 style={{ margin: 0, fontSize: "1.25rem", color: "#1a1a2e" }}>
-        Reset your password
+    <form
+      action={formAction}
+      className="animate-pop rounded-[28px] border-2 border-ink bg-white p-7 shadow-sticker"
+    >
+      <span className="sticker -rotate-3 bg-iris text-white">
+        ✦ Password rescue
+      </span>
+
+      <div className="mt-5 grid h-16 w-16 place-items-center rounded-2xl border-2 border-ink bg-butter text-3xl shadow-sticker-sm">
+        💌
+      </div>
+
+      <h1 className="mt-5 font-display text-3xl font-extrabold leading-tight sm:text-4xl">
+        Reset your <span className="text-gradient">password</span>
       </h1>
+      <p className="mt-2 text-sm font-medium leading-relaxed text-ink/60">
+        Pop in your email and we&apos;ll send you a link to set a new one.
+      </p>
 
       {state.error && (
-        <p
-          style={{
-            margin: 0,
-            padding: "0.5rem 0.75rem",
-            borderRadius: "0.5rem",
-            background: "#ffe3e3",
-            color: "#c92a2a",
-            fontSize: "0.875rem",
-          }}
+        <div
+          role="alert"
+          className="mt-5 rounded-2xl border-2 border-coral bg-coral/10 px-4 py-3 text-sm font-bold text-coral"
         >
           {state.error}
-        </p>
+        </div>
       )}
-
       {state.message && (
-        <p
-          style={{
-            margin: 0,
-            padding: "0.5rem 0.75rem",
-            borderRadius: "0.5rem",
-            background: "#d3f9d8",
-            color: "#2b8a3e",
-            fontSize: "0.875rem",
-          }}
+        <div
+          role="status"
+          className="mt-5 rounded-2xl border-2 border-ink bg-acid px-4 py-3 text-sm font-bold text-ink"
         >
           {state.message}
-        </p>
+        </div>
       )}
 
-      <label style={{ display: "grid", gap: "0.25rem", fontSize: "0.875rem", color: "#495057" }}>
-        Email
+      <div className="mt-6">
+        <label htmlFor="email" className="label">
+          Email
+        </label>
         <input
+          id="email"
           type="email"
           name="email"
           required
           autoComplete="email"
-          style={{
-            padding: "0.625rem",
-            borderRadius: "0.5rem",
-            border: "1px solid #dee2e6",
-            fontSize: "1rem",
-          }}
+          placeholder="you@example.com"
+          className="input placeholder:font-medium placeholder:text-ink/35"
         />
-      </label>
+      </div>
 
       <SubmitButton />
 
-      <p style={{ margin: 0, fontSize: "0.875rem", textAlign: "center", color: "#495057" }}>
-        <Link href="/auth/signin" style={{ color: "#7C5CFF" }}>
-          Back to sign in
+      <p className="mt-6 text-center text-sm font-bold text-ink/50">
+        <Link
+          href="/auth/signin"
+          className="text-iris underline transition hover:text-ink"
+        >
+          ← Back to sign in
         </Link>
       </p>
     </form>

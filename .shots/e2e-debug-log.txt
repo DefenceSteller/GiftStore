@@ -1,0 +1,6 @@
+PASS  test customer created — id=3f38a4f0-18b9-479d-aca2-3ab740a2d751
+cleaned up test data
+
+E2E ERROR: Error: timeout: client auth state (last=false)
+    at waitFor (C:\Users\Admin\Desktop\giftshop\scripts\e2e-order-cart.js:60:9)
+    at async main (C:\Users\Admin\Desktop\giftshop\scripts\e2e-order-cart.js:225:7)

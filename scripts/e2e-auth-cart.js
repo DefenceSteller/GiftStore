@@ -143,8 +143,12 @@ async function main() {
   // --- 1. throwaway customer (trigger should create the profile row) ---
   // Idempotent: delete any leftover user from a previous run first, then
   // create fresh so the signup trigger runs and the profile row is new.
-  const existing = await supa(`/auth/v1/admin/users?email=eq.${EMAIL}`);
-  const existingId = existing.body?.users?.[0]?.id;
+  // GoTrue ignores `?email=eq.` on this endpoint and returns EVERY user, so
+  // list them all and match the email client-side — never touch another user.
+  const existing = await supa(`/auth/v1/admin/users`);
+  const existingId = (existing.body?.users || []).find(
+    (u) => (u.email || "").toLowerCase() === EMAIL.toLowerCase()
+  )?.id;
   if (existingId) {
     await supa(`/rest/v1/profiles?id=eq.${existingId}`, { method: "DELETE" });
     await supa(`/auth/v1/admin/users/${existingId}`, { method: "DELETE" });
