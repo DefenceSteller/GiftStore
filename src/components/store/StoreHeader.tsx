@@ -43,6 +43,7 @@ export default function StoreHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   // Mobile menu state: controls whether the hamburger dropdown is open
+  // This replaces the old 5-row stacked navbar with a clean hamburger menu
   const showAnnouncement = !!config.announcement?.trim();
 
   return (
