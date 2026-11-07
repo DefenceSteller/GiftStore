@@ -55,14 +55,7 @@ export default function StoreFooter() {
               <li><Link className="transition hover:text-acid" href="/track">Track my order</Link></li>
               <li><Link className="transition hover:text-acid" href="/track">Shipping &amp; returns</Link></li>
               <li><Link className="transition hover:text-acid" href="/shop">Gift cards</Link></li>
-              <li>
-                <a
-                  className="transition hover:text-acid"
-                  href={`mailto:${config.support_email || "hello@confetticlub.shop"}`}
-                >
-                  Contact us
-                </a>
-              </li>
+              <li><Link className="transition hover:text-acid" href="/contact">Contact us</Link></li>
             </ul>
           </div>
 

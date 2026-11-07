@@ -23,6 +23,7 @@ export default function ProductsContent() {
   const [saveError, setSaveError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [categories, setCategories] = useState<string[]>([]);
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
 
   useEffect(() => {
     loadProducts();
@@ -84,6 +85,7 @@ export default function ProductsContent() {
   }
 
   async function handleDelete(id: string) {
+    setConfirmDelete(null);
     try {
       const res = await fetch(`/api/admin/products/${id}`, { method: "DELETE" });
       const data = await res.json();
@@ -204,7 +206,7 @@ export default function ProductsContent() {
                     </td>
                     <td className="px-4 py-3 text-right">
                       <button onClick={() => { setEditingProduct(p); setShowModal(true); }} className="mr-1 rounded-full border-2 border-ink/10 px-2.5 py-1 text-[11px] font-black hover:border-ink">Edit</button>
-                      <button onClick={() => handleDelete(p.id)} className="rounded-full border-2 border-ink/10 px-2.5 py-1 text-[11px] font-black hover:border-coral hover:text-coral">Archive</button>
+                      <button onClick={() => setConfirmDelete(p.id)} className="rounded-full border-2 border-ink/10 px-2.5 py-1 text-[11px] font-black hover:border-coral hover:text-coral">🗑 Delete</button>
                     </td>
                   </tr>
                 ))
@@ -220,6 +222,33 @@ export default function ProductsContent() {
           </div>
         </div>
       </div>
+
+      {/* Delete confirmation dialog */}
+      {confirmDelete && (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-ink/60 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-sm rounded-[28px] border-2 border-ink bg-white p-6 shadow-sticker">
+            <div className="mb-4 grid h-14 w-14 place-items-center rounded-2xl border-2 border-ink bg-coral/10 text-2xl">🗑</div>
+            <h2 className="font-display text-xl font-extrabold">Delete product?</h2>
+            <p className="mt-1 text-sm font-bold text-ink/60">
+              This product will be archived (hidden from the shop). You can restore it later from the Archived tab.
+            </p>
+            <div className="mt-6 flex gap-3">
+              <button
+                onClick={() => setConfirmDelete(null)}
+                className="btn-outline flex-1"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => handleDelete(confirmDelete)}
+                className="btn-primary flex-1"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Product Modal */}
       {showModal && (

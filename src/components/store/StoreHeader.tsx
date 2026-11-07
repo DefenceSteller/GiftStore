@@ -12,7 +12,6 @@ const NAV_LINKS = [
   { href: "/shop", label: "Shop all" },
   { href: "/shop?category=Personalized", label: "Personalized" },
   { href: "/shop?featured=1", label: "Bestsellers" },
-  { href: "/track", label: "Track order" },
 ];
 
 /** Marquee announcement bar — reads text from dynamic settings. */

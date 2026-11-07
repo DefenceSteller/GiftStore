@@ -1,7 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import type { StoreProduct } from "@/lib/products";
 import { money } from "@/lib/format";
 import AddToCartButton from "@/components/cart/AddToCartButton";
+import { useState } from "react";
 
 function Stars({ rating, count }: { rating: number; count: number }) {
   const full = Math.round(rating);
@@ -19,6 +22,7 @@ function Stars({ rating, count }: { rating: number; count: number }) {
 export default function ProductCard({ p }: { p: StoreProduct }) {
   const disabled = !p.inStock;
   const [c1, c2] = (p.gradient || "").split(",");
+  const [imgFailed, setImgFailed] = useState(false);
 
   const badges = (
     <>
@@ -28,7 +32,9 @@ export default function ProductCard({ p }: { p: StoreProduct }) {
       {p.featured && p.discountPct <= 0 && (
         <span className="sticker bg-acid">Bestseller</span>
       )}
-      {!p.inStock && <span className="sticker bg-ink text-white">Sold out</span>}
+      {!p.inStock && (
+        <span className="sticker bg-ink text-white">Sold out</span>
+      )}
     </>
   );
 
@@ -39,16 +45,25 @@ export default function ProductCard({ p }: { p: StoreProduct }) {
         className="relative block aspect-[4/3] overflow-hidden"
         style={{ background: `linear-gradient(135deg, ${c1}, ${c2 || "#000"})` }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={p.image}
-          alt={p.name}
-          loading="lazy"
-          width={800}
-          height={800}
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-        />
-        <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">{badges}</div>
+        {!imgFailed ? (
+          /* eslint-disable-next-line @next/next/no-img-element */
+          <img
+            src={p.image}
+            alt={p.name}
+            loading="lazy"
+            width={800}
+            height={800}
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            onError={() => setImgFailed(true)}
+          />
+        ) : (
+          <div className="grid h-full w-full place-items-center text-6xl select-none pointer-events-none" aria-hidden="true">
+            {p.emoji || "🎁"}
+          </div>
+        )}
+        <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
+          {badges}
+        </div>
       </Link>
 
       <div className="flex flex-1 flex-col gap-1.5 p-4 sm:p-5">
@@ -66,7 +81,9 @@ export default function ProductCard({ p }: { p: StoreProduct }) {
             {p.name}
           </Link>
         </h3>
-        <p className="line-clamp-1 text-[13px] font-medium text-ink/50">{p.tagline}</p>
+        <p className="line-clamp-1 text-[13px] font-medium text-ink/50">
+          {p.tagline}
+        </p>
 
         <div className="mt-auto flex items-end justify-between gap-3 pt-3">
           <div>

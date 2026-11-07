@@ -7,6 +7,7 @@ import ProductPurchase from "@/components/cart/ProductPurchase";
 import ProductTracker from "@/components/traffic/ProductTracker";
 import { getProductBySlug } from "@/lib/products";
 import { money } from "@/lib/format";
+import ProductImage from "./ProductImage";
 
 export const dynamic = "force-dynamic";
 
@@ -28,8 +29,8 @@ export default async function ProductPage({ params }: { params: Params }) {
 
   if (!product) notFound();
 
-  const [c1, c2] = (product.gradient || "").split(",");
-  const onSale = !!product.compareAtCents && product.compareAtCents > product.priceCents;
+  const onSale =
+    !!product.compareAtCents && product.compareAtCents > product.priceCents;
 
   return (
     <>
@@ -45,25 +46,17 @@ export default async function ProductPage({ params }: { params: Params }) {
         </nav>
 
         <div className="mt-6 grid gap-8 lg:grid-cols-2">
-          {/* Image */}
-          <div
-            className="relative overflow-hidden rounded-[28px] border border-ink/8 shadow-soft"
-            style={{ background: `linear-gradient(135deg, ${c1}, ${c2 || "#000"})` }}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={product.image}
-              alt={product.name}
-              width={1000}
-              height={1000}
-              className="h-full w-full object-cover"
-            />
-            {onSale && (
-              <span className="sticker absolute left-4 top-4 bg-coral text-white">
-                -{product.discountPct}%
-              </span>
-            )}
-          </div>
+          <ProductImage
+            src={product.image}
+            alt={product.name}
+            gradient={product.gradient}
+            emoji={product.emoji}
+          />
+          {onSale && (
+            <span className="sticker self-start bg-coral text-white">
+              -{product.discountPct}%
+            </span>
+          )}
 
           {/* Details */}
           <div className="flex flex-col">
@@ -73,22 +66,34 @@ export default async function ProductPage({ params }: { params: Params }) {
             <h1 className="mt-2 font-display text-3xl font-extrabold sm:text-4xl">
               {product.name}
             </h1>
-            <p className="mt-2 text-base font-semibold text-ink/55">{product.tagline}</p>
+            <p className="mt-2 text-base font-semibold text-ink/55">
+              {product.tagline}
+            </p>
 
             <div className="mt-4 flex items-center gap-2 text-sm font-bold text-ink/50">
-              <span className="text-butter">{"★".repeat(Math.round(product.rating))}</span>
-              <span>{product.rating.toFixed(1)} · {product.reviewCount} reviews</span>
+              <span className="text-butter">
+                {"★".repeat(Math.round(product.rating))}
+              </span>
+              <span>
+                {product.rating.toFixed(1)} · {product.reviewCount} reviews
+              </span>
             </div>
 
             <div className="mt-5 flex items-end gap-3">
-              <span className="font-display text-3xl font-extrabold">{money(product.priceCents)}</span>
+              <span className="font-display text-3xl font-extrabold">
+                {money(product.priceCents)}
+              </span>
               {product.compareAtCents && (
-                <s className="mb-1 text-lg font-bold text-ink/35">{money(product.compareAtCents)}</s>
+                <s className="mb-1 text-lg font-bold text-ink/35">
+                  {money(product.compareAtCents)}
+                </s>
               )}
             </div>
 
             {product.description && (
-              <p className="mt-5 leading-relaxed text-ink/70">{product.description}</p>
+              <p className="mt-5 leading-relaxed text-ink/70">
+                {product.description}
+              </p>
             )}
 
             <div className="mt-6">
@@ -122,7 +127,9 @@ export default async function ProductPage({ params }: { params: Params }) {
 
         {related.length > 0 && (
           <section className="mt-16">
-            <h2 className="font-display text-2xl font-extrabold">You might also like</h2>
+            <h2 className="font-display text-2xl font-extrabold">
+              You might also like
+            </h2>
             <div className="mt-5 grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-4">
               {related.map((p) => (
                 <ProductCard key={p.id} p={p} />
