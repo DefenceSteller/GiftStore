@@ -42,6 +42,7 @@ export default function StoreHeader() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // Mobile menu state: controls whether the hamburger dropdown is open
   const showAnnouncement = !!config.announcement?.trim();
 
   return (
