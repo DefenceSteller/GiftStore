@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useStoreConfig } from "@/components/store/StoreConfigProvider";
 import { useAuth } from "@/components/auth/AuthProvider";
-import SignOutButton from "@/components/SignOutButton";
 import CartButton from "@/components/cart/CartButton";
 import { useState } from "react";
 
@@ -87,53 +86,51 @@ export default function StoreHeader() {
               </Link>
             </nav>
 
-            {/* Right actions */}
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              {/* Hamburger — mobile only */}
-              <button
-                onClick={() => setMenuOpen(!menuOpen)}
-                className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border-2 border-ink/10 bg-white text-lg text-ink transition hover:border-ink md:hidden"
-                aria-label="Toggle menu"
-              >
-                {menuOpen ? "✕" : "☰"}
-              </button>
-
-              {/* Search icon — mobile only */}
+            {/* Right actions — matches original main-branch styling exactly */}
+            <div className="flex items-center gap-2">
               <Link
                 href="/shop"
-                className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border-2 border-ink/10 text-ink transition hover:border-ink sm:hidden"
+                className="btn-outline btn-sm hidden sm:inline-flex"
                 aria-label="Search gifts"
               >
-                🔎
+                🔎 <span className="hidden lg:inline">Search</span>
               </Link>
-
-              {/* Auth buttons — desktop only */}
               {user ? (
-                <>
-                  <Link href="/profile" className="hidden h-9 items-center rounded-xl border-2 border-ink/10 px-3 text-sm font-extrabold text-ink transition hover:border-ink sm:flex">
-                    👤 Profile
-                  </Link>
-                  <div className="hidden sm:block"><SignOutButton /></div>
-                </>
+                <Link
+                  href="/profile"
+                  className="btn-ghost btn-sm hidden sm:inline-flex"
+                >
+                  👤 Profile
+                </Link>
               ) : (
-                <Link href="/auth/signin" className="hidden h-9 items-center rounded-xl border-2 border-ink/10 px-3 text-sm font-extrabold text-ink transition hover:border-ink sm:flex">
+                <Link
+                  href="/auth/signin"
+                  className="btn-ghost btn-sm hidden sm:inline-flex"
+                >
                   Sign in
                 </Link>
               )}
               <CartButton />
+              <button
+                onClick={() => setMenuOpen(!menuOpen)}
+                className="grid h-10 w-10 place-items-center rounded-full border-2 border-ink/10 text-lg md:hidden"
+                aria-label="Menu"
+              >
+                {menuOpen ? "✕" : "☰"}
+              </button>
             </div>
           </div>
 
-          {/* Mobile menu overlay */}
+          {/* Mobile menu overlay — matches original main-branch styling exactly */}
           {menuOpen && (
-            <div className="border-t border-ink/8 px-3 pb-3 pt-2 md:hidden">
-              <nav className="grid gap-1">
+            <div id="cc-mobile-menu" className="border-t border-ink/8 px-4 py-3 md:hidden">
+              <nav className="grid gap-1 text-sm font-bold">
                 {NAV_LINKS.map((l) => (
                   <Link
                     key={l.href}
                     href={l.href}
                     onClick={() => setMenuOpen(false)}
-                    className="rounded-xl px-3 py-3 text-sm font-extrabold text-ink transition hover:bg-mist"
+                    className="rounded-xl px-3 py-2.5 transition hover:bg-ink/5"
                   >
                     {l.label}
                   </Link>
@@ -141,32 +138,27 @@ export default function StoreHeader() {
                 <Link
                   href="/surprise"
                   onClick={() => setMenuOpen(false)}
-                  className="rounded-xl px-3 py-3 text-sm font-extrabold text-iris transition hover:bg-iris/10"
+                  className="rounded-xl px-3 py-2.5 text-left transition hover:bg-ink/5"
                 >
                   🎲 Surprise me
                 </Link>
-                <div className="mt-1 flex gap-2">
-                  {user ? (
-                    <>
-                      <Link
-                        href="/profile"
-                        onClick={() => setMenuOpen(false)}
-                        className="flex-1 rounded-xl border-2 border-ink/10 py-2.5 text-center text-sm font-extrabold text-ink transition hover:border-ink"
-                      >
-                        👤 Profile
-                      </Link>
-                      <SignOutButton />
-                    </>
-                  ) : (
-                    <Link
-                      href="/auth/signin"
-                      onClick={() => setMenuOpen(false)}
-                      className="flex-1 rounded-xl border-2 border-ink/10 py-2.5 text-center text-sm font-extrabold text-ink transition hover:border-ink"
-                    >
-                      Sign in
-                    </Link>
-                  )}
-                </div>
+                {user ? (
+                  <Link
+                    href="/profile"
+                    onClick={() => setMenuOpen(false)}
+                    className="rounded-xl px-3 py-2.5 transition hover:bg-ink/5"
+                  >
+                    👤 Profile
+                  </Link>
+                ) : (
+                  <Link
+                    href="/auth/signin"
+                    onClick={() => setMenuOpen(false)}
+                    className="rounded-xl px-3 py-2.5 transition hover:bg-ink/5"
+                  >
+                    Sign in
+                  </Link>
+                )}
               </nav>
             </div>
           )}
