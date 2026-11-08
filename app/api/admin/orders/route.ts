@@ -64,6 +64,8 @@ export async function GET(req: Request) {
       totalCents: o.total_cents, status: o.status, paymentMethod: o.payment_method,
       paymentStatus: o.payment_status, placedAt: new Date(o.placed_at).getTime(),
       itemCount: o.item_count, source: o.source, trackingNumber: o.tracking_number, carrier: o.carrier, emoji: "🎁",
+      address1: o.address1, address2: o.address2, city: o.city, state: o.state,
+      postalCode: o.postal_code, country: o.country, phone: o.phone,
       items: itemsByOrder[o.id] || [],
     })) ?? [],
     total: count ?? 0, page, limit,

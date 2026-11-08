@@ -170,13 +170,14 @@ export default function OrdersContent() {
                 <th className="px-4 py-3">Total</th>
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3">Payment</th>
+                <th className="px-4 py-3">Address</th>
                 <th className="px-4 py-3">Placed</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-ink/6">
               {orders.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-4 py-10 text-center text-sm font-bold text-ink/45">
+                  <td colSpan={8} className="px-4 py-10 text-center text-sm font-bold text-ink/45">
                     No orders found.
                   </td>
                 </tr>
@@ -248,6 +249,28 @@ export default function OrdersContent() {
                     {/* Placed date */}
                     <td className="px-4 py-3 text-xs font-bold text-ink/55">
                       {new Date(o.placedAt).toLocaleDateString()}
+                    </td>
+                    {/* Address column */}
+                    <td className="px-4 py-3">
+                      {o.address1 ? (
+                        <div>
+                          <div className="text-xs font-bold text-ink/70 truncate max-w-[200px]">
+                            {o.address1}
+                          </div>
+                          {o.city && o.state && (
+                            <div className="text-[11px] font-bold text-ink/45">
+                              {o.city}, {o.state} {o.postalCode || ""}
+                            </div>
+                          )}
+                          {o.phone && (
+                            <div className="text-[11px] font-bold text-ink/45">
+                              📞 {o.phone}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <span className="text-[11px] font-bold text-ink/35">—</span>
+                      )}
                     </td>
                   </tr>
                 ))
