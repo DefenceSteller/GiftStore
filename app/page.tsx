@@ -132,8 +132,8 @@ export default async function HomePage() {
                 <Link href="/shop" className="btn-lime text-base">
                   Shop the drop →
                 </Link>
-                <Link href="/track" className="btn-outline text-base">
-                  Track my order
+                <Link href="/surprise" className="btn-outline text-base">
+                  🎲 Surprise me
                 </Link>
               </div>
 
