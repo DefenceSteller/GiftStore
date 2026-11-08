@@ -170,8 +170,8 @@ export default function OrdersContent() {
                 <th className="px-4 py-3">Total</th>
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3">Payment</th>
-                <th className="px-4 py-3">Address</th>
                 <th className="px-4 py-3">Placed</th>
+                <th className="px-4 py-3">Address</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-ink/6">
