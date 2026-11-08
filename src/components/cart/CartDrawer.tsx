@@ -54,7 +54,7 @@ export default function CartDrawer() {
 
       {/* Panel */}
       <aside
-        className={`absolute right-0 top-0 flex h-full w-full max-w-[430px] flex-col bg-paper shadow-lift transition-transform duration-300 ease-[cubic-bezier(.2,.8,.3,1)] ${
+        className={`absolute right-0 top-0 flex h-full w-full max-w-[90vw] sm:max-w-[430px] flex-col bg-paper shadow-lift transition-transform duration-300 ease-[cubic-bezier(.2,.8,.3,1)] ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >

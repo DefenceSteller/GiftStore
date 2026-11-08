@@ -137,7 +137,7 @@ export default async function HomePage() {
                 </Link>
               </div>
 
-              <dl className="mt-9 grid max-w-lg grid-cols-3 gap-3 text-center">
+              <dl className="mt-9 grid max-w-lg grid-cols-1 gap-3 text-center sm:grid-cols-3">
                 <div className="rounded-2xl border border-ink/8 bg-white p-3.5 shadow-soft">
                   <dt className="font-display text-2xl font-extrabold">4.9★</dt>
                   <dd className="mt-0.5 text-[11px] font-extrabold uppercase tracking-wide text-ink/45">
@@ -160,7 +160,7 @@ export default async function HomePage() {
             </div>
 
             {/* Right: floating hero cards */}
-            <div className="relative mx-auto h-[380px] w-full max-w-[520px] sm:h-[460px]">
+            <div className="relative mx-auto h-[380px] w-full max-w-[520px] sm:h-[460px] overflow-x-auto">
               <div className="absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-iris/20 blur-3xl" />
               {heroProducts.map((p, i) => (
                 <HeroFloatingCard

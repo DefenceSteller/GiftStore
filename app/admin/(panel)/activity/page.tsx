@@ -89,9 +89,9 @@ export default function AdminActivityLogPage() {
 
       <div className="mt-6">
         {/* Filters */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-4">
-          <div className="flex-1">
-            <div className="rounded-[26x] border border-ink/8 bg-white p-3 shadow-soft">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch mb-4">
+          <div className="flex-1 min-w-0">
+            <div className="rounded-[26px] border border-ink/8 bg-white p-3 shadow-soft">
               <input
                 type="text"
                 value={search}
@@ -120,7 +120,7 @@ export default function AdminActivityLogPage() {
         </div>
 
         {/* Events Table */}
-        <div className="bg-white rounded-[26x] overflow-hidden shadow-soft">
+        <div className="card overflow-hidden">
           {events.length === 0 && totalCount === 0 ? (
             <p className="text-ink/60 pt-8 text-center">No events found.</p>
           ) : (

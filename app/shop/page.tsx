@@ -183,11 +183,11 @@ export default async function ShopPage({
 
           {/* RESULTS */}
           <section>
-            <div className="flex items-center justify-between gap-3 rounded-2xl border border-ink/8 bg-white px-4 py-3 shadow-soft">
+            <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-ink/8 bg-white px-4 py-3 shadow-soft">
               <p className="hidden text-sm font-bold text-ink/55 sm:block">
                 {products.length} result{products.length === 1 ? "" : "s"}
               </p>
-              <form method="GET" action="/shop" className="ml-auto">
+              <form method="GET" action="/shop" className="flex w-full flex-wrap items-center gap-2 sm:ml-auto">
                 {filters.category && <input type="hidden" name="category" value={filters.category} />}
                 {filters.q && <input type="hidden" name="q" value={filters.q} />}
                 {filters.featured && <input type="hidden" name="featured" value="1" />}

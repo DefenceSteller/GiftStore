@@ -486,8 +486,8 @@ export default function CheckoutPage() {
                   <p className="field-error show" data-error-for="a-address1">{formState.errors.address1}</p>
                 )}
               </div>
-              <div className="grid gap-4 sm:grid-cols-3">
-                <div className="sm:col-span-2">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <div className="sm:col-span-2 min-w-0">
                   <label htmlFor="a-address2" className="label">
                     Apt / suite{" "}
                     <span className="font-bold text-ink/35">(optional)</span>
@@ -511,8 +511,8 @@ export default function CheckoutPage() {
                   )}
                 </div>
               </div>
-              <div className="grid gap-4 sm:grid-cols-3">
-                <div>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <div className="min-w-0">
                   <label htmlFor="a-state" className="label">State</label>
                   <input
                     id="a-state"

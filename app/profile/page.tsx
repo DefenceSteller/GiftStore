@@ -180,7 +180,7 @@ export default async function ProfilePage() {
         </div>
 
         {/* Stats */}
-        <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {stats.map((s) => (
             <div
               key={s.label}
@@ -199,7 +199,7 @@ export default async function ProfilePage() {
 
         {/* Order history + account details */}
         <div className="mt-5 grid gap-5 lg:grid-cols-[1fr_360px]">
-          <section>
+          <section className="min-w-0">
             <div className="flex items-center justify-between">
               <h3 className="font-display text-2xl font-extrabold">
                 Order history

@@ -49,7 +49,7 @@ export default function AnalyticsContent() {
       </div>
 
       {/* KPI cards */}
-      <div className="grid gap-4 sm:grid-cols-3 xl:grid-cols-5">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-5">
         {[
           { label: "Visits", value: kpis.visits7d.toLocaleString(), icon: "👣" },
           { label: "Unique visitors", value: kpis.uniques7d.toLocaleString(), icon: "🧑‍💻" },
