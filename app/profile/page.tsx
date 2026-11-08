@@ -228,17 +228,16 @@ export default async function ProfilePage() {
             ) : (
               <div className="mt-4 space-y-4">
                 {orders.map((o) => (
-                  <Link
+                  <div
                     key={o.order_number}
-                    href={`/track/${o.order_number}`}
-                    className="group block rounded-[26px] border border-ink/8 bg-white p-5 shadow-soft transition hover:-translate-y-1 hover:shadow-lift"
+                    className="group block rounded-[26px] border border-ink/8 bg-white p-5 shadow-soft"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
                         <p className="text-[10px] font-black uppercase tracking-[0.16em] text-ink/40">
                           Order
                         </p>
-                        <h4 className="truncate font-display text-lg font-extrabold transition group-hover:text-iris">
+                        <h4 className="truncate font-display text-lg font-extrabold">
                           #{o.order_number}
                         </h4>
                         <p className="mt-1 text-sm font-bold text-ink/50">
@@ -264,7 +263,7 @@ export default async function ProfilePage() {
                         {money(o.total_cents)}
                       </span>
                     </div>
-                  </Link>
+                  </div>
                 ))}
               </div>
             )}
