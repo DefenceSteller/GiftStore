@@ -2,6 +2,7 @@ import Link from "next/link";
 import StoreHeader from "@/components/store/StoreHeader";
 import StoreFooter from "@/components/store/StoreFooter";
 import ProductCard from "@/components/store/ProductCard";
+import SortForm from "@/components/store/SortForm";
 import { getProducts, getCategories, type StoreProduct } from "@/lib/products";
 
 export const dynamic = "force-dynamic";
@@ -187,29 +188,14 @@ export default async function ShopPage({
               <p className="hidden text-sm font-bold text-ink/55 sm:block">
                 {products.length} result{products.length === 1 ? "" : "s"}
               </p>
-              <form method="GET" action="/shop" className="flex w-full flex-wrap items-center gap-2 sm:ml-auto">
-                {filters.category && <input type="hidden" name="category" value={filters.category} />}
-                {filters.q && <input type="hidden" name="q" value={filters.q} />}
-                {filters.featured && <input type="hidden" name="featured" value="1" />}
-                {filters.inStock && <input type="hidden" name="inStock" value="1" />}
-                {filters.max != null && <input type="hidden" name="max" value={String(filters.max)} />}
-                <label className="flex items-center gap-2 text-sm font-bold text-ink/60">
-                  Sort
-                  <select
-                    name="sort"
-                    defaultValue={filters.sort}
-                    className="rounded-full border-2 border-ink/10 bg-white px-3 py-2 text-sm font-extrabold text-ink focus:border-ink focus:outline-none"
-                  >
-                    <option value="featured">Featured</option>
-                    <option value="popular">Most loved</option>
-                    <option value="newest">Newest</option>
-                    <option value="price-asc">Price: low → high</option>
-                    <option value="price-desc">Price: high → low</option>
-                    <option value="rating">Top rated</option>
-                  </select>
-                  <button type="submit" className="sr-only">Apply</button>
-                </label>
-              </form>
+              <SortForm
+                sort={filters.sort}
+                q={filters.q}
+                category={filters.category}
+                featured={filters.featured}
+                inStock={filters.inStock}
+                max={filters.max}
+              />
             </div>
 
             {products.length === 0 ? (
