@@ -133,13 +133,14 @@
   }
 }
 
+.cart-drawer-panel {
+  max-width: 90vw;
+}
+
 @media (min-width: 640px) {
   .cart-drawer-panel {
     max-width: 430px;
   }
-}
-.cart-drawer-panel {
-  max-width: 90vw;
 }
 
 @media (prefers-reduced-motion: reduce) {
