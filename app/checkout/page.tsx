@@ -279,7 +279,6 @@ export default function CheckoutPage() {
     formData.set("city", getField("a-city"));
     formData.set("state", getField("a-state"));
     formData.set("postal_code", getField("a-zip"));
-    formData.set("country", getField("a-country"));
 
     // payment method
     const paymentMethod = (document.querySelector('input[name="payment"]:checked') as HTMLInputElement)?.value ?? "card";
@@ -543,20 +542,6 @@ export default function CheckoutPage() {
                   {formState.errors.postal && (
                     <p className="field-error show" data-error-for="a-zip">{formState.errors.postal}</p>
                   )}
-                </div>
-                <div>
-                  <label htmlFor="a-country" className="label">Country</label>
-                  <select
-                    id="a-country"
-                    className="input"
-                    autoComplete="country"
-                  >
-                    <option value="US">United States</option>
-                    <option value="CA">Canada</option>
-                    <option value="GB">United Kingdom</option>
-                    <option value="AU">Australia</option>
-                    <option value="NZ">New Zealand</option>
-                  </select>
                 </div>
               </div>
             </div>
