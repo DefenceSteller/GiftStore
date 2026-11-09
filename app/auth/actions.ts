@@ -24,7 +24,7 @@ export async function signup(
   }
 
   const service = createServiceClient();
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const siteUrl = process.env.SITE_URL ?? "http://localhost:3000";
 
   // Create the user UNCONFIRMED. A fake / typo'd address never receives the
   // confirmation link, so it can never become a usable account — the user is
@@ -146,7 +146,7 @@ export async function resetPassword(
   const supabase = await createClient();
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/auth/reset-password`,
+    redirectTo: `${process.env.SITE_URL ?? "http://localhost:3000"}/auth/reset-password`,
   });
 
   if (error) {

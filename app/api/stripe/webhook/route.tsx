@@ -66,7 +66,7 @@ export async function POST(request: Request) {
       }
 
       // Redirect to order success page
-      const origin = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+      const origin = process.env.SITE_URL || "http://localhost:3000";
       return new Response(null, {
         status: 302,
         headers: { Location: `${origin}/order-success?session_id=${session.id}` },

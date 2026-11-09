@@ -25,7 +25,7 @@ export async function POST(request: Request) {
     if (process.env.PAYMENT_PROVIDER === "demo") {
       // Use demo payment provider
       // For demo, we just return a mock session
-      const mockUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/order-success?mock=true`;
+      const mockUrl = `${process.env.SITE_URL || "http://localhost:3000"}/order-success?mock=true`;
 
       return new Response(
         JSON.stringify({ url: mockUrl }),
