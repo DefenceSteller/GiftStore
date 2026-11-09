@@ -11,30 +11,37 @@ export async function GET(req: Request) {
   const hours: Record<string, number> = { "1d": 1, "3d": 3, "7d": 7, "30d": 30 };
   const days = hours[period] || 7;
   const startDate = new Date(now.getTime() - days * 24 * 60 * 60 * 1000).toISOString();
-  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
 
   // ── KPIs ────────────────────────────────────────────────────────
-  const [{ count: visits7d }, { count: uniques7d }] = await Promise.all([
+  const [{ count: visits7d }] = await Promise.all([
     supabase.from("traffic_events").select("*", { count: "exact", head: true }).gte("created_at", startDate),
-    supabase.from("traffic_events").select("visitor_id", { count: "exact", head: true }).gte("created_at", startDate).neq("visitor_id", null),
   ]);
+
+  // Distinct visitors in the selected period (count rows, then dedupe).
+  const { data: visitorRows } = await supabase
+    .from("traffic_events")
+    .select("visitor_id")
+    .gte("created_at", startDate)
+    .not("visitor_id", "is", null);
+  const uniques7d = new Set((visitorRows || []).map((r) => r.visitor_id)).size;
 
   const { data: cartEvents, error: cartErr } = await supabase
     .from("traffic_events").select("id").gte("created_at", startDate).eq("type", "add_to_cart");
   const { data: checkoutEvents } = await supabase
     .from("traffic_events").select("id").gte("created_at", startDate).eq("type", "checkout_start");
-  const { data: orders30d } = await supabase
-    .from("orders").select("id").gte("placed_at", new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString())
+  const { data: ordersPeriod } = await supabase
+    .from("orders").select("id").gte("placed_at", startDate)
     .not("status", "in", "('cancelled','refunded')");
 
   const addToCartRate = visits7d ? Math.round((cartEvents?.length ?? 0) / visits7d * 1000) / 10 : 0;
   const cartCount = cartEvents?.length ?? 0;
   const checkoutCount = checkoutEvents?.length ?? 0;
+  const orderCount = ordersPeriod?.length ?? 0;
   const checkoutRate = cartCount > 0
     ? Math.round(checkoutCount / cartCount * 1000) / 10
     : 0;
   const purchaseRate = checkoutCount > 0
-    ? Math.round(((orders30d?.length ?? 0)) / checkoutCount * 100) : 0;
+    ? Math.round(orderCount / checkoutCount * 100) : 0;
 
   // ── Traffic by hour (aggregated across all days in period) ─────
   const { data: hourlyRows } = await supabase
@@ -84,7 +91,7 @@ export async function GET(req: Request) {
     { stage: "Product views", count: prodData?.length ?? 0 },
     { stage: "Added to bag", count: cartData?.length ?? 0 },
     { stage: "Checkout started", count: coData?.length ?? 0 },
-    { stage: "Orders", count: orders30d?.length ?? 0 },
+    { stage: "Orders", count: orderCount },
   ];
 
   return NextResponse.json({

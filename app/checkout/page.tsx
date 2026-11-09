@@ -62,6 +62,11 @@ export default function CheckoutPage() {
   // form refs
   const formRef = useRef<HTMLFormElement>(null);
 
+  // Fire a checkout_start event once when the checkout page loads.
+  useEffect(() => {
+    trackEvent("checkout_start", "/checkout");
+  }, []);
+
   // hydrate promo from sessionStorage once
   useEffect(() => {
     if (!ready) return;
