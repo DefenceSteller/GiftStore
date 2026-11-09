@@ -40,8 +40,10 @@ export async function GET(req: Request) {
   const checkoutRate = cartCount > 0
     ? Math.round(checkoutCount / cartCount * 1000) / 10
     : 0;
-  const purchaseRate = checkoutCount > 0
-    ? Math.round(orderCount / checkoutCount * 100) : 0;
+  // Purchase rate = % of visits that converted to a paid order (always ≤ 100%).
+  const purchaseRate = visits7d
+    ? Math.round(orderCount / visits7d * 1000) / 10
+    : 0;
 
   // ── Traffic by hour (aggregated across all days in period) ─────
   const { data: hourlyRows } = await supabase
