@@ -54,9 +54,7 @@ export default function CartDrawer() {
 
       {/* Panel */}
       <aside
-        className={`absolute right-0 top-0 flex h-full w-full max-w-[90vw] sm:max-w-[430px] flex-col bg-paper shadow-lift transition-transform duration-300 ease-[cubic-bezier(.2,.8,.3,1)] ${
-          open ? "translate-x-0" : "translate-x-full"
-        }`}
+        className="cart-drawer-panel absolute right-0 top-0 flex h-full w-full flex-col bg-paper shadow-lift transition-transform duration-300 ease-[cubic-bezier(.2,.8,.3,1)]"
       >
         <div className="flex items-center justify-between border-b border-ink/8 px-5 py-4">
           <h2 className="font-display text-xl font-extrabold">
