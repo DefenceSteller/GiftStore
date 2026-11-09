@@ -24,37 +24,57 @@ export async function signup(
   }
 
   const service = createServiceClient();
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
-  // Create the user via the admin API. The client-keyed `auth.signUp` has been
-  // failing at the DB step ("Database error saving new user"); the admin API
-  // uses the same underlying DB write but is the path we've verified works.
+  // Create the user UNCONFIRMED. A fake / typo'd address never receives the
+  // confirmation link, so it can never become a usable account — the user is
+  // stuck in a pending state until they verify a real mailbox.
   const { data: created, error: createError } = await service.auth.admin.createUser({
     email,
     password,
-    email_confirm: true,
+    email_confirm: false,
     user_metadata: { name },
   });
 
-  if (createError) {
+  const alreadyExists =
+    !!createError &&
+    (createError.code === "user_already_exists" ||
+      /already (registered|exists|confirmed)/i.test(createError.message));
+
+  if (createError && !alreadyExists) {
     return { error: createError.message };
   }
 
-  const userId = created?.user?.id;
-  if (userId) {
-    const { error: profileError } = await service.from("profiles").insert({
-      id: userId,
-      email,
-      role: "customer",
-    });
-    if (profileError && profileError.code !== "23505") {
-      return { error: `Account created, but profile setup failed: ${profileError.message}` };
-    }
+  // Send (or re-send) the confirmation email. Its link lands on /auth/confirm.
+  const { error: resendError } = await service.auth.resend({
+    type: "signup",
+    email,
+    options: { emailRedirectTo: `${siteUrl}/auth/confirm` },
+  });
+
+  if (resendError) {
+    return { error: friendlyAuthError(resendError) };
   }
 
-  revalidatePath("/", "layout");
   return {
-    message: "Your account is ready — sign in and your bag is waiting.",
+    message: alreadyExists
+      ? "We re-sent your confirmation link — check your inbox (or sign in if you've already confirmed)."
+      : "One more step — check your inbox and click the confirmation link to activate your account.",
   };
+}
+
+function friendlyAuthError(err: { message?: string; code?: string }): string {
+  const m = (err.message || "").toLowerCase();
+  if (err.code === "over_email_send_rate_limit" || m.includes("rate limit")) {
+    return "We just sent an email — please wait a few minutes and try again.";
+  }
+  if (m.includes("invalid") || m.includes("not a valid")) {
+    return "That email address doesn't look valid. Check for typos and try again.";
+  }
+  if (m.includes("already confirmed") || m.includes("already confirmed")) {
+    return "That email is already confirmed — sign in to continue.";
+  }
+  return err.message || "We couldn't send the confirmation email.";
 }
 
 /** Sign in with email + password. */
@@ -75,6 +95,12 @@ export async function signin(
   const { data: signedIn, error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error || !signedIn.user) {
+    const code = (error as any)?.code;
+    if (code === "email_not_confirmed" || /not confirmed/i.test(error?.message || "")) {
+      return {
+        error: "That email isn't confirmed yet. Check your inbox (and spam) for the confirmation link.",
+      };
+    }
     return { error: error?.message ?? "Sign-in failed." };
   }
 

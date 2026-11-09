@@ -73,7 +73,7 @@ export default async function proxy(request: NextRequest) {
   // If signed in and heading to auth pages, send to home.
   // Exception: /auth/callback is the OAuth redirect target — it must run
   // even when a session is already present (e.g. re-authentication).
-  if (user && pathname.startsWith("/auth/") && !pathname.startsWith("/auth/callback")) {
+  if (user && pathname.startsWith("/auth/") && !pathname.startsWith("/auth/callback") && !pathname.startsWith("/auth/confirm")) {
     const url = request.nextUrl.clone();
     url.pathname = "/";
     url.search = "";
