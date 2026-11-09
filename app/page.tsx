@@ -160,7 +160,7 @@ export default async function HomePage() {
             </div>
 
             {/* Right: floating hero cards */}
-            <div className="relative mx-auto h-[380px] w-full max-w-[520px] sm:h-[460px] overflow-x-auto">
+            <div className="relative mx-auto h-[380px] w-full max-w-[520px] sm:h-[460px] overflow-hidden">
               <div className="absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-iris/20 blur-3xl" />
               {heroProducts.map((p, i) => (
                 <HeroFloatingCard
