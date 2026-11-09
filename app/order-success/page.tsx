@@ -59,12 +59,6 @@ async function SuccessContent({
           <Link href="/" className="btn-lime text-base">
             🏠 Back to home
           </Link>
-          <Link
-            href="/track"
-            className="btn-outline text-base"
-          >
-            Track this order →
-          </Link>
         </div>
 
         <div className="mt-10 grid gap-3 sm:grid-cols-3">

@@ -52,7 +52,6 @@ export default function StoreFooter() {
           <div>
             <h4 className="text-xs font-extrabold uppercase tracking-[0.18em] text-white/40">Help</h4>
             <ul className="mt-4 space-y-2.5 text-sm font-semibold text-white/70">
-              <li><Link className="transition hover:text-acid" href="/track">Track my order</Link></li>
               <li><Link className="transition hover:text-acid" href="/track">Shipping &amp; returns</Link></li>
               <li><Link className="transition hover:text-acid" href="/shop">Gift cards</Link></li>
               <li><Link className="transition hover:text-acid" href="/contact">Contact us</Link></li>
