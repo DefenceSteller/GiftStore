@@ -408,8 +408,8 @@ export async function placeOrder(
     path: "/checkout",
   });
 
-  // Send order confirmation email (fire-and-forget — never blocks checkout)
-  void sendOrderConfirmation({
+  // Send order confirmation email (awaited so it completes before redirect)
+  await sendOrderConfirmation({
     to: contactResult.data.email,
     name: contactResult.data.name,
     orderNumber,
@@ -431,7 +431,7 @@ export async function placeOrder(
       country: shippingResult.data.country,
     },
     deliveryMethod: deliveryResult.data.delivery,
-  }).catch(() => undefined); // suppress any fire-and-forget errors silently
+  });
 
   revalidatePath("/", "layout");
   redirect(`/order-success?orderNumber=${orderNumber}`);

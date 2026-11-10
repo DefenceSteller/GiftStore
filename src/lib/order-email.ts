@@ -4,6 +4,13 @@ const resend = new Resend(process.env.RESEND_API_KEY ?? "");
 
 export const FROM_EMAIL = process.env.EMAIL_FROM ?? "Confetti Club <orders@confetticlub.shop>";
 
+if (!process.env.RESEND_API_KEY) {
+  console.warn("[email] RESEND_API_KEY is not set — order confirmation emails will silently fail.");
+}
+if (!process.env.EMAIL_FROM) {
+  console.warn("[email] EMAIL_FROM is not set — using default sender.");
+}
+
 interface OrderEmailData {
   to: string;
   name: string;
@@ -155,15 +162,20 @@ function esc(str: string) {
 export async function sendOrderConfirmation(data: OrderEmailData) {
   try {
     const { subject, html } = buildOrderEmail(data);
-    await resend.emails.send({
+    const result = await resend.emails.send({
       from: FROM_EMAIL,
       to: [data.to],
       subject,
       html,
     });
-    console.log(`[email] Order confirmation sent to ${data.to} for order ${data.orderNumber}`);
+    if (result.error) {
+      console.error("[email] Resend error:", result.error);
+    } else {
+      console.log(`[email] Order confirmation sent to ${data.to} for order ${data.orderNumber}`);
+    }
+    return result;
   } catch (err) {
-    // Fire-and-forget — never block checkout if email fails
     console.error("[email] Failed to send order confirmation:", err);
+    return { error: err instanceof Error ? err.message : String(err) };
   }
 }
