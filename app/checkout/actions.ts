@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { STORE_CONFIG, getServerStoreConfig, discountFor, type Promo } from "@/lib/store-config";
 import { z } from "zod";
+import { sendOrderConfirmation } from "@/lib/order-email";
 
 const contactSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -406,6 +407,31 @@ export async function placeOrder(
     source: "nextjs-checkout",
     path: "/checkout",
   });
+
+  // Send order confirmation email (fire-and-forget — never blocks checkout)
+  void sendOrderConfirmation({
+    to: contactResult.data.email,
+    name: contactResult.data.name,
+    orderNumber,
+    totalCents: total,
+    currency: "USD",
+    items: orderItems.map((item) => ({
+      name: item.name,
+      emoji: item.emoji ?? "🎁",
+      qty: item.qty,
+      unitPrice: item.unit_price_cents,
+      lineTotal: item.line_total_cents,
+    })),
+    address: {
+      address1: shippingResult.data.address1,
+      address2: shippingResult.data.address2 ?? null,
+      city: shippingResult.data.city,
+      state: shippingResult.data.state,
+      postal: shippingResult.data.postal_code,
+      country: shippingResult.data.country,
+    },
+    deliveryMethod: deliveryResult.data.delivery,
+  }).catch(() => undefined); // suppress any fire-and-forget errors silently
 
   revalidatePath("/", "layout");
   redirect(`/order-success?orderNumber=${orderNumber}`);
