@@ -180,7 +180,7 @@ export async function sendOrderConfirmation(data: OrderEmailData): Promise<{ ok:
       body: JSON.stringify({
         sender: {
           name: "Confetti Club",
-          email: "noreply@confetticlub.shop",
+          email: "confetticlubadmin@gmail.com",
         },
         to: [{ email: data.to, name: data.name }],
         subject,

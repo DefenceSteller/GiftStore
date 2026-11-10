@@ -39,7 +39,7 @@ export async function POST(request: Request) {
       body: JSON.stringify({
         sender: {
           name: "Confetti Club",
-          email: "noreply@confetticlub.shop",
+          email: "confetticlubadmin@gmail.com",
         },
         to: [{ email: to, name: "Test User" }],
         subject: "Test email from Confetti Club",
