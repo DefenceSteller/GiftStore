@@ -19,7 +19,7 @@ export const shippingAddressSchema = z.object({
     .string()
     .regex(/^[0-9]{6}$/, "Postal code must be 6 digits")
     .optional(),
-  country: z.string().min(1, "Country required"),
+  country: z.string().default("US"),
 });
 
 export const passwordSchema = z.object({

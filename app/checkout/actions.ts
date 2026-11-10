@@ -19,7 +19,7 @@ const shippingSchema = z.object({
   city: z.string().min(1, "City required"),
   state: z.string().min(1, "State required"),
   postal_code: z.string().min(3, "Postal/ZIP code required").max(12, "Postal code too long"),
-  country: z.string().min(1, "Country required"),
+  country: z.string().default("US"),
 });
 
 const deliverySchema = z.object({
@@ -181,14 +181,14 @@ export async function placeOrder(
   }
 
   // Parse and validate shipping
-  const shippingResult = shippingSchema.safeParse({
+  const shippingData: Record<string, string> = {
     address1: String(formData.get("address1") ?? "").trim(),
     address2: String(formData.get("address2") ?? "").trim(),
     city: String(formData.get("city") ?? "").trim(),
     state: String(formData.get("state") ?? "").trim(),
     postal_code: String(formData.get("postal_code") ?? "").trim(),
-    country: String(formData.get("country") ?? "").trim(),
-  });
+  };
+  const shippingResult = shippingSchema.safeParse(shippingData);
 
   if (!shippingResult.success) {
     return { error: shippingResult.error.issues[0].message };

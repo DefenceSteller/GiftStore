@@ -15,7 +15,7 @@ const shippingSchema = z.object({
   city: z.string().min(1, "City required"),
   state: z.string().min(1, "State required"),
   postal_code: z.string().min(3, "Postal/ZIP code required").max(12, "Postal code too long"),
-  country: z.string().min(1, "Country required"),
+  country: z.string().default("US"),
 });
 
 const deliverySchema = z.object({
