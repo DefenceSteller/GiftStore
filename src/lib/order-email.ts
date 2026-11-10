@@ -13,15 +13,22 @@ export interface OrderEmailData {
 
 export const FROM_EMAIL = process.env.EMAIL_FROM ?? "Confetti Club <noreply@confetticlub.shop>";
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || "smtp.brevo.com",
-  port: parseInt(process.env.SMTP_PORT || "587"),
-  secure: false,
-  auth: {
-    user: process.env.SMTP_USER || "",
-    pass: process.env.SMTP_PASS || "",
-  },
-});
+// Create transporter lazily only when needed (to avoid errors on module load)
+function createTransporter() {
+  const host = process.env.SMTP_HOST || "smtp.brevo.com";
+  const port = parseInt(process.env.SMTP_PORT || "587", 10);
+  const user = process.env.SMTP_USER || "";
+  const pass = process.env.SMTP_PASS || "";
+  
+  console.log("[email] Creating transporter:", { host, port, hasUser: !!user, hasPass: !!pass });
+  
+  return nodemailer.createTransport({
+    host,
+    port,
+    secure: false,
+    auth: { user, pass },
+  });
+}
 
 function formatMoney(cents: number, symbol: string) {
   return `${symbol}${(cents / 100).toFixed(2)}`;
@@ -39,7 +46,7 @@ export function buildOrderEmail(data: OrderEmailData): { subject: string; html: 
 
   const itemRows = data.items
     .map(
-      (item) => `
+      (item: any) => `
     <tr>
       <td style="padding:12px 0;border-bottom:1px solid #f0f0f0;vertical-align:top;width:48px;font-size:22px">${esc(item.emoji)}</td>
       <td style="padding:12px 16px 12px 0;border-bottom:1px solid #f0f0f0;vertical-align:middle">
@@ -161,24 +168,51 @@ export function buildOrderEmail(data: OrderEmailData): { subject: string; html: 
 }
 
 export async function sendOrderConfirmation(data: OrderEmailData): Promise<{ ok: boolean; error?: string }> {
-  // Skip sending if SMTP credentials are not configured
+  console.log("[email] Checking env vars:");
+  console.log("  SMTP_HOST:", process.env.SMTP_HOST || "(not set)");
+  console.log("  SMTP_PORT:", process.env.SMTP_PORT || "(not set)");
+  console.log("  SMTP_USER:", process.env.SMTP_USER ? "set (" + process.env.SMTP_USER.substring(0,8) + "..." + ")" : "(not set)");
+  console.log("  SMTP_PASS:", process.env.SMTP_PASS ? "set (" + process.env.SMTP_PASS.substring(0,8) + "..." + ")" : "(not set)");
+  console.log("  EMAIL_FROM:", process.env.EMAIL_FROM || "(not set)");
+
+  // Check if credentials exist
   if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
-    console.warn("[email] SMTP credentials not set — skipping order confirmation email.");
-    return { ok: true, error: undefined };
+    console.error("[email] ERROR: SMTP credentials missing!");
+    return { ok: false, error: "SMTP_USER and SMTP_PASS are not configured in environment variables" };
+  }
+
+  let transporter;
+  try {
+    transporter = createTransporter();
+  } catch (transportError) {
+    console.error("[email] Failed to create transport:", transportError);
+    return { ok: false, error: "Failed to create email transport: " + String(transportError) };
+  }
+
+  try {
+    console.log("[email] Verifying connection...");
+    await transporter.verify();
+    console.log("[email] Connection verified OK");
+  } catch (verifyErr) {
+    console.error("[email] Verify failed:", verifyErr);
+    return { ok: false, error: "Connection verification failed: " + String(verifyErr) };
   }
 
   try {
     const { subject, html } = buildOrderEmail(data);
-    await transporter.sendMail({
+    console.log(`[email] Sending to ${data.to}...`);
+    
+    const info = await transporter.sendMail({
       from: FROM_EMAIL,
       to: [data.to],
       subject,
       html,
     });
-    console.log(`[email] Order confirmation sent to ${data.to} for order ${data.orderNumber}`);
+    
+    console.log(`[email] SUCCESS! messageId: ${info.messageId}`);
     return { ok: true };
-  } catch (err) {
-    console.error("[email] Failed to send order confirmation:", err);
-    return { ok: false, error: err instanceof Error ? err.message : String(err) };
+  } catch (sendErr) {
+    console.error("[email] Send failed:", sendErr);
+    return { ok: false, error: "Send failed: " + (sendErr instanceof Error ? sendErr.message : String(sendErr)) };
   }
 }
