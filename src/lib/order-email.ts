@@ -1,17 +1,6 @@
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
-const resend = new Resend(process.env.RESEND_API_KEY ?? "");
-
-export const FROM_EMAIL = process.env.EMAIL_FROM ?? "Confetti Club <orders@confetticlub.shop>";
-
-if (!process.env.RESEND_API_KEY) {
-  console.warn("[email] RESEND_API_KEY is not set — order confirmation emails will silently fail.");
-}
-if (!process.env.EMAIL_FROM) {
-  console.warn("[email] EMAIL_FROM is not set — using default sender.");
-}
-
-interface OrderEmailData {
+export interface OrderEmailData {
   to: string;
   name: string;
   orderNumber: string;
@@ -22,11 +11,27 @@ interface OrderEmailData {
   deliveryMethod: "standard" | "express";
 }
 
+export const FROM_EMAIL = process.env.EMAIL_FROM ?? "Confetti Club <noreply@confetticlub.shop>";
+
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST || "smtp.brevo.com",
+  port: parseInt(process.env.SMTP_PORT || "587"),
+  secure: false,
+  auth: {
+    user: process.env.SMTP_USER || "",
+    pass: process.env.SMTP_PASS || "",
+  },
+});
+
 function formatMoney(cents: number, symbol: string) {
   return `${symbol}${(cents / 100).toFixed(2)}`;
 }
 
-/** Build a branded, inline-CSS order confirmation HTML email */
+function esc(str: string) {
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+/** Build a branded HTML order confirmation email */
 export function buildOrderEmail(data: OrderEmailData): { subject: string; html: string } {
   const sym = data.currency === "PKR" ? "Rs" : "$";
   const deliveryLabel = data.deliveryMethod === "express" ? "Express (2–3 days)" : "Standard (5–7 days)";
@@ -90,7 +95,7 @@ export function buildOrderEmail(data: OrderEmailData): { subject: string; html: 
                       <td colspan="3" style="padding:16px 0">
                         <table width="100%" cellpadding="0" cellspacing="0">
                           <tr><td style="font-size:13px;color:#5B5B6B;padding-bottom:6px">Subtotal</td><td style="text-align:right;font-size:13px;font-weight:700;color:#5B5B6B;padding-bottom:6px">${formatMoney(data.items.reduce((s,i)=>s+i.lineTotal,0),sym)}</td></tr>
-                          <tr><td style="font-size:13px;color:#5B5B6B;padding-bottom:6px">Shipping (${deliveryLabel})</td><td style="text-align:right;font-size:13px;font-weight:700;color:#5B5B6B;padding-bottom:6px">${formatMoney(data.items.length===0?0:0,sym)}</td></tr>
+                          <tr><td style="font-size:13px;color:#5B5B6B;padding-bottom:6px">Shipping (${deliveryLabel})</td><td style="text-align:right;font-size:13px;font-weight:700;color:#5B5B6B;padding-bottom:6px">${formatMoney(0,sym)}</td></tr>
                           <tr style="border-top:2px dashed rgba(13,13,18,0.12)"><td style="font-size:16px;font-weight:900;color:#0D0D12;padding-top:10px">Total</td><td style="text-align:right;font-size:18px;font-weight:900;color:#7C5CFF;padding-top:10px">${formatMoney(data.totalCents,sym)}</td></tr>
                         </table>
                       </td>
@@ -133,7 +138,7 @@ export function buildOrderEmail(data: OrderEmailData): { subject: string; html: 
         <tr>
           <td align="center" style="padding:0 36px 36px">
             <a href="${trackUrl}" target="_blank" style="display:inline-block;background:#7C5CFF;color:#FFFDF7;font-weight:900;font-size:15px;padding:14px 32px;border-radius:99px;text-decoration:none;letter-spacing:0.02em">Track My Order →</a>
-            <div style="font-size:12px;color:#8A8A99;margin-top:12px">Need help? Reply to this email or contact us at hello@confetticlub.shop</div>
+            <div style="font-size:12px;color:#8A8A99;margin-top:12px">Need help? Contact us at hello@confetticlub.shop</div>
           </td>
         </tr>
 
@@ -141,7 +146,7 @@ export function buildOrderEmail(data: OrderEmailData): { subject: string; html: 
         <tr>
           <td style="background:#0D0D12;padding:28px 36px;text-align:center">
             <div style="font-size:13px;color:#B7A6FF;font-weight:700;margin-bottom:6px">Made with confetti ✨ by Confetti Club</div>
-            <div style="font-size:11px;color:#8A8A99;line-height:1.6">This is an automated message — please do not reply directly.<br/>Questions? Reach us at <a href="mailto:hello@confetticlub.shop" style="color:#D6FF3E;text-decoration:none">hello@confetticlub.shop</a></div>
+            <div style="font-size:11px;color:#8A8A99;line-height:1.6">This is an automated message.<br/>Questions? Reach us at <a href="mailto:hello@confetticlub.shop" style="color:#D6FF3E;text-decoration:none">hello@confetticlub.shop</a></div>
           </td>
         </tr>
 
@@ -155,27 +160,25 @@ export function buildOrderEmail(data: OrderEmailData): { subject: string; html: 
   return { subject: `Your Confetti Club order ${data.orderNumber} is confirmed! 🎉`, html };
 }
 
-function esc(str: string) {
-  return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-}
+export async function sendOrderConfirmation(data: OrderEmailData): Promise<{ ok: boolean; error?: string }> {
+  // Skip sending if SMTP credentials are not configured
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    console.warn("[email] SMTP credentials not set — skipping order confirmation email.");
+    return { ok: true, error: undefined };
+  }
 
-export async function sendOrderConfirmation(data: OrderEmailData) {
   try {
     const { subject, html } = buildOrderEmail(data);
-    const result = await resend.emails.send({
+    await transporter.sendMail({
       from: FROM_EMAIL,
       to: [data.to],
       subject,
       html,
     });
-    if (result.error) {
-      console.error("[email] Resend error:", result.error);
-    } else {
-      console.log(`[email] Order confirmation sent to ${data.to} for order ${data.orderNumber}`);
-    }
-    return result;
+    console.log(`[email] Order confirmation sent to ${data.to} for order ${data.orderNumber}`);
+    return { ok: true };
   } catch (err) {
     console.error("[email] Failed to send order confirmation:", err);
-    return { error: err instanceof Error ? err.message : String(err) };
+    return { ok: false, error: err instanceof Error ? err.message : String(err) };
   }
 }

@@ -22,6 +22,7 @@
     "legacy:setup": "npm run legacy:build && npm run gen:images && npm run seed"
   },
   "dependencies": {
+    "@sendinblue/client": "^3.3.1",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.118.0",
     "bcryptjs": "^2.4.3",
@@ -33,6 +34,7 @@
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "next": "^16.4.3",
+    "nodemailer": "^10.5.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "resend": "^6.37.0",

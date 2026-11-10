@@ -72,21 +72,9 @@ export default function CheckoutPage() {
   // Pre-fill contact fields from the logged-in user's profile so repeat
   // checkouts don't ask for the same email/name twice. The user can still
   // override any field before placing the order.
-  useEffect(() => {
-    if (!user?.email) return;
-    const emailInput = document.getElementById("c-email") as HTMLInputElement | null;
-    const firstNameInput = document.getElementById("c-first") as HTMLInputElement | null;
-    const lastNameInput = document.getElementById("c-last") as HTMLInputElement | null;
-    if (emailInput && !emailInput.value) emailInput.value = user.email;
-    if (firstNameInput && !firstNameInput.value) {
-      const parts = (user.email.split("@")[0] || "").split(".");
-      if (parts.length) firstNameInput.value = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
-    }
-    if (lastNameInput && !lastNameInput.value && user.email.split("@")[0].split(".").length > 1) {
-      const parts = user.email.split("@")[0].split(".");
-      lastNameInput.value = parts[1].charAt(0).toUpperCase() + parts[1].slice(1);
-    }
-  }, [user]);
+  // NOTE: We use `defaultValue` on the inputs (not `value`) so the pre-fill
+  // happens at render time — mutating the DOM after hydration triggers a
+  // React hydration error (#441).
 
   // hydrate promo from sessionStorage once
   useEffect(() => {
