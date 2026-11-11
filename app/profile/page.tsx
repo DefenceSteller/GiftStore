@@ -269,7 +269,7 @@ export default async function ProfilePage() {
             )}
           </section>
 
-          <aside className="lg:sticky lg:top-24 lg:self-start">
+          <aside className="min-w-0 lg:sticky lg:top-24 lg:self-start">
             <div className="rounded-[26px] border border-ink/8 bg-white p-5 shadow-soft">
               <div className="flex items-center justify-between">
                 <h3 className="font-display text-lg font-extrabold">
