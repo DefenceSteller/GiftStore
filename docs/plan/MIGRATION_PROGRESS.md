@@ -54,6 +54,7 @@ Everything below happened **after** the migration reached parity:
 - [x] **Pakistan defaults** (`fcf4364`) — country `PK`, currency `PKR` (Rs) across config, validators (postal 4–5 digits), checkout action + API, admin settings
 - [x] **Checkout email pre-fill** (`1f6c9b2`) — email field defaults to the logged-in account email via `defaultValue` + server-seeded `initialUser` (no hydration error); user can still edit
 - [x] **Profile page mobile zoom-out fix** (`4be796e`) — `min-w-0` on the account-details `aside` removes 396px min-content overflow; 0 horizontal overflow verified at 320/360/375/390px, desktop untouched
+- [x] **Signup confirmation link restored** (`031f3b2`) — Supabase's `resend({type: "signup"})` is rate-limited (2/hour per address) and fails on fresh signups with `over_email_send_rate_limit`; the action still returned the "check your inbox" success message, so users never got the activation link. Fix: `sendConfirmationLink()` in `app/auth/actions.ts` tries `resend` first, then falls back to `generateLink` + Brevo (`src/lib/signup-email.ts`) so the link always goes out. Verified end-to-end: `resend` → rate-limit error → `generateLink` → valid link → Brevo `201 messageId`
 - [x] CSP extended for browser fetch to Supabase (`bdcc6f3`)
 
 ### Known gaps (non-blocking)

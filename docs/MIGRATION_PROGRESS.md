@@ -34,6 +34,7 @@ Branch `nextjs-supabase` · deployed at `confetti-club-alpha.vercel.app` · late
 - **Pakistan defaults** (commit `fcf4364`): country `PK`, currency `PKR` in `store-config.ts`, `validators.ts` (postal 4–5 digits), `checkout/actions.ts`, `api/checkout/route.tsx`, admin settings default.
 - **Checkout email pre-fill** (commit `1f6c9b2`): email input `defaultValue={user?.email ?? ""}` — server-seeded `initialUser` keeps server/client render identical (no React #441 hydration error; earlier DOM-mutation attempt removed in `4869acb`). User can still edit the field.
 - **Profile page mobile fix** (commit `4be796e`): Account details card forced a 396px min-content width (UUID row), so phones <396px shrink-to-fit zoomed out with blank space on the right. Fix: `min-w-0` on the `aside`. Verified 0 horizontal overflow at 320/360/375/390px; desktop (≥1024px) untouched.
+- [x] **Signup confirmation link restored** (commit `031f3b2`): Supabase's `resend({type: "signup"})` is rate-limited (2/hour per address) and fails on fresh signups with `over_email_send_rate_limit` — the action still returned the "check your inbox" success message, so users never got the activation link. Fix: `sendConfirmationLink()` in `app/auth/actions.ts` tries `resend` first, then falls back to `generateLink` + Brevo (`src/lib/signup-email.ts`) so the link always goes out. Verified end-to-end: resend → rate-limit error → generateLink → valid link → Brevo 201 messageId.
 
 ### Known issues / gaps
 - **Unit tests:** `vitest.config.mjs` configured (jsdom) but no test files written yet.
