@@ -46,14 +46,13 @@ export async function signup(
   }
 
   // Send (or re-send) the confirmation email. Its link lands on /auth/confirm.
-  const { error: resendError } = await service.auth.resend({
-    type: "signup",
-    email,
-    options: { emailRedirectTo: `${siteUrl}/auth/confirm` },
-  });
-
-  if (resendError) {
-    return { error: friendlyAuthError(resendError) };
+  // Supabase's own `resend` is rate-limited (2/hour per address) and, on a
+  // fresh signup, can fail with "over_email_send_rate_limit" — which used to
+  // silently swallow the activation link while the panel still said "check
+  // your inbox". Fall back to generateLink + Brevo so the link always goes out.
+  const confirmation = await sendConfirmationLink(service, email, password, siteUrl);
+  if (!confirmation.ok) {
+    return { error: confirmation.error };
   }
 
   return {
@@ -61,6 +60,55 @@ export async function signup(
       ? "We re-sent your confirmation link — check your inbox (or sign in if you've already confirmed)."
       : "One more step — check your inbox and click the confirmation link to activate your account.",
   };
+}
+
+/**
+ * Deliver the signup confirmation link for `email`.
+ *
+ * Tries Supabase's own `resend` first; on any failure (rate limit, transport
+ * error) falls back to `generateLink` + Brevo so the user actually receives
+ * the activation link. Returns `{ ok: false }` only if every path fails.
+ */
+async function sendConfirmationLink(
+  service: ReturnType<typeof createServiceClient>,
+  email: string,
+  password: string,
+  siteUrl: string
+): Promise<{ ok: boolean; error?: string }> {
+  const redirect = `${siteUrl}/auth/confirm`;
+
+  // 1. Supabase's own email dispatch.
+  const { error: resendError } = await service.auth.resend({
+    type: "signup",
+    email,
+    options: { emailRedirectTo: redirect },
+  });
+  if (!resendError) return { ok: true };
+
+  console.warn("[auth] resend failed, falling back to generateLink:", resendError.message);
+
+  // 2. Supabase generates the confirmation link (no email sent).
+  // `generateLink({type: "signup", email, password})` produces a link that,
+  // when clicked, confirms the existing unconfirmed user — exactly what we
+  // need after `createUser(email_confirm: false)`. The plaintext password is
+  // passed in by the caller (`signup()`), not stored.
+  const { data: linkData, error: linkError } = await service.auth.admin.generateLink({
+    type: "signup",
+    email,
+    password,
+    options: { redirectTo: redirect },
+  });
+  if (linkError || !linkData?.properties?.action_link) {
+    return { ok: false, error: friendlyAuthError(linkError ?? { message: "No confirmation link returned." }) };
+  }
+
+  // 3. Deliver it ourselves via Brevo (already verified working for order emails).
+  const { sendSignupConfirmation } = await import("@/lib/signup-email");
+  const result = await sendSignupConfirmation({ to: email, confirmUrl: linkData.properties.action_link });
+  if (!result.ok) {
+    return { ok: false, error: result.error ?? "We couldn't send the confirmation email." };
+  }
+  return { ok: true };
 }
 
 function friendlyAuthError(err: { message?: string; code?: string }): string {
