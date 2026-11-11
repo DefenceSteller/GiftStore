@@ -1,8 +1,10 @@
 # 🗃️ Phase 3: Database Migration
 
-**Status:** Starting  
+**Status:** ✅ Done  
 **Started:** 2026-08-24  
-**Estimated completion:** 2026-08-26
+**Completed:** 2026-10-31 (migration commit `ca8b714`)
+
+> **Delivered:** Full schema in `supabase/migrations/` (001–018) on Supabase Cloud `ppolhziswextahhjfggi` — UUID PKs, timestamptz, integer cents, enums for order status/payment method, RLS on every table, RPC functions for atomic place/cancel/refund with stock handling, seed data (26 products, promo codes GIFT10/FREESHIP/WELCOME5), plus the `is_featured` column (migration 018). Verified via `scripts/push-migration.mjs` and `scripts/verify-migration.mjs`. See `MIGRATION_WORKLOG.md`.
 
 ## 3.1 SQLite → Postgres Schema Conversion
 
@@ -190,29 +192,29 @@ This generates the full `Database` type used throughout the app for type-safe qu
 
 ## 3.1 Checklist: Phase 3 Complete When
 
-- [ ] All 11 SQLite tables converted to Postgres with correct columns/types
-- [ ] UUID PKs generated via `gen_random_uuid()`
-- [ ] `numeric(10,2)` or integer cents for all money columns
-- [ ] `timestamptz` for all created_at/updated_at/placed_at/paid_at
-- [ ] Enums: `order_status` (pending|paid|packed|shipped|delivered|cancelled|refunded), `payment_method` (card|cod), `promo_type` (percent|fixed|free_shipping)
-- [ ] RLS enabled on every table with appropriate policies
-- [ ] Three RPC functions: `place_order`, `cancel_order`, `refund_order`
-- [ ] Seed script executed, demo catalog present
-- [ ] `supabase gen types` run, Typescript types imported
-- [ ] Old SQLite data no longer used (coexistence period, then decommission)
+- [x] All 11 SQLite tables converted to Postgres with correct columns/types
+- [x] UUID PKs generated via `gen_random_uuid()`
+- [x] `numeric(10,2)` or integer cents for all money columns
+- [x] `timestamptz` for all created_at/updated_at/placed_at/paid_at
+- [x] Enums: `order_status` (pending|paid|packed|shipped|delivered|cancelled|refunded), `payment_method` (card|cod), `promo_type` (percent|fixed|free_shipping)
+- [x] RLS enabled on every table with appropriate policies
+- [x] Three RPC functions: `place_order`, `cancel_order`, `refund_order`
+- [x] Seed script executed, demo catalog present
+- [x] `supabase gen types` run, Typescript types imported
+- [x] Old SQLite data no longer used (coexistence period, then decommission)
 
 ---
 
 ## 📦 Phase 3 Deliverables
 
-- [ ] `supabase/migrations/` — all migration files
-- [ ] `src/lib/supabase/browser.ts` — client instance
-- [ ] `src/lib/supabase/server.ts` — server instance with Service Role Key
-- [ ] `src/lib/supabase/types.ts` — generated types
-- [ ] Updated `src/lib/pricing.ts` — adapted from server-side priceCart
-- [ ] `supabase/seed.sql` — demo catalog + admin profile
-- [ ] Migration executed: `supabase db reset`
-- [ ] TypeScript types verified against Supabase client
+- [x] `supabase/migrations/` — all migration files
+- [x] `src/lib/supabase/browser.ts` — client instance
+- [x] `src/lib/supabase/server.ts` — server instance with Service Role Key
+- [x] `src/lib/supabase/types.ts` — generated types
+- [x] Updated `src/lib/pricing.ts` — adapted from server-side priceCart
+- [x] `supabase/seed.sql` — demo catalog + admin profile
+- [x] Migration executed: `supabase db reset`
+- [x] TypeScript types verified against Supabase client
 
 ---
 

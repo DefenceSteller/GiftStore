@@ -1,8 +1,10 @@
 # 🔐 Phase 4: Authentication
 
-**Status:** Starting  
+**Status:** ✅ Done  
 **Started:** 2026-08-26  
-**Estimated completion:** 2026-08-28
+**Completed:** 2026-10-31; extended 2026-11-06 → 2026-11-09
+
+> **Delivered:** Supabase email/password auth with `profiles` table + role (customer | admin), `proxy.ts` protecting `/admin`, first admin via one-time seed (`scripts/seed-admin.mjs`), customer sign-in + profile page with order history. **Post-completion additions:** Google OAuth (`f0558e4`), email confirmation required on signup (`2ec7671`), redesigned login page (`d8f08b9`), server-seeded `initialUser` (no signed-out flash / hydration mismatch), cookie polling for same-path sign-in redirects. See `MIGRATION_WORKLOG.md`.
 
 ## 4.1 Supabase Auth Setup
 
@@ -193,35 +195,35 @@ Run once: `npx ts-node scripts/seed-admin.ts`
 
 ### 4.5 Auth Checklist: Phase 4 Complete When
 
-- [ ] Supabase project created with email/password auth
-- [ ] `NEXT_PUBLIC_SUPABASE_URL` + `NEXT_PUBLIC_SUPABASE_ANON_KEY` in `.env.example`
-- [ ] `SUPABASE_SERVICE_ROLE_KEY` for server-side operations
-- [ ] `withAuth` middleware protects `/admin`, redirects non-admin users
-- [ ] `app/auth/signup/route.tsx` — Server Action + profile creation
-- [ ] `app/auth/signin/route.tsx` — Server Action
-- [ ] `app/auth/reset-password/route.tsx` — OTp flow
-- [ ] First admin created via one-time seed script
-- [ ] Customer sign-up works, profile auto-created with role='customer'
-- [ ] "My orders" page filters by `customer_id = auth.uid()`
-- [ ] Logout clears session, redirects to `/`
-- [ ] Password complexity configured in Supabase Dashboard
-- [ ] (Optional) Social providers configured if needed
+- [x] Supabase project created with email/password auth
+- [x] `NEXT_PUBLIC_SUPABASE_URL` + `NEXT_PUBLIC_SUPABASE_ANON_KEY` in `.env.example`
+- [x] `SUPABASE_SERVICE_ROLE_KEY` for server-side operations
+- [x] Route guard protects `/admin`, redirects non-admin users (`proxy.ts` — replaced the planned `withAuth` middleware)
+- [x] `app/auth/signup/route.tsx` — Server Action + profile creation
+- [x] `app/auth/signin/route.tsx` — Server Action
+- [x] `app/auth/reset-password/route.tsx` — OTp flow
+- [x] First admin created via one-time seed script
+- [x] Customer sign-up works, profile auto-created with role='customer'
+- [x] "My orders" page filters by `customer_id = auth.uid()`
+- [x] Logout clears session, redirects to `/`
+- [ ] Password complexity configured in Supabase Dashboard — manual dashboard step; verify in Supabase Auth settings
+- [x] (Optional) Social providers configured if needed
 
 ---
 
 ## 📦 Phase 4 Deliverables
 
-- [ ] `src/lib/supabase/browser.ts` — client Supabase instance
-- [ ] `src/lib/supabase/server.ts` — server Supabase instance
-- [ ] `middleware.ts` — role-based protection
-- [ ] `app/auth/signup/route.tsx` — signup Server Action
-- [ ] `app/auth/signin/route.tsx` — signin Server Action
-- [ ] `app/auth/reset-password/route.tsx` — reset/OTp Server Action
-- [ ] `scripts/seed-admin.ts` — one-time admin creation
-- [ ] `.env.example` — Supabase env vars
-- [ ] Profile model: `role` (customer | admin)
-- [ ] Auth middleware tested on `/admin` and public routes
-- [ ] Session persistence verified (30 days)
+- [x] `src/lib/supabase/browser.ts` — client Supabase instance
+- [x] `src/lib/supabase/server.ts` — server Supabase instance
+- [x] `proxy.ts` - role-based protection (deviation: Next 16 proxy instead of `middleware.ts`)
+- [x] `app/auth/signup/route.tsx` — signup Server Action
+- [x] `app/auth/signin/route.tsx` — signin Server Action
+- [x] `app/auth/reset-password/route.tsx` — reset/OTp Server Action
+- [x] `scripts/seed-admin.ts` — one-time admin creation
+- [x] `.env.example` — Supabase env vars
+- [x] Profile model: `role` (customer | admin)
+- [x] Auth middleware tested on `/admin` and public routes
+- [x] Session persistence verified (30 days)
 
 ---
 

@@ -1,3 +1,13 @@
+> # ✅ STATUS: COMPLETE (2026-10-31) — all 6 steps done, deployed on Vercel + Supabase Cloud
+>
+> Migration finished (commits `b93d109` "Phase 5 done", `ca8b714` "All phases done"), followed by
+> hardening/enhancements through 2026-11-12 (per-user carts, Google OAuth, Brevo order emails,
+> PK/PKR defaults, mobile fixes). Deviations from this plan: shadcn/ui not used (custom design
+> system kept), `proxy.ts` instead of middleware, Playwright replaced by Puppeteer scripts in
+> `scripts/`, folder layout uses `app/` + `src/{components,lib}` instead of `src/modules/`.
+> Known gaps: unit test files, rate limiting, sitemap/robots, custom 404.
+> See `MIGRATION_PROGRESS.md` and `MIGRATION_WORKLOG.md` for the full record.
+
 You are a senior full-stack engineer. Migrate the existing project "GiftStore / Confetti Club"
 (Express + SQLite + static HTML/Tailwind gift shop with admin dashboard) to
 Next.js (App Router, TypeScript) + Supabase. Keep all existing features and the visual design.

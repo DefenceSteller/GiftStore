@@ -1,8 +1,10 @@
 # 🎨 Phase 5: Features to Port
 
-**Status:** Starting  
+**Status:** ✅ Done (14/14 features)  
 **Started:** 2026-08-28  
-**Estimated completion:** 2026-09-10
+**Completed:** 2026-10-31 (commit `b93d109` "Phase 5 done")
+
+> **Delivered:** All storefront pages (home, shop, product, cart drawer, 3-step checkout, order tracking, order-success, surprise), all 8 admin areas (dashboard with Realtime, orders with Address column, products CRUD with Storage upload, customers + CSV export, analytics, settings, promos, activity log), and payments (demo + Stripe Checkout + webhook, `PAYMENT_PROVIDER` switch). **Post-completion additions:** per-user auth-gated carts with SignInPopout (`3de89f3`), checkout email pre-fill (`1f6c9b2`), order-confirmation emails via Brevo, Pakistan defaults PK/PKR (`fcf4364`). See `MIGRATION_WORKLOG.md`.
 
 ## 5.1 Storefront Features (Already Complete in Express — Port to Next.js)
 
@@ -389,41 +391,41 @@ export async function POST(request: Request) {
 ## 5.4 Checklist: Phase 5 Complete When
 
 **Storefront:**
-- [ ] Home page with same visual design, product grid
-- [ ] Shop page with category filters, price range, search, sort, pagination
-- [ ] Product page with image, price, "Add to cart", related products
-- [ ] Cart drawer with quantity adjustments, free shipping threshold
-- [ ] Checkout with pricing (subtotal/discount/shipping/tax total), Stripe + demo provider
-- [ ] Order tracking page with email verification + timeline
+- [x] Home page with same visual design, product grid
+- [x] Shop page with category filters, price range, search, sort, pagination
+- [x] Product page with image, price, "Add to cart", related products
+- [x] Cart drawer with quantity adjustments, free shipping threshold
+- [x] Checkout with pricing (subtotal/discount/shipping/tax total), Stripe + demo provider
+- [x] Order tracking page with email verification + timeline
 
 **Admin:**
-- [ ] Dashboard overview KPI cards with live Realtime
-- [ ] Orders list with status tabs, search, drawer with transitions
-- [ ] Products CRUD with image upload to Supabase Storage
-- [ ] Customers list with lifetime value, order link
-- [ ] Analytics: traffic, funnel, sources, hourly, top pages
-- [ ] Settings: store name/announcement/currency/delivery days
-- [ ] Promos: create/edit/delete, validation via RPC
-- [ ] Audit log list with filter/export
+- [x] Dashboard overview KPI cards with live Realtime
+- [x] Orders list with status tabs, search, drawer with transitions
+- [x] Products CRUD with image upload to Supabase Storage
+- [x] Customers list with lifetime value, order link
+- [x] Analytics: traffic, funnel, sources, hourly, top pages
+- [x] Settings: store name/announcement/currency/delivery days
+- [x] Promos: create/edit/delete, validation via RPC
+- [x] Audit log list with filter/export
 
 **Payments:**
-- [ ] Demo provider: 4242 4242 4242 4242 → success, 4000...0002 → decline
-- [ ] Stripe Checkout integration (Route Handler + Webhook)
-- [ ] `PAYMENT_PROVIDER` env var switches between demo/stripe
-- [ ] Webhook fulfills order on `checkout.session.completed`
+- [x] Demo provider: 4242 4242 4242 4242 → success, 4000...0002 → decline
+- [x] Stripe Checkout integration (Route Handler + Webhook)
+- [x] `PAYMENT_PROVIDER` env var switches between demo/stripe
+- [x] Webhook fulfills order on `checkout.session.completed`
 
 ---
 
 ## 📦 Phase 5 Deliverables
 
-- [ ] All storefront pages (home, shop, product, cart, checkout, track)
-- [ ] All admin pages (dashboard, orders, products, customers, analytics, settings, promos, activity)
-- [ ] Payment provider: demo + Stripe Checkout + webhook
-- [ ] Zod schemas for all forms (15+ schemas)
-- [ ] Supabase Realtime channels for live dashboard
-- [ ] Cart state management (client + optional Supabase-linked)
-- [ ] Image upload to Supabase Storage for product images
-- [ ] TypeScript types for all forms & RPC calls
+- [x] All storefront pages (home, shop, product, cart, checkout, track)
+- [x] All admin pages (dashboard, orders, products, customers, analytics, settings, promos, activity)
+- [x] Payment provider: demo + Stripe Checkout + webhook
+- [x] Zod schemas for all forms (15+ schemas)
+- [x] Supabase Realtime channels for live dashboard
+- [x] Cart state management (client + optional Supabase-linked)
+- [x] Image upload to Supabase Storage for product images
+- [x] TypeScript types for all forms & RPC calls
 
 ---
 

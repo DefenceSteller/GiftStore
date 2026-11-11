@@ -1,8 +1,10 @@
 # 🎯 Phase 2: Target Architecture
 
-**Status:** In Progress  
+**Status:** ✅ Done  
 **Started:** 2026-08-24  
-**Estimated completion:** 2026-08-26
+**Completed:** 2026-10-31 (migration commit `ca8b714`)
+
+> **Delivered:** Next.js 16 App Router + TypeScript + Tailwind (design tokens preserved, precompiled stylesheet at `public/assets/css/styles.css`), Supabase via `@supabase/ssr` (anon server / browser / service-role clients, Auth, Storage, Realtime), Server Components for pages + Server Actions/Route Handlers for mutations, Zod validation (`src/lib/validators.ts`), `proxy.ts` role guard. **Deviations from plan:** shadcn/ui not used (custom design system kept instead). See `MIGRATION_WORKLOG.md`.
 
 ## 2.1 Framework & App Structure
 
@@ -204,19 +206,19 @@ All route handlers & server components typed against this.
 
 ## 📦 Phase 2 Deliverables (Ready to Start Phase 3)
 
-- [ ] Next.js 15 project initialized with `create-next-app@latest`
-- [ ] TypeScript config strict mode
-- [ ] Tailwind CSS with design tokens imported
-- [ ] shadcn/ui installed and configured
-- [ ] Supabase project created + @supabase/ssr set up
-- [ ] Folder structure: `src/app/`, `src/modules/storefront/`, `src/modules/admin/`
-- [ ] Environment variables template `.env.example`
-- [ ] Database schema defined (see 2.3)
-- [ ] RLS policies defined (see 2.4)
-- [ ] API route patterns documented (see 2.5)
-- [ ] Zod schemas defined (see 2.6)
-- [ ] Payment provider interface preserved (see 2.7)
-- [ ] TypeScript types generated from Supabase
+- [x] Next.js project initialized with `create-next-app@latest` (now on Next.js 16.4.3)
+- [x] TypeScript config strict mode
+- [x] Tailwind CSS with design tokens imported
+- [x] shadcn/ui ~~installed and configured~~ — **not used**: custom design system retained instead (plan deviation)
+- [x] Supabase project created + @supabase/ssr set up
+- [x] Folder structure: routes in `app/`, shared UI in `src/components/`, logic in `src/lib/` (plan deviation: no `src/modules/`)
+- [x] Environment variables template `.env.example`
+- [x] Database schema defined (see 2.3)
+- [x] RLS policies defined (see 2.4)
+- [x] API route patterns documented (see 2.5)
+- [x] Zod schemas defined (see 2.6)
+- [x] Payment provider interface preserved (see 2.7)
+- [x] TypeScript types generated from Supabase
 
 ---
 
