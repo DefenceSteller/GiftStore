@@ -459,6 +459,7 @@ export default function CheckoutPage() {
                   type="email"
                   className="input"
                   autoComplete="email"
+                  defaultValue={user?.email ?? ""}
                   required
                 />
                 {formState.errors.email && (
