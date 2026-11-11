@@ -6,7 +6,7 @@ import { money } from "@/lib/format";
 export default function SettingsContent() {
   const [settings, setSettings] = useState({
     store_name: "Confetti Club",
-    currency: "USD",
+    currency: "PKR",
     announcement: "FREE SHIPPING OVER Rs 50  ✦  NEW DROPS EVERY FRIDAY  ✦  30-DAY EASY RETURNS",
     support_email: "hello@confetticlub.shop",
     free_shipping_threshold_cents: 5000,

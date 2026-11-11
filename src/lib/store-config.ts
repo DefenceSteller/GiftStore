@@ -16,7 +16,7 @@ export type StoreConfig = {
 
 export const STORE_CONFIG_DEFAULTS: StoreConfig = {
   store_name: "Confetti Club",
-  currency: "USD",
+  currency: "PKR",
   announcement: "",
   support_email: "hello@confetticlub.shop",
   free_shipping_threshold_cents: 5000,

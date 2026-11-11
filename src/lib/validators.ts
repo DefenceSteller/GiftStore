@@ -17,9 +17,9 @@ export const shippingAddressSchema = z.object({
   state: z.string().min(1, "State required"),
   postal_code: z
     .string()
-    .regex(/^[0-9]{6}$/, "Postal code must be 6 digits")
+    .regex(/^[0-9]{4,5}$/, "Postal code must be 4-5 digits")
     .optional(),
-  country: z.string().default("US"),
+  country: z.string().default("PK"),
 });
 
 export const passwordSchema = z.object({
@@ -88,7 +88,7 @@ export const customerSearchSchema = z.object({
 
 export const settingsSchema = z.object({
   store_name: z.string().min(1, "Store name required").max(100),
-  currency: z.enum(["USD", "PKR"]).default("USD"),
+  currency: z.enum(["USD", "PKR"]).default("PKR"),
   free_shipping_threshold_cents: z.number().int().min(0).optional(),
   standard_shipping_cents: z.number().int().min(0).optional(),
   express_shipping_cents: z.number().int().min(0).optional(),

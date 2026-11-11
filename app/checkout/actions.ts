@@ -20,7 +20,7 @@ const shippingSchema = z.object({
   city: z.string().min(1, "City required"),
   state: z.string().min(1, "State required"),
   postal_code: z.string().min(3, "Postal/ZIP code required").max(12, "Postal code too long"),
-  country: z.string().default("US"),
+  country: z.string().default("PK"),
 });
 
 const deliverySchema = z.object({
@@ -352,7 +352,7 @@ export async function placeOrder(
       shipping_cents: shipping,
       tax_cents: tax,
       total_cents: total,
-      currency: "USD",
+      currency: "PKR",
       status: "pending",
       payment_method: String(formData.get("payment_method") ?? "cod"),
       payment_status: "pending",
@@ -414,7 +414,7 @@ export async function placeOrder(
     name: contactResult.data.name,
     orderNumber,
     totalCents: total,
-    currency: "USD",
+    currency: "PKR",
     items: orderItems.map((item) => ({
       name: item.name,
       emoji: item.emoji ?? "🎁",

@@ -20,17 +20,17 @@ export async function GET(request: Request) {
       name: "Test User",
       orderNumber: "TEST-" + Math.floor(100000 + Math.random() * 900000),
       totalCents: 1000,
-      currency: "USD",
+      currency: "PKR",
       items: [
         { name: "Test Gift", emoji: "🎁", qty: 1, unitPrice: 1000, lineTotal: 1000 },
       ],
       address: {
         address1: "123 Test Street",
         address2: null,
-        city: "Test City",
-        state: "TX",
-        postal: "12345",
-        country: "US",
+        city: "Karachi",
+        state: "Sindh",
+        postal: "75500",
+        country: "PK",
       },
       deliveryMethod: "standard",
     });
