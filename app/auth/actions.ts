@@ -36,10 +36,15 @@ export async function signup(
     user_metadata: { name },
   });
 
+  // Supabase reports an existing address with code "email_exists" and the
+  // message "A user with this email address has already been registered"
+  // (note the "been" — an earlier regex missed it and leaked the raw error
+  // to the user instead of re-sending their confirmation link).
   const alreadyExists =
     !!createError &&
-    (createError.code === "user_already_exists" ||
-      /already (registered|exists|confirmed)/i.test(createError.message));
+    (createError.code === "email_exists" ||
+      createError.code === "user_already_exists" ||
+      /already (been )?(registered|exists|confirmed)/i.test(createError.message));
 
   if (createError && !alreadyExists) {
     return { error: createError.message };
