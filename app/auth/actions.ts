@@ -46,11 +46,11 @@ export async function signup(
   }
 
   // Send (or re-send) the confirmation email. Its link lands on /auth/confirm.
-  // Supabase's own `resend` is rate-limited (2/hour per address) and, on a
-  // fresh signup, can fail with "over_email_send_rate_limit" — which used to
-  // silently swallow the activation link while the panel still said "check
-  // your inbox". Fall back to generateLink + Brevo so the link always goes out.
-  const confirmation = await sendConfirmationLink(service, email, password, siteUrl);
+  // PRIMARY: generateLink + branded Brevo email (sender "Confetti Club", site
+  // theme). Supabase's own `resend` always goes out as plain "Supabase auth"
+  // with a default template — kept only as a last-resort fallback so the
+  // activation link still arrives if Brevo is down.
+  const confirmation = await sendConfirmationLink(service, email, password, siteUrl, name);
   if (!confirmation.ok) {
     return { error: confirmation.error };
   }
@@ -65,29 +65,25 @@ export async function signup(
 /**
  * Deliver the signup confirmation link for `email`.
  *
- * Tries Supabase's own `resend` first; on any failure (rate limit, transport
- * error) falls back to `generateLink` + Brevo so the user actually receives
- * the activation link. Returns `{ ok: false }` only if every path fails.
+ * PRIMARY path: `generateLink` + branded Brevo email (sender "Confetti Club",
+ * site theme). Supabase's own dispatch always goes out as "Supabase auth"
+ * with a plain default template, which looks broken next to our storefront.
+ *
+ * LAST-RESORT fallback: Supabase `resend` — unbranded, but it still delivers
+ * the activation link if Brevo is down or the link can't be generated.
+ *
+ * Returns `{ ok: false }` only if every path fails.
  */
 async function sendConfirmationLink(
   service: ReturnType<typeof createServiceClient>,
   email: string,
   password: string,
-  siteUrl: string
+  siteUrl: string,
+  name?: string
 ): Promise<{ ok: boolean; error?: string }> {
   const redirect = `${siteUrl}/auth/confirm`;
 
-  // 1. Supabase's own email dispatch.
-  const { error: resendError } = await service.auth.resend({
-    type: "signup",
-    email,
-    options: { emailRedirectTo: redirect },
-  });
-  if (!resendError) return { ok: true };
-
-  console.warn("[auth] resend failed, falling back to generateLink:", resendError.message);
-
-  // 2. Supabase generates the confirmation link (no email sent).
+  // 1. Generate the confirmation link ourselves (no email sent).
   // `generateLink({type: "signup", email, password})` produces a link that,
   // when clicked, confirms the existing unconfirmed user — exactly what we
   // need after `createUser(email_confirm: false)`. The plaintext password is
@@ -98,17 +94,33 @@ async function sendConfirmationLink(
     password,
     options: { redirectTo: redirect },
   });
-  if (linkError || !linkData?.properties?.action_link) {
-    return { ok: false, error: friendlyAuthError(linkError ?? { message: "No confirmation link returned." }) };
+  const confirmUrl = linkData?.properties?.action_link;
+
+  // 2. Deliver it via Brevo, branded as Confetti Club.
+  if (confirmUrl) {
+    const { sendSignupConfirmation } = await import("@/lib/auth-email");
+    const result = await sendSignupConfirmation({ to: email, name, confirmUrl });
+    if (result.ok) return { ok: true };
+    console.warn("[auth] branded Brevo send failed, falling back to Supabase resend:", result.error);
+  } else {
+    console.warn("[auth] generateLink failed, falling back to Supabase resend:", linkError?.message);
   }
 
-  // 3. Deliver it ourselves via Brevo (already verified working for order emails).
-  const { sendSignupConfirmation } = await import("@/lib/signup-email");
-  const result = await sendSignupConfirmation({ to: email, confirmUrl: linkData.properties.action_link });
-  if (!result.ok) {
-    return { ok: false, error: result.error ?? "We couldn't send the confirmation email." };
-  }
-  return { ok: true };
+  // 3. Last resort: Supabase's own dispatch (plain "Supabase auth" email,
+  // but the link always goes out even if Brevo is unavailable).
+  const { error: resendError } = await service.auth.resend({
+    type: "signup",
+    email,
+    options: { emailRedirectTo: redirect },
+  });
+  if (!resendError) return { ok: true };
+
+  return {
+    ok: false,
+    error: friendlyAuthError(
+      linkError ?? resendError ?? { message: "We couldn't send the confirmation email." }
+    ),
+  };
 }
 
 function friendlyAuthError(err: { message?: string; code?: string }): string {
@@ -191,10 +203,35 @@ export async function resetPassword(
     return { error: "Email is required." };
   }
 
-  const supabase = await createClient();
+  const siteUrl = process.env.SITE_URL ?? "http://localhost:3000";
+  const redirect = `${siteUrl}/auth/reset-password`;
+  const service = createServiceClient();
 
+  // PRIMARY: generate the recovery link ourselves and send it through Brevo
+  // as "Confetti Club" (site theme). Supabase's own dispatch would arrive as
+  // plain "Supabase auth" with a default template.
+  const { data: linkData, error: linkError } = await service.auth.admin.generateLink({
+    type: "recovery",
+    email,
+    options: { redirectTo: redirect },
+  });
+  const recoverUrl = linkData?.properties?.action_link;
+
+  if (recoverUrl) {
+    const { sendRecoveryEmail } = await import("@/lib/auth-email");
+    const result = await sendRecoveryEmail({ to: email, recoverUrl });
+    if (result.ok) {
+      return { message: "Check your email for a password reset link." };
+    }
+    console.warn("[auth] branded recovery email failed, falling back to Supabase:", result.error);
+  } else {
+    console.warn("[auth] recovery generateLink failed, falling back to Supabase:", linkError?.message);
+  }
+
+  // Last resort: Supabase's own dispatch (unbranded, but the link goes out).
+  const supabase = await createClient();
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${process.env.SITE_URL ?? "http://localhost:3000"}/auth/reset-password`,
+    redirectTo: redirect,
   });
 
   if (error) {
